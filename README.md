@@ -1,4 +1,6 @@
-# Nu primesc notă pentru că nu am pus titlu și descriere
+# Survival horror game (name TBD)
+
+Jucatorul trebuie sa scape dintr-un labirint si sa evite un numar de inamici intr-un environment semi-point-and-click.
 
 ### Folosiți template-ul corespunzător grupei voastre!
 
