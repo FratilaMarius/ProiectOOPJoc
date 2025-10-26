@@ -1,23 +1,24 @@
 #include <iostream>
+#include <fstream>
 #include <array>
+#include <string>
 #include <chrono>
 #include <thread>
 
 namespace data{
 
-  #define NR_UNIC_CAMERE 10
+  #define NR_UNIC_CAMERE 9    /// nr de camere din fisierul de date + 1
   #define NR_UNIC_PICKUPS 6
   #define TEXTURE_NAME_SIZE 15
 //////////////////////////////////////////
     int RNG () {
-      srand(time(nullptr));
       return rand();
     }
 
     // FUNCTIE NECESAARA DOAR PENTRU DEMO, REDO:
-    int Input() { // -1 back(up) | 1 fwrd(down) | 2 left | 3 right
+    int Input() { // 0 (up) | 1 (down) | 2 left | 3 right
       int a; 
-      std::cout<<"\nDiretion: ";
+      std::cout<<"\nDirection: ";
       std::cin>>a;
       return a;
     }
@@ -96,10 +97,10 @@ namespace data{
     public:
 
 ////////////////////////
-      Room() : id(0), texture(NULL), exits{1,0,0,0}, hasEnemy(0), hasPlayer(0) {}
+      Room() : id(0), texture(""), hasEnemy(0), hasPlayer(0) {}
       explicit Room(int _id) { // constructor daca am nevoie de id predefinit
         this->id = _id;
-        texture = NULL;
+        texture = "";
         hasEnemy= 0;
         hasPlayer = 0;
       }
@@ -107,7 +108,7 @@ namespace data{
         this->id = other.id;
         this->hasEnemy = other.hasEnemy;
         this->hasPlayer = other.hasPlayer;
-        std::copy(other.texture, other.texture + TEXTURE_NAME_SIZE, this->texture);
+        this->texture = other.texture;
         std::copy(other.exits, other.exits + 4, this->exits);
       }
       Room& operator=(const Room other) {
@@ -115,13 +116,11 @@ namespace data{
         this->id = other.id;
         this->hasEnemy = other.hasEnemy;
         this->hasPlayer = other.hasPlayer;
-        std::copy(other.texture, other.texture + TEXTURE_NAME_SIZE, this->texture);
+        std::copy(other.exits, other.exits + 4, this->exits);
         std::copy(other.exits, other.exits + 4, this->exits);
         return *this;
       }      
-      ~Room() {
-        delete texture;
-      }
+      ~Room() = default;
       friend std::ostream& operator<<(std::ostream& os, const Room& room);
 ////////////////////////
 
@@ -140,19 +139,59 @@ namespace data{
       void HasPlayer(int yesOrNo) {
         hasPlayer = yesOrNo;
       }
+      int Exits(std::string where) {
+        if(where == "up") return exits[0];
+        if(where == "down") return exits[1];
+        if(where == "left") return exits[2];
+        if(where == "right") return exits[3];
+        return -1;
+      }
+      void ReadProp(int _id) {
+        std::ifstream propCamere("Rooms.txt"); // deschide fișierul pentru citire
+        
+        if(!propCamere) {
+          std::cout<<"Nu s a gasit fisierul\n";
+          propCamere.close();
+          return;
+        }
+        std::string line = "";
+        std::string nr;
+        int nr_int = -1;
+        int spatiu;
+        while(nr_int != _id) {
+          if(propCamere.eof()) break;
+          getline(propCamere, line);  
+
+          spatiu = line.find(" ");
+          nr = line.substr(0, spatiu);
+          nr_int = std::stoi(nr);
+          // nr int e acum numarul liniei
+          if(nr_int == id) break;
+        }
+        if(nr_int == id) {
+          std::string inFIleExits = line.substr(spatiu + 1, spatiu + 7); // citim exiturile din fisier
+          texture = line.substr(spatiu + 9);
+          exits[0] = inFIleExits[0]-48; 
+          exits[1] = inFIleExits[2]-48;
+          exits[2] = inFIleExits[4]-48;
+          exits[3] = inFIleExits[6]-48;
+        }
+        propCamere.close();
+    }
     private:
       int id;
-      char *texture;
-      int exits[4] = {1,0,0,0}; // back, left, right, forward
+      std::string texture;
+      int exits[4] = {1,1,1,1}; // up, down, left, right
       int hasEnemy;      // hasEnemy si hasPlayer sunt 0 default, 1 la nevoie
       int hasPlayer;     // 
   };
     std::ostream& operator<<(std::ostream& os,  const Room& room) {
-      os << "Player("
-      << "HP=" << room.id
-      << ", accuracy=" << room.texture
-      << ", bullets=" << room.hasPlayer
-      << ", water=" << room.hasEnemy
+      os << "Room("
+      << "ID=" << room.id
+      << " exits=" << room.exits[0] << " " << room.exits[1] << " " << room.exits[2] << " " << room.exits[3]
+      << ", texture=" << room.texture
+      << ", hasPlayer=" << room.hasPlayer
+      << ", hasEnemy=" << room.hasEnemy
       << ")";
       return os;
     }
@@ -231,6 +270,7 @@ namespace data{
         if(layout[x][y].Id() == 0) {
           layout[x][y].Id(RNG() % NR_UNIC_CAMERE);
           if(layout[x][y].Id() == 0) layout[x][y].Id( layout[x][y].Id() + 1);
+          layout[x][y].ReadProp(layout[x][y].Id());
         }
       }
 
@@ -241,23 +281,18 @@ namespace data{
         playerCords[0] = x;
         playerCords[1] = y;
       }
-      
+
       void Move() {
         int where = Input();
         int newX = -1, newY = -1;
         switch (where)
         {
-        case 1:
-          if (playerCords[0] + 1 == width) // daca vrea sa mearga in fata(down) dar iese din lab
+        case 0:
+          if(!layout[playerCords[0]][playerCords[1]].Exits("up")) 
           {
-            std::cout<<"\nWall\n";
+            std::cout<<"\nDead end\n";
             break;
           }
-          newX = playerCords[0] + 1;
-          newY = playerCords[1];
-        break;
-      
-        case -1:
           if (playerCords[0] - 1 == -1) // daca vrea sa mearga in spate(up) dar iese din lab
           {
             std::cout<<"\nWall\n";
@@ -266,8 +301,27 @@ namespace data{
           newX = playerCords[0] - 1;
           newY = playerCords[1];
         break;
+        case 1:
+          if(!layout[playerCords[0]][playerCords[1]].Exits("down")) 
+          {
+            std::cout<<"\nDead end\n";
+            break;
+          }
+          if (playerCords[0] + 1 == width) // daca vrea sa mearga in (down) dar iese din lab
+          {
+            std::cout<<"\nWall\n";
+            break;
+          }
+          newX = playerCords[0] + 1;
+          newY = playerCords[1];
+        break;
         
         case 2:
+          if(!layout[playerCords[0]][playerCords[1]].Exits("left")) 
+          {
+            std::cout<<"\nDead end\n";
+            break;
+          }
           if (playerCords[1] - 1 == -1) // daca vrea sa mearga in stanga dar iese din lab
           {
             std::cout<<"\nWall\n";
@@ -278,6 +332,11 @@ namespace data{
         break;
         
         case 3:
+          if(!layout[playerCords[0]][playerCords[1]].Exits("right")) 
+          {
+            std::cout<<"\nDead end\n";
+            break;
+          }
           if (playerCords[1] + 1 == height) // daca vrea sa mearga in dreapta dar iese din lab
           {
             std::cout<<"\nWall\n";
@@ -296,6 +355,7 @@ namespace data{
         playerCords[0] = newX;
         playerCords[1] = newY;
         GenerateRoom(newX, newY);
+        std::cout<<"\n"<<layout[newX][newY]<<"\n";
       }
 
 ////////////////// functie de debug/demo
@@ -331,3 +391,11 @@ namespace data{
     }
 
 };
+
+//TODO:
+// sistem de citire de caracterisitici de camere si texturi din fisier                            X
+// sistem de spawnare de inamici/pickup-uri
+// sistem de lumina
+// sistem de in functie de tip de camera nu are voie sa se duca decat in anumit loc               X
+// sistem de combat cu monstri
+// de copiat fisierul cu date despre camere din ./data/Rooms in install dir
