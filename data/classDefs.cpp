@@ -16,8 +16,8 @@ namespace data{
     }
 
     // FUNCTIE NECESAARA DOAR PENTRU DEMO, REDO:
-    int Input() { // 0 (up) | 1 (down) | 2 left | 3 right
-      int a; 
+    std::string _Input() { // 0 (up) | 1 (down) | 2 left | 3 right
+      std::string a; 
       std::cout<<"\nDirection: ";
       std::cin>>a;
       return a;
@@ -59,6 +59,33 @@ namespace data{
         this->food = other.food;
         return *this;
       }      
+
+      void RefillWater() {
+        water = 6;
+        movesUntilDemise = 5;
+      }      
+      void RefillFood() {
+        food = 6;
+        movesUntilDemise = 5;
+      }
+
+      int PlayerStatus() {
+        water--;
+        food--;
+        if(water < 0) movesUntilDemise--;
+        if(food < 0) movesUntilDemise--;
+
+        if(food <= 2 && food > 0) std::cout<<almostOutOfFood;
+        if(water <= 3 && water > 0) std::cout<<almostOutOfWater;
+        if(food < 0) std::cout<<OutOfFood;
+        if(water < 0) std::cout<<OutOfWater;
+        if(food<0||water<0) std::cout<<outOfSupplies<<movesUntilDemise<<"\n";
+
+        if(movesUntilDemise < 0) return -1;
+        return 1;
+      }
+
+
       friend std::ostream& operator<<(std::ostream& os, const Player& player);
 ////////////////////////
 
@@ -73,9 +100,15 @@ namespace data{
       int lights = 3;
       int tent = 0;
       int meds = 25;
-      int water = 100;
-      int food = 100;
+      int water = 6;
+      int food = 5;
 
+      int movesUntilDemise = 5;
+      std::string almostOutOfFood = "\nCareful! You are running out of food!\n";
+      std::string OutOfFood = "\nYou have run out of food!\n";
+      std::string almostOutOfWater = "\nCareful! You are running out of water!\n";
+      std::string OutOfWater = "\nYou have run out of water!\n";
+      std::string outOfSupplies = "\nYou are out of supplies! Days until the elements overtake you: ";
   };
     std::ostream& operator<<(std::ostream& os,  const Player& player) {
       os << "Player("
@@ -360,13 +393,13 @@ namespace data{
         playerCords[1] = y;
       }    ///// Spawn e o functie apelata de constructor. genereaza o camera si plaseaza playerul in ea. camera are minim o iesire
 
-      void Move() {
+      int Move() {
         std::cout<<"\n"<<layout[playerCords[0]] [playerCords[1]]<<"\n"<<"moves="<<moves<<" cFE="<<chanceForExit<<"\n";
-        int where = Input();
+        std::string where = _Input();
         int newX = -1, newY = -1;
-        switch (where)
+        switch (where[0])
         {
-        case 0:
+        case 'u':
           if (playerCords[0] - 1 == -1) // daca vrea sa mearga in (up) dar iese din lab
           {
             std::cout<<"\nWall\n";
@@ -389,7 +422,7 @@ namespace data{
         break;
 
 
-        case 1:
+        case 'd':
           if (playerCords[0] + 1 == width) // daca vrea sa mearga in (down) dar iese din lab
           {
             std::cout<<"\nWall\n";
@@ -410,7 +443,7 @@ namespace data{
           newY = playerCords[1];
         break;
         
-        case 2:
+        case 'l':
           if (playerCords[1] - 1 == -1) // daca vrea sa mearga in stanga dar iese din lab
           {
             std::cout<<"\nWall\n";
@@ -431,7 +464,7 @@ namespace data{
           newY = playerCords[1] - 1;
         break;
         
-        case 3:
+        case 'r':
           if (playerCords[1] + 1 == height) // daca vrea sa mearga in dreapta dar iese din lab
           {
             std::cout<<"\nWall\n";
@@ -456,7 +489,7 @@ namespace data{
           break;
         }
         
-        if(newX == -1 && newY == -1) return;
+        if(newX == -1 && newY == -1) return 0;
           layout[playerCords[0]][playerCords[1]].HasPlayer(0);
 
           GenerateRoom(newX, newY, playerCords[0], playerCords[1]);
@@ -473,7 +506,9 @@ namespace data{
           if(moves > 10 && chanceForExit > 10) {
             chanceForExit -= 10; //dupa 10 mutari sansele pentru a castiga devin mai mari cu 10% la fiecare noua mutare
           }
+          
           if(finish) std::cout<<"Congrats! You have escaped!";
+          return 1;
       }
 
     private:
@@ -504,11 +539,13 @@ namespace data{
 
 //TODO:
 // sistem de citire de caracterisitici de camere si texturi din fisier                            X?
-// sistem de spawnare de inamici/pickup-uri
+// sistem de spawnare de inamici
 // sistem de lumina
 // sistem de in functie de tip de camera nu are voie sa se duca decat in anumit loc               X
 // sistem de combat cu monstri
 // de copiat fisierul cu date despre camere din ./data/Rooms in install dir         
-// failsafe pentru labirint in cerc, dca trece de 2/3 ori prin aceeasi camera se reseteaza
-// mecanica de iesire
+// failsafe pentru labirint in cerc, dca trece de 2/3 ori prin aceeasi camera se reseteaza        X
+// mecanica de iesire                                                                             X
 // mecanica de portal
+// mecanica de pickupuri in camere
+// general balance

@@ -116,6 +116,8 @@ int main() {
     //     window.clear();
     //     window.display();
     // }
+    std::srand(std::time(nullptr));
+
     std::cout<<"\nDimm lab:\n";
     int w, h;
     std::cin>>w>>h;
@@ -123,14 +125,21 @@ int main() {
     std::cout<<"\nCoord Spawn:\n";
     std::cin>>a>>b;
     data::Labyrinth map(w, h, a, b);
- 
+    data::Player jucator(100);
+
     while(1) {
       if(map.HasFinished()) break;
       std::cout<<map;
       std::cout<<"Continue? ";
       std::cin>>a;
       if(a == 0) break;
-      map.Move();
+      if(map.Move()) {
+        int alive = jucator.PlayerStatus();
+        if(alive < 0) {
+          std::cout << "\nYou died\n\n";
+          return 0;
+        }
+      }
     }
     std::cout << "Programul a terminat execuția\n";
     return 0;
