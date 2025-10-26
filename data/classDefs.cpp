@@ -146,50 +146,90 @@ namespace data{
         if(where == "right") return exits[3];
         return -1;
       }
-      void ReadProp(int _id) {
-        std::ifstream propCamere("Rooms.txt"); // deschide fișierul pentru citire
-        
-        if(!propCamere) {
-          std::cout<<"Nu s a gasit fisierul\n";
-          propCamere.close();
-          return;
-        }
-        std::string line = "";
-        std::string nr;
-        int nr_int = -1;
-        int spatiu;
-        while(nr_int != _id) {
-          if(propCamere.eof()) break;
-          getline(propCamere, line);  
+      int Exits(int where) {
+        if(where == 0) return exits[0];
+        if(where == 1) return exits[1];
+        if(where == 2) return exits[2];
+        if(where == 3) return exits[3];
+        return -1;
+      }
+      void Exits(std::string where, int val) {
+        if(where == "up") exits[0] = val;
+        if(where == "down") exits[1] = val;
+        if(where == "left") exits[2] = val;
+        if(where == "right") exits[3] = val;
+      }
+      void Exits(int where, int val) {
+        if(where == 0) exits[0] = val;
+        if(where == 1) exits[1] = val;
+        if(where == 2) exits[2] = val;
+        if(where == 3) exits[3] = val;
+      }
+      int NrRoutes() {
+        return exits[0] + exits[1] + exits[2] + exits[3];
+      }
+      int TimesVisited() {
+        return timesVisited;
+      }
+      void TimesVisited(int x) {
+        timesVisited += x;
+      }
 
-          spatiu = line.find(" ");
-          nr = line.substr(0, spatiu);
-          nr_int = std::stoi(nr);
-          // nr int e acum numarul liniei
-          if(nr_int == id) break;
-        }
-        if(nr_int == id) {
-          std::string inFIleExits = line.substr(spatiu + 1, spatiu + 7); // citim exiturile din fisier
-          texture = line.substr(spatiu + 9);
-          exits[0] = inFIleExits[0]-48; 
-          exits[1] = inFIleExits[2]-48;
-          exits[2] = inFIleExits[4]-48;
-          exits[3] = inFIleExits[6]-48;
-        }
-        propCamere.close();
-    }
+
+      void ResetRoom() {
+        id = 0;
+        texture = "";
+        exits[0] = 1;
+        exits[1] = 1;
+        exits[2] = 1;
+        exits[3] = 1;        
+        hasEnemy = 0;
+        hasPlayer = 0;
+        timesVisited = 0;
+      }
+    //   void ReadProp(int _id) {
+    //     std::ifstream propCamere("Rooms.txt"); // deschide fișierul pentru citire
+    //     if(!propCamere) {
+    //       std::cout<<"Nu s a gasit fisierul\n";
+    //       propCamere.close();
+    //       return;
+    //     }
+    //     std::string line = "";
+    //     std::string nr;
+    //     int nr_int = -1;
+    //     int spatiu;
+    //     while(nr_int != _id) {
+    //       if(propCamere.eof()) break;
+    //       getline(propCamere, line);  
+    //       spatiu = line.find(" ");
+    //       nr = line.substr(0, spatiu);
+    //       nr_int = std::stoi(nr);
+    //       // nr int e acum numarul liniei
+    //       if(nr_int == id) break;
+    //     }
+    //     if(nr_int == id) {
+    //       std::string inFIleExits = line.substr(spatiu + 1, spatiu + 7); // citim exiturile din fisier
+    //       texture = line.substr(spatiu + 9);
+    //       exits[0] = inFIleExits[0]-48; 
+    //       exits[1] = inFIleExits[2]-48;
+    //       exits[2] = inFIleExits[4]-48;
+    //       exits[3] = inFIleExits[6]-48;
+    //     }
+    //     propCamere.close();
+    // }
     private:
       int id;
-      std::string texture;
+      std::string texture = "";
       int exits[4] = {1,1,1,1}; // up, down, left, right
       int hasEnemy;      // hasEnemy si hasPlayer sunt 0 default, 1 la nevoie
       int hasPlayer;     // 
+      int timesVisited = 0;
   };
     std::ostream& operator<<(std::ostream& os,  const Room& room) {
       os << "Room("
       << "ID=" << room.id
-      << " exits=" << room.exits[0] << " " << room.exits[1] << " " << room.exits[2] << " " << room.exits[3]
-      << ", texture=" << room.texture
+      << " exits=" << room.exits[0] << "(up) " << room.exits[1] << "(down) " << room.exits[2] << "(left) " << room.exits[3]
+      << "(rigth), texture=" << room.texture
       << ", hasPlayer=" << room.hasPlayer
       << ", hasEnemy=" << room.hasEnemy
       << ")";
@@ -204,7 +244,7 @@ namespace data{
 
 
   ////////////////////////////////////////////
-  // clasa Labyrinth e clasa "principala" rn, in ea imi retin harta "labirintului" si, pentru demo, ma ocup si de movement
+  // clasa Labyrinth e clasa "principala", in ea imi retin harta "labirintului" si, pentru demo, ma ocup si de movement
   class Labyrinth{
     public:
 ////////////////////////
@@ -265,83 +305,149 @@ namespace data{
       }
       friend std::ostream& operator<<(std::ostream& os, const Labyrinth &labyrinth);
 ////////////////////////
+      int HasFinished() {
+        return finish;
+      }
+      void ResetLayout(int posX, int posY) {
+        for(int i = 0; i < width; i++) 
+          for(int j = 0; j < height; j++) {
+            if(i == posX && j == posY) continue;
+            layout[i][j].ResetRoom();
+          }
+      }
 
-      void GenerateRoom(int x, int y) {         // cand intram intr o camera noua daca e goala o generam
+      void GenerateRoom(int x, int y, int originX, int originY) {         // cand intram intr o camera noua daca e goala o generam
         if(layout[x][y].Id() == 0) {
-          layout[x][y].Id(RNG() % NR_UNIC_CAMERE);
-          if(layout[x][y].Id() == 0) layout[x][y].Id( layout[x][y].Id() + 1);
-          layout[x][y].ReadProp(layout[x][y].Id());
+          moves++;
+
+          layout[x][y].Id(1);
+            
+            layout[x][y].Exits("up", RNG() % 2);
+            layout[x][y].Exits("down", RNG() % 2);
+            layout[x][y].Exits("left", RNG() % 2);
+            layout[x][y].Exits("right", RNG() % 2);
+
+          if(originX - x < 0) layout[x][y].Exits("up", 1); // daca a venit de sus setam iesire in sus
+          if(x - originX < 0) layout[x][y].Exits("down", 1); // daca a venit de jos setam iesire in jos
+          if(y - originY < 0) layout[x][y].Exits("right", 1); // daca a venit din dreapta setam iesire in jos
+          if(originY - y < 0) layout[x][y].Exits("left", 1); // daca a venit din stanga setam iesire in jos
+
+          while(layout[x][y].NrRoutes() < 2) {
+            int z = RNG() % 4;
+            layout[x][y].Exits(z, 1);
+          }
+        }  // o camera noua are sigur cale de intoarcere + o alta cale 
+        if(RNG() % chanceForExit == 0) {
+          finish = 1;
         }
       }
 
       void Spawn(int x, int y) {               // functia de mai sus dar apelata la inceput
-        layout[x][y].Id(RNG() % NR_UNIC_CAMERE);
-        if(layout[x][y].Id() == 0) layout[x][y].Id( layout[x][y].Id() + 1);
+          layout[x][y].Id(1);
+            
+            layout[x][y].Exits("up", RNG() % 2);
+            layout[x][y].Exits("down", RNG() % 2);
+            layout[x][y].Exits("left", RNG() % 2);
+            layout[x][y].Exits("right", RNG() % 2);
+          if(layout[x][y].NrRoutes() < 1) {
+            int z = RNG() % 4;
+            layout[x][y].Exits(z, 1);
+          } 
+
         layout[x][y].HasPlayer(1);
+        layout[x][y].TimesVisited(1);
         playerCords[0] = x;
         playerCords[1] = y;
-      }
+      }    ///// Spawn e o functie apelata de constructor. genereaza o camera si plaseaza playerul in ea. camera are minim o iesire
 
       void Move() {
+        std::cout<<"\n"<<layout[playerCords[0]] [playerCords[1]]<<"\n"<<"moves="<<moves<<" cFE="<<chanceForExit<<"\n";
         int where = Input();
         int newX = -1, newY = -1;
         switch (where)
         {
         case 0:
-          if(!layout[playerCords[0]][playerCords[1]].Exits("up")) 
-          {
-            std::cout<<"\nDead end\n";
-            break;
-          }
-          if (playerCords[0] - 1 == -1) // daca vrea sa mearga in spate(up) dar iese din lab
+          if (playerCords[0] - 1 == -1) // daca vrea sa mearga in (up) dar iese din lab
           {
             std::cout<<"\nWall\n";
             break;
           }
+
+            if(!layout[playerCords[0]] [playerCords[1]].Exits("up")) 
+            {
+              std::cout<<"\nDead end\n";
+              break;
+            } /// daca casuta curenta nu il lasa sa mearga in sus
+            if(layout[playerCords[0]-1] [playerCords[1]].Id() != 0 && !layout[playerCords[0]-1] [playerCords[1]].Exits("down")) {  
+              std::cout<<"\nDead end\n";
+              break;
+            } /// daca casuta care trebuie sa il primeasca nu are deschidere catre casuta curenta
+
+
           newX = playerCords[0] - 1;
           newY = playerCords[1];
         break;
+
+
         case 1:
-          if(!layout[playerCords[0]][playerCords[1]].Exits("down")) 
-          {
-            std::cout<<"\nDead end\n";
-            break;
-          }
           if (playerCords[0] + 1 == width) // daca vrea sa mearga in (down) dar iese din lab
           {
             std::cout<<"\nWall\n";
             break;
           }
+
+            if(!layout[playerCords[0]] [playerCords[1]].Exits("down")) 
+            {
+              std::cout<<"\nDead end\n";
+              break;
+            }
+            if(layout[playerCords[0]+1] [playerCords[1]].Id() != 0 && !layout[playerCords[0]+1] [playerCords[1]].Exits("up")) {  
+              std::cout<<"\nDead end\n";
+              break;
+            } /// daca casuta care trebuie sa il primeasca nu are deschidere catre casuta curenta
+
           newX = playerCords[0] + 1;
           newY = playerCords[1];
         break;
         
         case 2:
-          if(!layout[playerCords[0]][playerCords[1]].Exits("left")) 
-          {
-            std::cout<<"\nDead end\n";
-            break;
-          }
           if (playerCords[1] - 1 == -1) // daca vrea sa mearga in stanga dar iese din lab
           {
             std::cout<<"\nWall\n";
             break;
           }
+
+            if(!layout[playerCords[0]] [playerCords[1]].Exits("left")) 
+            {
+              std::cout<<"\nDead end\n";
+              break;
+            }
+            if(layout[playerCords[0]] [playerCords[1]-1].Id() != 0 && !layout[playerCords[0]] [playerCords[1]-1].Exits("right")) {  
+              std::cout<<"\nDead end\n";
+              break;
+            } /// daca casuta care trebuie sa il primeasca nu are deschidere catre casuta curenta
+
           newX = playerCords[0];
           newY = playerCords[1] - 1;
         break;
         
         case 3:
-          if(!layout[playerCords[0]][playerCords[1]].Exits("right")) 
-          {
-            std::cout<<"\nDead end\n";
-            break;
-          }
           if (playerCords[1] + 1 == height) // daca vrea sa mearga in dreapta dar iese din lab
           {
             std::cout<<"\nWall\n";
             break;
           }
+
+            if(!layout[playerCords[0]] [playerCords[1]].Exits("right")) 
+            {
+              std::cout<<"\nDead end\n";
+              break;
+            }
+            if(layout[playerCords[0]] [playerCords[1]+1].Id() != 0 && !layout[playerCords[0]] [playerCords[1]+1].Exits("left")) {  
+              std::cout<<"\nDead end\n";
+              break;
+            } /// daca casuta care trebuie sa il primeasca nu are deschidere catre casuta curenta
+
           newX = playerCords[0];
           newY = playerCords[1] + 1;
         break;
@@ -349,32 +455,36 @@ namespace data{
         default:
           break;
         }
+        
         if(newX == -1 && newY == -1) return;
-        layout[playerCords[0]][playerCords[1]].HasPlayer(0);
-        layout[newX][newY].HasPlayer(1);
-        playerCords[0] = newX;
-        playerCords[1] = newY;
-        GenerateRoom(newX, newY);
-        std::cout<<"\n"<<layout[newX][newY]<<"\n";
-      }
+          layout[playerCords[0]][playerCords[1]].HasPlayer(0);
 
-////////////////// functie de debug/demo
-      // void PrintMap() {
-      //   for(int i = 0; i < width; i++) {
-      //     for(int j = 0; j < height; j++)
-      //       std::cout << this->layout[i][j].Id()<< " ";
-      //     std::cout<<'\n';
-      //   }
-      //   std::cout<<'\n';
-      // }
+          GenerateRoom(newX, newY, playerCords[0], playerCords[1]);
+          layout[newX][newY].HasPlayer(1);
+          layout[newX][newY].TimesVisited(1);
+
+          playerCords[0] = newX;
+          playerCords[1] = newY;
+
+          if(layout[newX][newY].TimesVisited() > 2) {
+            ResetLayout(playerCords[0], playerCords[1]);
+          }
+
+          if(moves > 10 && chanceForExit > 10) {
+            chanceForExit -= 10; //dupa 10 mutari sansele pentru a castiga devin mai mari cu 10% la fiecare noua mutare
+          }
+          if(finish) std::cout<<"Congrats! You have escaped!";
+      }
 
     private:
       int playerCords[2];
       int width, height;
       Room **layout;
+      int moves = 0;
+      int chanceForExit = 101; // se va folosi ca rand() % cFE == 0?, astfel cFE = 100 --> 1% sansa pentru exit, cFE = 1 --> 100% sansa
+      int finish = 0;
       //////////////////////////
       // in layout imi retin asezarea curenta a lucrurilor pe harta
-      // 0 = perete, 1-NR_UNIC_CAMERE sunt camere de toate diferitele tipuri
       //
       //
 
@@ -383,7 +493,7 @@ namespace data{
     std::ostream& operator<<(std::ostream& cout,  const Labyrinth &labyrinth) {
       for(int i = 0; i < labyrinth.width; i++) {
         for(int j = 0; j < labyrinth.height; j++)
-          cout << labyrinth.layout[i][j].Id()<< " ";
+          cout << labyrinth.layout[i][j].TimesVisited()<< " ";
         cout<<'\n';
         }
       cout<<'\n';
@@ -393,9 +503,12 @@ namespace data{
 };
 
 //TODO:
-// sistem de citire de caracterisitici de camere si texturi din fisier                            X
+// sistem de citire de caracterisitici de camere si texturi din fisier                            X?
 // sistem de spawnare de inamici/pickup-uri
 // sistem de lumina
 // sistem de in functie de tip de camera nu are voie sa se duca decat in anumit loc               X
 // sistem de combat cu monstri
-// de copiat fisierul cu date despre camere din ./data/Rooms in install dir
+// de copiat fisierul cu date despre camere din ./data/Rooms in install dir         
+// failsafe pentru labirint in cerc, dca trece de 2/3 ori prin aceeasi camera se reseteaza
+// mecanica de iesire
+// mecanica de portal

@@ -125,6 +125,7 @@ int main() {
     data::Labyrinth map(w, h, a, b);
  
     while(1) {
+      if(map.HasFinished()) break;
       std::cout<<map;
       std::cout<<"Continue? ";
       std::cin>>a;
