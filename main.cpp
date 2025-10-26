@@ -3,7 +3,7 @@
 #include <array>
 #include <chrono>
 #include <thread>
-#include "./data/classDefs.cpp"
+#include "classDefs.cpp"
 #include <SFML/Graphics.hpp>
 
 //////////////////////////////////////////////////////////////////////
