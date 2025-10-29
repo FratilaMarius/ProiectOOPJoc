@@ -125,11 +125,11 @@ int main() {
     std::cout<<"\nCoord Spawn:\n";
     std::cin>>a>>b;
 
-    while( (a >= w -1)  (b >= h -1)  a<1 || b<1) {
+    while( (a >= w -1) || (b >= h -1) ||  a<1 || b<1) {
       std::cout<<"\nCoord invalide, reintroduceti:\n";
       std::cin>>a>>b;
     }
-    
+
     data::Labyrinth map(w, h, a, b);
     data::Player jucator(100);
 
