@@ -27,7 +27,9 @@ namespace data{
     public:
       Enemy(int _type, int _hp) : type(_type), hp(_hp) {
         if(type == 0) std::cout<<"\nInvalid enemy type generated\n";
-        if(type == 1)
+        if(type == 1) {
+          damage = 100;
+        }
 
 ;      }
 
