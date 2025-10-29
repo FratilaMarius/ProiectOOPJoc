@@ -23,6 +23,23 @@ namespace data{
     }
 //////////////////////////////////////////
 
+  class Enemy{
+    public:
+      Enemy(int _type, int _hp) : type(_type), hp(_hp) {
+        if(type == 0) std::cout<<"\nInvalid enemy type generated\n";
+        if(type == 1)
+
+;      }
+
+    private: 
+      int type;  //  id, deocamdata 2 tipuri
+      int hp;
+      int damage;
+      std::string texture = "";
+
+  };
+
+
 
 
 //////////////////////////////////////////
