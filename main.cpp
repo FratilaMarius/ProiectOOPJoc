@@ -124,22 +124,39 @@ int main() {
     int a, b;
     std::cout<<"\nCoord Spawn:\n";
     std::cin>>a>>b;
+    while( (a >= w -1) || (b >= h -1) || a<1 || b<1) {
+      std::cout<<"\nCoord invalide, reintroduceti:\n";
+      std::cin>>a>>b;
+    }
     data::Labyrinth map(w, h, a, b);
     data::Player jucator(100);
 
     while(1) {
       if(map.HasFinished()) break;
       std::cout<<map;
-      std::cout<<"Continue? ";
+      std::cout<<"Continue? (1)  Check for Items? (2)  Check your backpack? (3)  End? (0)   ";
       std::cin>>a;
       if(a == 0) break;
-      if(map.Move()) {
-        int alive = jucator.PlayerStatus();
-        if(alive < 0) {
-          std::cout << "\nYou died\n\n";
-          return 0;
-        }
+
+      if(a == 2) {
+        int c = map.CheckForItems();
+        if(c == 1) jucator.RefillWater(); 
+        if(c == 2) jucator.RefillFood();
       }
+
+      if(a == 3) {
+        jucator.BackPack();
+      }
+
+
+      if(a == 1)
+        if(map.Move()) {
+          int alive = jucator.PlayerStatus();
+          if(alive < 0) {
+            std::cout << "\nYou died\n\n";
+            return 0;
+          }
+        }
     }
     std::cout << "Programul a terminat execuția\n";
     return 0;

@@ -7,8 +7,7 @@
 
 namespace data{
 
-  #define NR_UNIC_CAMERE 9    /// nr de camere din fisierul de date + 1
-  #define NR_UNIC_PICKUPS 6
+  #define NR_UNIC_PICKUPS 5
   #define TEXTURE_NAME_SIZE 15
 //////////////////////////////////////////
     int RNG () {
@@ -61,22 +60,20 @@ namespace data{
       }      
 
       void RefillWater() {
-        water = 6;
-        movesUntilDemise = 5;
+        water = 15;
+        if(food > 0 && water > 0) movesUntilDemise = 5;
       }      
       void RefillFood() {
-        food = 6;
-        movesUntilDemise = 5;
+        food = 12;
+        if(food > 0 && water > 0) movesUntilDemise = 5;
       }
-
+      
       int PlayerStatus() {
         water--;
         food--;
         if(water < 0) movesUntilDemise--;
         if(food < 0) movesUntilDemise--;
 
-        if(food <= 2 && food > 0) std::cout<<almostOutOfFood;
-        if(water <= 3 && water > 0) std::cout<<almostOutOfWater;
         if(food < 0) std::cout<<OutOfFood;
         if(water < 0) std::cout<<OutOfWater;
         if(food<0||water<0) std::cout<<outOfSupplies<<movesUntilDemise<<"\n";
@@ -89,6 +86,10 @@ namespace data{
       friend std::ostream& operator<<(std::ostream& os, const Player& player);
 ////////////////////////
 
+    void BackPack() const {
+      std::cout<<"\n"<<"Food: "<<food<<", Water: "<<water<<"\n";
+    }
+
     int Hp() const { 
       return hp;
     }
@@ -97,16 +98,15 @@ namespace data{
       int hp;
       int accuracy = 1;
       int bullets = 6;
-      int lights = 3;
+      int lights = 8;
       int tent = 0;
       int meds = 25;
-      int water = 6;
-      int food = 5;
+      int water = 15;
+      int food = 12;
 
       int movesUntilDemise = 5;
-      std::string almostOutOfFood = "\nCareful! You are running out of food!\n";
+
       std::string OutOfFood = "\nYou have run out of food!\n";
-      std::string almostOutOfWater = "\nCareful! You are running out of water!\n";
       std::string OutOfWater = "\nYou have run out of water!\n";
       std::string outOfSupplies = "\nYou are out of supplies! Days until the elements overtake you: ";
   };
@@ -250,6 +250,37 @@ namespace data{
     //     }
     //     propCamere.close();
     // }
+    
+    int FindPickup(int what) {
+      if(checkedForPickups) {
+        std::cout << "\nYou've already checked here\n";
+        return 0;
+      }
+      checkedForPickups = 1;
+      switch(what) {
+        case 0:
+        case 1:
+        case 2: 
+          std::cout<<"\nFound nothing\n";
+          return 0;
+        break;
+
+        case 3:
+          std::cout<<"\nFound some water\n";
+          return 1;
+        break;
+
+        case 4:
+          std::cout<<"\nFound some food\n";
+          return 2;
+        break;
+
+        default: 
+        break;
+      }
+      return 0;
+    }
+
     private:
       int id;
       std::string texture = "";
@@ -257,6 +288,8 @@ namespace data{
       int hasEnemy;      // hasEnemy si hasPlayer sunt 0 default, 1 la nevoie
       int hasPlayer;     // 
       int timesVisited = 0;
+
+      int checkedForPickups = 0;
   };
     std::ostream& operator<<(std::ostream& os,  const Room& room) {
       os << "Room("
@@ -352,27 +385,63 @@ namespace data{
       void GenerateRoom(int x, int y, int originX, int originY) {         // cand intram intr o camera noua daca e goala o generam
         if(layout[x][y].Id() == 0) {
           moves++;
-
+          layout[x][y].Exits(0, 0);
+          layout[x][y].Exits(1, 0);
+          layout[x][y].Exits(2, 0);
+          layout[x][y].Exits(3, 0);
           layout[x][y].Id(1);
-            
-            layout[x][y].Exits("up", RNG() % 2);
-            layout[x][y].Exits("down", RNG() % 2);
-            layout[x][y].Exits("left", RNG() % 2);
-            layout[x][y].Exits("right", RNG() % 2);
 
-          if(originX - x < 0) layout[x][y].Exits("up", 1); // daca a venit de sus setam iesire in sus
-          if(x - originX < 0) layout[x][y].Exits("down", 1); // daca a venit de jos setam iesire in jos
-          if(y - originY < 0) layout[x][y].Exits("right", 1); // daca a venit din dreapta setam iesire in jos
-          if(originY - y < 0) layout[x][y].Exits("left", 1); // daca a venit din stanga setam iesire in jos
+          int retur;
+          if(originX - x < 0) {
+            layout[x][y].Exits("up", 1);
+            retur = 0;
+          } // daca a venit de sus setam iesire in sus
+          if(x - originX < 0) {
+            layout[x][y].Exits("down", 1);
+            retur = 1;
+          } // daca a venit de jos setam iesire in jos
+          if(y - originY < 0) {
+            layout[x][y].Exits("right", 1);
+            retur = 3;
+          } // daca a venit din dreapta setam iesire in jos
+          if(originY - y < 0) {
+            layout[x][y].Exits("left", 1);
+            retur = 2;
+          } // daca a venit din stanga setam iesire in jos
 
-          while(layout[x][y].NrRoutes() < 2) {
+          int chance = RNG() % 100;
+          if( chance < 100) { // facem doar cu 2 iesiri
             int z = RNG() % 4;
+            if(z == retur) {
+              z += 2;
+              z %= 4;
+            }
+            std::cout<<"\n"<<z<<"\n";
             layout[x][y].Exits(z, 1);
           }
-        }  // o camera noua are sigur cale de intoarcere + o alta cale 
+          if( (chance) <= 60) { // facem doar cu 3 iesiri
+            int z = RNG() % 4;
+            if(z == retur) {
+              z += 2;
+              z %= 4;
+            }
+            layout[x][y].Exits(z, 1);
+
+            if(RNG() % 2) z += 1;
+            else z += 3;
+            z %= 4;
+            layout[x][y].Exits(z, 1);
+          }
+          if( (chance) < 25) { // facem cu 4 iesiri
+            layout[x][y].Exits(0, 1);
+            layout[x][y].Exits(2, 1);
+            layout[x][y].Exits(1, 1);
+            layout[x][y].Exits(3, 1);
+          }
         if(RNG() % chanceForExit == 0) {
           finish = 1;
         }
+        }  // o camera noua are sigur cale de intoarcere + o alta cale 
       }
 
       void Spawn(int x, int y) {               // functia de mai sus dar apelata la inceput
@@ -491,6 +560,7 @@ namespace data{
         
         if(newX == -1 && newY == -1) return 0;
           layout[playerCords[0]][playerCords[1]].HasPlayer(0);
+          layout[playerCords[0]][playerCords[1]].Id(1);
 
           GenerateRoom(newX, newY, playerCords[0], playerCords[1]);
           layout[newX][newY].HasPlayer(1);
@@ -498,6 +568,8 @@ namespace data{
 
           playerCords[0] = newX;
           playerCords[1] = newY;
+          layout[playerCords[0]][playerCords[1]].Id(2);
+
 
           if(layout[newX][newY].TimesVisited() > 2) {
             ResetLayout(playerCords[0], playerCords[1]);
@@ -509,6 +581,10 @@ namespace data{
           
           if(finish) std::cout<<"Congrats! You have escaped!";
           return 1;
+      }
+
+      int CheckForItems() {
+        return layout[playerCords[0]] [playerCords[1]].FindPickup(RNG() % NR_UNIC_PICKUPS);
       }
 
     private:
@@ -525,10 +601,10 @@ namespace data{
 
 
   };
-    std::ostream& operator<<(std::ostream& cout,  const Labyrinth &labyrinth) {
+    std::ostream& operator<<(std::ostream& cout, const Labyrinth &labyrinth) {
       for(int i = 0; i < labyrinth.width; i++) {
         for(int j = 0; j < labyrinth.height; j++)
-          cout << labyrinth.layout[i][j].TimesVisited()<< " ";
+          cout << labyrinth.layout[i][j].Id()<< " ";
         cout<<'\n';
         }
       cout<<'\n';
@@ -542,10 +618,11 @@ namespace data{
 // sistem de spawnare de inamici
 // sistem de lumina
 // sistem de in functie de tip de camera nu are voie sa se duca decat in anumit loc               X
-// sistem de combat cu monstri
+// sistem de combat cu monstri 
 // de copiat fisierul cu date despre camere din ./data/Rooms in install dir         
 // failsafe pentru labirint in cerc, dca trece de 2/3 ori prin aceeasi camera se reseteaza        X
 // mecanica de iesire                                                                             X
 // mecanica de portal
 // mecanica de pickupuri in camere
-// general balance
+// general balance: player dies too quick, rooms need to generate with more exits on average
+// redo the README !!!!!!!                                                                        X
