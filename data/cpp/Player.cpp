@@ -14,8 +14,9 @@ Player::Player(const Player& other) {
   this->water = other.water;
   this->food = other.food;
 }
-Player& Player::operator=(const Player other) {
+Player& Player::operator=(const Player& other) {
   if (this == &other) return *this;
+  this->movesUntilDemise = other.movesUntilDemise;
   this->hp = other.hp;
   this->accuracy = other.accuracy;
   this->bullets = other.bullets;
@@ -28,11 +29,11 @@ Player& Player::operator=(const Player other) {
 }    
 void Player::RefillWater() {
   water = 15;
-  if(food > 0 && water > 0) movesUntilDemise = 5;
+  if(food > 0) movesUntilDemise = 5;
 }      
 void Player::RefillFood() {
   food = 12;
-  if(food > 0 && water > 0) movesUntilDemise = 5;
+  if(water > 0) movesUntilDemise = 5;
 }
       
 int Player::PlayerStatus() {

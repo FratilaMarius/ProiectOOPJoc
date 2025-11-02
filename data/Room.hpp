@@ -18,7 +18,7 @@
       Room() : id(0), texture(""), hasEnemy(0), hasPlayer(0) {}
       explicit Room(int _id);                                       //  constructor daca am nevoie de id predefinit
       Room(const Room& other);
-      Room& operator=(const Room other); 
+      Room& operator=(const Room& other); 
       ~Room() = default;
 //////////////////////////////////////////////////////////////////////
       Enemy GenerateEnemy(int _type, int _hp);

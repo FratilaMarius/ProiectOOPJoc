@@ -20,7 +20,7 @@
       // pl = player coords
       explicit Labyrinth(int _width, int _height, int plX, int plY); 
       ~Labyrinth();
-      Labyrinth& operator=(const Labyrinth other);
+      Labyrinth& operator=(const Labyrinth& other);
       Labyrinth(const Labyrinth &other);
       friend std::ostream& operator<<(std::ostream& os, const Labyrinth &labyrinth);
 ////////////////////////

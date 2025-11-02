@@ -19,12 +19,12 @@ class Enemy {
     Enemy(int _type, int _hp);
 ///////////////////////////////////////////////////////////////////////////////////
 
-    void Attack(Player &jucator, int chance); // the higher chance is the rare-er the hits
+    // void Attack(Player &jucator, int chance); // the higher chance is the rare-er the hits
 
     ///////////////////////////////////////////////////////////////////////////////////
   private: 
     int type;  //  id, deocamdata 2 tipuri
-    int hp;
+    int hp = 1;
     int damage;
     std::string texture = "";
 

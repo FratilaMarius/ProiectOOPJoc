@@ -16,7 +16,7 @@
       explicit Player(int _hp);
       ~Player();
       Player(const Player& other);            //  copiatori
-      Player& operator=(const Player other);  //
+      Player& operator=(const Player& other);  //
 ///////////////////////////////////////////////////////////////////////////////////
       void RefillWater();  //  umple inapoi var de apa la numarul max
       void RefillFood();   //  lfl pentru mancare

@@ -7,9 +7,9 @@ Enemy::Enemy(int _type, int _hp) : type(_type), hp(_hp) {
   }
 }
 
-void Enemy::Attack(Player &jucator, int chance) {
-  int hitOrNah = RNG() % chance;
-  if(hitOrNah) {
-    jucator.TakeDmg(damage);
-  }
-}
+// void Enemy::Attack(Player &jucator, int chance) {
+//   int hitOrNah = RNG() % chance;
+//   if(hitOrNah) {
+//     jucator.TakeDmg(damage);
+//   }
+// }

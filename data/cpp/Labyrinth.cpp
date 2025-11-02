@@ -18,7 +18,7 @@ Labyrinth::~Labyrinth() {
       delete[] layout[i];
     delete[] layout;
 }
-Labyrinth& Labyrinth::operator=(const Labyrinth other) {
+Labyrinth& Labyrinth::operator=(const Labyrinth& other) {
   if (this == &other) return *this;
   for (int i = 0; i < width; ++i) 
     delete[] layout[i];
@@ -81,7 +81,7 @@ void Labyrinth::GenerateRoom(int x, int y, int originX, int originY) {         /
       retur = 2;
     } // daca a venit din stanga setam iesire in jos
     int chance = RNG() % 100;
-    if( chance < 100) { // facem doar cu 2 iesiri
+    if( chance < 97) { // facem doar cu 2 iesiri
       int z = RNG() % 4;
       if(z == retur) {
         z += 2;

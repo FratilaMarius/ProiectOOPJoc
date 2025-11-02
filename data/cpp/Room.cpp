@@ -2,7 +2,6 @@
 
 Room::Room(int _id) { // constructor daca am nevoie de id predefinit
   this->id = _id;
-  texture = "";
   hasEnemy= 0;
   hasPlayer = 0;
 }
@@ -13,7 +12,7 @@ Room::Room(const Room& other) {
   this->texture = other.texture;
   std::copy(other.exits, other.exits + 4, this->exits);
 }
-Room& Room::operator=(const Room other) {
+Room& Room::operator=(const Room& other) {
   if (this == &other) return *this;
   this->id = other.id;
   this->hasEnemy = other.hasEnemy;
@@ -22,12 +21,12 @@ Room& Room::operator=(const Room other) {
   std::copy(other.exits, other.exits + 4, this->exits);
   return *this;
 }      
-Enemy Room::GenerateEnemy(int _type, int _hp) {
+Enemy Room::GenerateEnemy(const int _type, const int _hp) {
   hasEnemy = 1;
   Enemy inamic(_type, _hp);
   return inamic;
 }
-int Room::Exits(std::string where) { // pentru setat prin string | up, down, left, right
+int Room::Exits(const std::string where) { // pentru setat prin string | up, down, left, right
   if(where == "up") return exits[0];
   if(where == "down") return exits[1];
   if(where == "left") return exits[2];
@@ -41,7 +40,7 @@ int Room::Exits(int where) { // pentru setat prin index | 0-up,1-down,2-left,3-r
   if(where == 3) return exits[3];
   return -1;
 }
-void Room::Exits(std::string where, int val) { // ca mai sus dar pentru setat, index string
+void Room::Exits(const std::string where, int val) { // ca mai sus dar pentru setat, index string
   if(where == "up") exits[0] = val;
   if(where == "down") exits[1] = val;
   if(where == "left") exits[2] = val;
