@@ -32,9 +32,9 @@
       int HasExit(int which) const{ return exits[which];}
       int TimesVisited() const{ return timesVisited;}
 ////////////////////////////////////////////////////////////////////// setari si getari pentru iesiri:
-      int Exits(const std::string where);           // pentru setat prin string | up, down, left, right
+      int Exits(const std::string& where);           // pentru setat prin string | up, down, left, right
       int Exits(int where);                   // pentru setat prin index | 0-up,1-down,2-left,3-right
-      void Exits(const std::string where, int val); // ca mai sus dar pentru setat, index string
+      void Exits(const std::string& where, int val); // ca mai sus dar pentru setat, index string
       void Exits(int where, int val);         // ca mai sus dar pentru setat, index int
 //////////////////////////////////////////////////////////////////////
       void TimesVisited(int x) { timesVisited += x;} // incrementeaza numarul de vizitari

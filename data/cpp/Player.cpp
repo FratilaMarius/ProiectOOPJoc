@@ -64,9 +64,9 @@ int Player::Food()const {
   return food;
 }
 
-void Player::TakeDmg(int dmg) {
-  hp -= dmg;
-}
+// void Player::TakeDmg(int dmg) {
+//   hp -= dmg;
+// }
 std::ostream& operator<<(std::ostream& os,  const Player& player) {
   os << "Player("
   << "hp=" << player.Hp()

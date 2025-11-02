@@ -26,7 +26,7 @@ Enemy Room::GenerateEnemy(const int _type, const int _hp) {
   Enemy inamic(_type, _hp);
   return inamic;
 }
-int Room::Exits(const std::string where) { // pentru setat prin string | up, down, left, right
+int Room::Exits(const std::string& where) { // pentru setat prin string | up, down, left, right
   if(where == "up") return exits[0];
   if(where == "down") return exits[1];
   if(where == "left") return exits[2];
@@ -40,7 +40,7 @@ int Room::Exits(int where) { // pentru setat prin index | 0-up,1-down,2-left,3-r
   if(where == 3) return exits[3];
   return -1;
 }
-void Room::Exits(const std::string where, int val) { // ca mai sus dar pentru setat, index string
+void Room::Exits(const std::string& where, int val) { // ca mai sus dar pentru setat, index string
   if(where == "up") exits[0] = val;
   if(where == "down") exits[1] = val;
   if(where == "left") exits[2] = val;

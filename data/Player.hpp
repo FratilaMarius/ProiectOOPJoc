@@ -30,7 +30,7 @@
       int Water()const;    //
       int Food()const;     //
 
-      void TakeDmg(int dmg);  // scade hp-ul
+      // void TakeDmg(int dmg);  // scade hp-ul
 ///////////////////////////////////////////////////////////////////////////////////
     private: 
       int hp;
