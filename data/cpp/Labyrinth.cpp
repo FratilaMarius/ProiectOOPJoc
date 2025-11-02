@@ -63,7 +63,7 @@ void Labyrinth::GenerateRoom(int x, int y, int originX, int originY) {         /
     layout[x][y].Exits(2, 0);
     layout[x][y].Exits(3, 0);
     layout[x][y].Id(1);
-    int retur;
+    int retur = -1;
     if(originX - x < 0) {
       layout[x][y].Exits("up", 1);
       retur = 0;
