@@ -1,0 +1,32 @@
+#pragma once
+
+#include <iostream>
+#include <fstream>
+#include <array>
+#include <chrono>
+#include <thread>
+
+#include "Player.hpp"
+#include "Utility.hpp"
+
+namespace data {
+///////////////////////////////////////////////////////////////////////////////////
+//
+//
+class Enemy {
+  public:
+///////////////////////////////////////////////////////////////////////////////////
+    Enemy(int _type, int _hp);
+///////////////////////////////////////////////////////////////////////////////////
+
+    void Attack(data::Player &jucator, int chance); // the higher chance is the rare-er the hits
+
+    ///////////////////////////////////////////////////////////////////////////////////
+  private: 
+    int type;  //  id, deocamdata 2 tipuri
+    int hp;
+    int damage;
+    std::string texture = "";
+
+  };
+}

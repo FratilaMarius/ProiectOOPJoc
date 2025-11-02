@@ -3,8 +3,14 @@
 #include <array>
 #include <chrono>
 #include <thread>
-#include "classDefs.cpp"
 #include <SFML/Graphics.hpp>
+
+#include "data/Player.hpp"
+#include "data/Enemy.hpp"
+#include "data/Utility.hpp"
+#include "data/Room.hpp"
+
+#include "classDefs.cpp"
 
 //////////////////////////////////////////////////////////////////////
 /// This class is used to test that the memory leak checks work as expected even when using a GUI
@@ -125,11 +131,11 @@ int main() {
     std::cout<<"\nCoord Spawn:\n";
     std::cin>>a>>b;
 
-    while( (a >= w -1) || (b >= h -1) ||  a<1 || b<1) {
+    while( (a >= w -1) || (b >= h -1) || a<1 || b<1) {
       std::cout<<"\nCoord invalide, reintroduceti:\n";
       std::cin>>a>>b;
     }
-
+    
     data::Labyrinth map(w, h, a, b);
     data::Player jucator(100);
 
@@ -163,3 +169,4 @@ int main() {
     std::cout << "Programul a terminat execuția\n";
     return 0;
 }
+
