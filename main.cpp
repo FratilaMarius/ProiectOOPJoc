@@ -14,7 +14,6 @@
 int main() {
 
     ///
-
     // std::cout << "Hello, world!\n";
     // std::array<int, 100> v{};
     // int nr;
@@ -54,10 +53,7 @@ int main() {
     /// Pentru date citite din fișier, NU folosiți tastatura.txt. Creați-vă voi
     /// alt fișier propriu cu ce alt nume doriți.
     /// Exemplu:
-    /// std::ifstream fis("date.txt");
-    /// for(int i = 0; i < nr2; ++i)
-    ///     fis >> v2[i];
-    ///
+    
     ///////////////////////////////////////////////////////////////////////////
 
     // SomeClass *c = getC();
@@ -109,18 +105,20 @@ int main() {
     //     window.display();
     // }
     std::srand(std::time(nullptr));
+    std::ifstream intrare("tastatura.txt");
 
-    std::cout<<"\nDimm lab:\n";
     int w, h;
-    std::cin>>w>>h;
-    int a, b;
-    std::cout<<"\nCoord Spawn:\n";
-    std::cin>>a>>b;
+    intrare>>w>>h;
+    std::cout<<"\nDimm lab: "<<w<<" "<<h<<"\n";
 
-    while( (a >= w -1) || (b >= h -1) || a<1 || b<1) {
-      std::cout<<"\nCoord invalide, reintroduceti:\n";
-      std::cin>>a>>b;
-    }
+    int a, b;
+    intrare>>a>>b;
+    std::cout<<"\nCoord Spawn: "<<a<<" "<<b<<"\n";
+
+    // while( (a >= w -1) || (b >= h -1) || a<1 || b<1) {
+    //   std::cout<<"\nCoord invalide, reintroduceti:\n";
+    //   std::cin>>a>>b;
+    // }
     
     Labyrinth map(w, h, a, b);
     Player jucator(100);
@@ -131,19 +129,17 @@ int main() {
       std::cout<<"Continue? (1)  Check for Items? (2)  Check your backpack? (3)  End? (0)   ";
       std::cin>>a;
       if(a == 0) break;
-
       if(a == 2) {
         int c = map.CheckForItems();
         if(c == 1) jucator.RefillWater(); 
         if(c == 2) jucator.RefillFood();
+        continue;
       }
-
       if(a == 3) {
         jucator.BackPack();
+        continue;
       }
-
-
-      if(a == 1)
+      if(a == 1) {
         if(map.Move()) {
           int alive = jucator.PlayerStatus();
           if(alive < 0) {
@@ -151,6 +147,9 @@ int main() {
             return 0;
           }
         }
+        continue;
+      }
+      std::cout<<"\nUnrecognised input\n";
     }
     std::cout << "Programul a terminat execuția\n";
     return 0;

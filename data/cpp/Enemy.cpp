@@ -13,3 +13,8 @@ Enemy::Enemy(int _type, int _hp) : type(_type), hp(_hp) {
 //     jucator.TakeDmg(damage);
 //   }
 // }
+std::ostream& operator<<(std::ostream& os,  const Enemy& enemy) {
+  os << "Enemy Type: " << enemy.Type() << ", HP: " << enemy.Hp() 
+     << ", Damage: " << enemy.Damage() << ", Texture: " << enemy.Texture();
+  return os;
+}

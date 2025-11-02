@@ -15,7 +15,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
       explicit Player(int _hp);
       ~Player();
-      Player(const Player& other);            //  copiatori
+      Player(const Player& other);              //  copiatori
       Player& operator=(const Player& other);  //
 ///////////////////////////////////////////////////////////////////////////////////
       void RefillWater();  //  umple inapoi var de apa la numarul max
@@ -44,9 +44,9 @@
 
       int movesUntilDemise = 5;
 
-      std::string OutOfFood = "\nYou have run out of food!\n";
-      std::string OutOfWater = "\nYou have run out of water!\n";
-      std::string outOfSupplies = "\nYou are out of supplies! Days until the elements overtake you: ";
+      const std::string OutOfFood = "\nYou have run out of food!\n";
+      const std::string OutOfWater = "\nYou have run out of water!\n";
+      const std::string outOfSupplies = "\nYou are out of supplies! Days until the elements overtake you: ";
   };
 ///////////////////////////////////////////////////////////////////////////////////
 std::ostream& operator<<(std::ostream& os,  const Player& player);

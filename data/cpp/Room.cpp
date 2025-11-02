@@ -97,8 +97,7 @@ std::ostream& operator<<(std::ostream& os,  const Room& room) {
   << "ID=" << room.Id()
   << " exits=" << room.HasExit(0) << "(up) " << room.HasExit(1) << "(down) " 
                << room.HasExit(2) << "(left) " << room.HasExit(3)
-  // << "(rigth), texture=" << room.texture
-  << ", hasPlayer=" << room.HasPlayer()
+  << "(rigth) "  << ", hasPlayer=" << room.HasPlayer()
   << ", hasEnemy=" << room.HasEnemy()
   << ")";
   return os;
