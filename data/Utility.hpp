@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <array>
+#include <string>
 #include <chrono>
 #include <thread>
 

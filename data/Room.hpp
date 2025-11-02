@@ -3,11 +3,12 @@
 #include <iostream>
 #include <fstream>
 #include <array>
+#include <string>
 #include <chrono>
 #include <thread>
 
 #include "Enemy.hpp"
-namespace data{
+
 //////////////////////////////////////////////////////////////////////
 //  Clasa Room retine informatii despre o anumita camera din labirint
 //
@@ -20,7 +21,7 @@ namespace data{
       Room& operator=(const Room other); 
       ~Room() = default;
 //////////////////////////////////////////////////////////////////////
-      data::Enemy GenerateEnemy(int _type, int _hp);
+      Enemy GenerateEnemy(int _type, int _hp);
 //////////////////////////////////////////////////////////////////////  printari si setari:
       int Id() const{ return id;}
       void Id(int _id) { id =_id;}
@@ -53,4 +54,3 @@ namespace data{
   };
 
 std::ostream& operator<<(std::ostream& os,  const Room& room);
-}

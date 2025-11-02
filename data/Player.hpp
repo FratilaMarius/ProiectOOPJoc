@@ -3,10 +3,10 @@
 #include <iostream>
 #include <fstream>
 #include <array>
+#include <string>
 #include <chrono>
 #include <thread>
 
-namespace data{
 ///////////////////////////////////////////////////////////////////////////////////
 // clasa player retine toate informatiile despre player, un fel de inventar.
 // nu este un lucru "fizic", nu contine date despre pozitia playerului spre exemplu
@@ -50,4 +50,3 @@ namespace data{
   };
 ///////////////////////////////////////////////////////////////////////////////////
 std::ostream& operator<<(std::ostream& os,  const Player& player);
-}

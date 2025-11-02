@@ -61,6 +61,8 @@ add_executable(${MAIN_EXECUTABLE_NAME}
     data/cpp/Player.cpp
     data/cpp/Enemy.cpp
     data/cpp/Utility.cpp
+    data/cpp/Labyrinth.cpp
+    data/cpp/Room.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

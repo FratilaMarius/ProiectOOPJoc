@@ -9,8 +9,7 @@
 #include "data/Enemy.hpp"
 #include "data/Utility.hpp"
 #include "data/Room.hpp"
-
-#include "classDefs.cpp"
+#include "data/Labyrinth.hpp"
 
 //////////////////////////////////////////////////////////////////////
 /// This class is used to test that the memory leak checks work as expected even when using a GUI
@@ -136,8 +135,8 @@ int main() {
       std::cin>>a>>b;
     }
     
-    data::Labyrinth map(w, h, a, b);
-    data::Player jucator(100);
+    Labyrinth map(w, h, a, b);
+    Player jucator(100);
 
     while(1) {
       if(map.HasFinished()) break;

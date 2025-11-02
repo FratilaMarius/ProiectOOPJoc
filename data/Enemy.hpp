@@ -3,13 +3,13 @@
 #include <iostream>
 #include <fstream>
 #include <array>
+#include <string>
 #include <chrono>
 #include <thread>
 
 #include "Player.hpp"
 #include "Utility.hpp"
 
-namespace data {
 ///////////////////////////////////////////////////////////////////////////////////
 //
 //
@@ -19,7 +19,7 @@ class Enemy {
     Enemy(int _type, int _hp);
 ///////////////////////////////////////////////////////////////////////////////////
 
-    void Attack(data::Player &jucator, int chance); // the higher chance is the rare-er the hits
+    void Attack(Player &jucator, int chance); // the higher chance is the rare-er the hits
 
     ///////////////////////////////////////////////////////////////////////////////////
   private: 
@@ -29,4 +29,3 @@ class Enemy {
     std::string texture = "";
 
   };
-}

@@ -1,5 +1,4 @@
 #include "../Player.hpp"
-using namespace data;
 
 Player::Player(int _hp) {
   this->hp = _hp;

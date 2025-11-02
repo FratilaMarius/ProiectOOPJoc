@@ -1,7 +1,5 @@
 #include "../Room.hpp"
 
-using namespace data;
-
 Room::Room(int _id) { // constructor daca am nevoie de id predefinit
   this->id = _id;
   texture = "";
@@ -24,9 +22,9 @@ Room& Room::operator=(const Room other) {
   std::copy(other.exits, other.exits + 4, this->exits);
   return *this;
 }      
-data::Enemy Room::GenerateEnemy(int _type, int _hp) {
+Enemy Room::GenerateEnemy(int _type, int _hp) {
   hasEnemy = 1;
-  data::Enemy inamic(_type, _hp);
+  Enemy inamic(_type, _hp);
   return inamic;
 }
 int Room::Exits(std::string where) { // pentru setat prin string | up, down, left, right
