@@ -12,54 +12,6 @@
 #include "src/Labyrinth.hpp"
 
 int main() {
-
-    ///
-    // std::cout << "Hello, world!\n";
-    // std::array<int, 100> v{};
-    // int nr;
-    // std::cout << "Introduceți nr: ";
-    /////////////////////////////////////////////////////////////////////////
-    /// Observație: dacă aveți nevoie să citiți date de intrare de la tastatură,
-    /// dați exemple de date de intrare folosind fișierul tastatura.txt
-    /// Trebuie să aveți în fișierul tastatura.txt suficiente date de intrare
-    /// (în formatul impus de voi) astfel încât execuția programului să se încheie.
-    /// De asemenea, trebuie să adăugați în acest fișier date de intrare
-    /// pentru cât mai multe ramuri de execuție.
-    /// Dorim să facem acest lucru pentru a automatiza testarea codului, fără să
-    /// mai pierdem timp de fiecare dată să introducem de la zero aceleași date de intrare.
-    ///
-    /// Pe GitHub Actions (bife), fișierul tastatura.txt este folosit
-    /// pentru a simula date introduse de la tastatură.
-    /// Bifele verifică dacă programul are erori de compilare, erori de memorie și memory leaks.
-    ///
-    /// Dacă nu puneți în tastatura.txt suficiente date de intrare, îmi rezerv dreptul să vă
-    /// testez codul cu ce date de intrare am chef și să nu pun notă dacă găsesc vreun bug.
-    /// Impun această cerință ca să învățați să faceți un demo și să arătați părțile din
-    /// program care merg (și să le evitați pe cele care nu merg).
-    ///
-    /////////////////////////////////////////////////////////////////////////
-    // std::cin >> nr;
-    // /////////////////////////////////////////////////////////////////////////
-    // for(int i = 0; i < nr; ++i) {
-    //     std::cout << "v[" << i << "] = ";
-    //     std::cin >> v[i];
-    // }
-    // std::cout << "\n\n";
-    // std::cout << "Am citit de la tastatură " << nr << " elemente:\n";
-    // for(int i = 0; i < nr; ++i) {
-    //     std::cout << "- " << v[i] << "\n";
-    // }
-    ///////////////////////////////////////////////////////////////////////////
-    /// Pentru date citite din fișier, NU folosiți tastatura.txt. Creați-vă voi
-    /// alt fișier propriu cu ce alt nume doriți.
-    /// Exemplu:
-    
-    ///////////////////////////////////////////////////////////////////////////
-
-    // SomeClass *c = getC();
-    // std::cout << c << "\n";
-    // delete c;  // comentarea acestui rând ar trebui să ducă la semnalarea unui mem leak
-
     // sf::RenderWindow window;
     // ///////////////////////////////////////////////////////////////////////////
     // /// NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:31
@@ -114,16 +66,22 @@ int main() {
 
     int w = 11, h = 11;
     intrare>>w>>h;
+    if((w < 3 || h < 3) || (w > 500 || h > 500)) {
+      std::cout << "Dimensiuni invalide pentru labirint! (minim 3x3, maxim 500x500)\n";
+      intrare.close();
+      return -1;
+    }
     std::cout<<"\nDimm lab: "<<w<<" "<<h<<"\n";
 
     int a = 2, b = 5;
     intrare>>a>>b;
     std::cout<<"\nCoord Spawn: "<<a<<" "<<b<<"\n";
 
-    // while( (a >= w -1) || (b >= h -1) || a<1 || b<1) {
-    //   std::cout<<"\nCoord invalide, reintroduceti:\n";
-    //   std::cin>>a>>b;
-    // }
+    if( a >= w -1 || b >= h -1 || a <= 1 || b <= 1) {
+      std::cout << "Coordonate invalide pentru spawn!\n";
+      intrare.close();
+      return -1;
+    }
     
     Labyrinth map(w, h, a, b);
     Player jucator(100);

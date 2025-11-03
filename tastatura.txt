@@ -1,3 +1,54 @@
 10 10
 3 4
-1 up 0
+1 up
+2
+3
+1 up
+1 down
+1 left
+1 right
+2 
+3
+1 up
+1 down
+1 left
+1 right
+2
+3
+1 up
+1 down
+1 left
+1 right
+2
+3
+1 up
+1 down
+1 left
+1 right
+2
+3
+1 up
+1 down
+1 left
+1 right
+2
+3
+1 up
+1 down
+1 left
+1 right
+2
+3
+1 up
+1 down
+1 left
+1 right
+2
+3
+1 up
+1 down
+1 left
+1 right
+2
+3
+0
