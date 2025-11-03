@@ -5,14 +5,7 @@ Player::Player(int _hp) {
 }
 Player::~Player() = default;
 Player::Player(const Player& other) {
-  this->hp = other.hp;
-  this->accuracy = other.accuracy;
-  this->bullets = other.bullets;
-  this->lights = other.lights;
-  this->tent = other.tent;
-  this->meds = other.meds;
-  this->water = other.water;
-  this->food = other.food;
+  *this = other;
 }
 Player& Player::operator=(const Player& other) {
   if (this == &other) return *this;

@@ -5,11 +5,11 @@
 #include <thread>
 #include <SFML/Graphics.hpp>
 
-#include "data/Player.hpp"
-#include "data/Enemy.hpp"
-#include "data/Utility.hpp"
-#include "data/Room.hpp"
-#include "data/Labyrinth.hpp"
+#include "src/Player.hpp"
+#include "src/Enemy.hpp"
+#include "src/Utility.hpp"
+#include "src/Room.hpp"
+#include "src/Labyrinth.hpp"
 
 int main() {
 
@@ -105,13 +105,18 @@ int main() {
     //     window.display();
     // }
     std::srand(std::time(nullptr));
-    std::ifstream intrare("tastatura.txt");
+    std::ifstream intrare("dateIntrare.txt");
+    if(!intrare.is_open()) {
+      std::cout << "Eroare la deschiderea fisierului de intrare!\n";
+      return -1;
+    }
 
-    int w, h;
+
+    int w = 11, h = 11;
     intrare>>w>>h;
     std::cout<<"\nDimm lab: "<<w<<" "<<h<<"\n";
 
-    int a, b;
+    int a = 2, b = 5;
     intrare>>a>>b;
     std::cout<<"\nCoord Spawn: "<<a<<" "<<b<<"\n";
 
@@ -152,6 +157,8 @@ int main() {
       std::cout<<"\nUnrecognised input\n";
     }
     std::cout << "Programul a terminat execuția\n";
+
+    intrare.close();
     return 0;
 }
 

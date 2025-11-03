@@ -46,8 +46,8 @@
       int id;
       std::string texture = "";
       int exits[4] = {1,1,1,1};       // up, down, left, right
-      int hasEnemy;                   // hasEnemy si hasPlayer sunt 0 default, 1 la nevoie
-      int hasPlayer;                  // 
+      int hasEnemy = 0;                   // hasEnemy si hasPlayer sunt 0 default, 1 la nevoie
+      int hasPlayer = 0 ;                  // 
       int timesVisited = 0;
 
       int checkedForPickups = 0;

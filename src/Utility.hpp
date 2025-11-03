@@ -8,7 +8,6 @@
 #include <thread>
 
 #define NR_UNIC_PICKUPS 5
-#define TEXTURE_NAME_SIZE 15
   
 int RNG();
 

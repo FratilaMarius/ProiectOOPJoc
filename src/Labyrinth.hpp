@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <array>
+#include <vector>
 #include <string>
 #include <chrono>
 #include <thread>
@@ -38,9 +39,9 @@
       int GetHeight() const { return height;}
       int GetLayoutAt(int x, int y) const { return layout[x][y].Id();}
       private:
-      int playerCords[2];
+      int playerCords[2] = {0,0};
       int width, height;
-      Room **layout;
+      std::vector<std::vector<Room>> layout;
       int moves = 0;
       int chanceForExit = 101; // se va folosi ca rand() % cFE == 0?, astfel cFE = 100 --> 1% sansa pentru exit, cFE = 1 --> 100% sansa
       int finish = 0;

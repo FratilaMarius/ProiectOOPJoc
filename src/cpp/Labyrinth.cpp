@@ -2,51 +2,36 @@
 
 Labyrinth::Labyrinth(int _width, int _height, int plX, int plY) {
   this->width = _width;
-  this->height = _height;
-  layout = new Room*[width];
-  for (int i = 0; i < width; ++i) {
-    layout[i] = new Room[height];
-  }
-  for (int i = 0; i < width; ++i)
-    for (int j = 0; j < height; ++j)
-      layout[i][j].Id(0);
-  
+  this->height = _height;  
+
+  layout.assign(width, std::vector<Room>(height));
   Spawn(plX, plY);
 }
 Labyrinth::~Labyrinth() {
-    for (int i = 0; i < width; ++i) 
-      delete[] layout[i];
-    delete[] layout;
+  for (int i = 0; i < width; ++i) 
+    layout[i].clear();
+  layout.clear();
 }
 Labyrinth& Labyrinth::operator=(const Labyrinth& other) {
-  if (this == &other) return *this;
   for (int i = 0; i < width; ++i) 
-    delete[] layout[i];
-  delete[] layout;
+    layout[i].clear();
+  layout.clear();
+
   this->width = other.width;
   this->height = other.height;
-  layout = new Room*[width];
-  for (int i = 0; i < width; ++i) {
-      layout[i] = new Room[height];
-  }
-  if (layout) {
-      std::copy(other.layout, other.layout + (width * height), layout);
-  }
+  layout.assign(width, std::vector<Room>(height));
+  
+  this->layout = other.layout;
+  this->playerCords[0] = other.playerCords[0];
+  this->playerCords[1] = other.playerCords[1];
+
+  this->moves = other.moves;
+  this->chanceForExit = other.chanceForExit;
+  
   return *this;
 }
 Labyrinth::Labyrinth(const Labyrinth &other) {
-  for (int i = 0; i < width; ++i) 
-    delete[] layout[i];
-  delete[] layout;
-  this->width = other.width;
-  this->height = other.height;
-  layout = new Room*[width];
-  for (int i = 0; i < width; ++i) {
-      layout[i] = new Room[height];
-  }
-  if (layout) {
-      std::copy(other.layout, other.layout + (width * height), layout);
-  }
+  *this = other;
 }
 void Labyrinth::ResetLayout(int posX, int posY) {
   for(int i = 0; i < width; i++) 
@@ -81,7 +66,8 @@ void Labyrinth::GenerateRoom(int x, int y, int originX, int originY) {         /
       retur = 2;
     } // daca a venit din stanga setam iesire in jos
     int chance = RNG() % 100;
-    if( chance < 97) { // facem doar cu 2 iesiri
+    if( chance < 97
+    ) { // facem doar cu 2 iesiri
       int z = RNG() % 4;
       if(z == retur) {
         z += 2;

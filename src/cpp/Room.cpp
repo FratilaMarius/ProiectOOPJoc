@@ -1,16 +1,10 @@
 #include "../Room.hpp"
 
-Room::Room(int _id) { // constructor daca am nevoie de id predefinit
+Room::Room(int _id) {
   this->id = _id;
-  hasEnemy= 0;
-  hasPlayer = 0;
 }
 Room::Room(const Room& other) {
-  this->id = other.id;
-  this->hasEnemy = other.hasEnemy;
-  this->hasPlayer = other.hasPlayer;
-  this->texture = other.texture;
-  std::copy(other.exits, other.exits + 4, this->exits);
+  *this = other;
 }
 Room& Room::operator=(const Room& other) {
   if (this == &other) return *this;
