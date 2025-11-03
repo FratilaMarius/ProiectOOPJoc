@@ -12,18 +12,18 @@
 #include "src/Labyrinth.hpp"
 
 int main() {
-    sf::RenderWindow window;
-    ///////////////////////////////////////////////////////////////////////////
-    /// NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:31
-    window.create(sf::VideoMode({800, 700}), "My Window", sf::Style::Default);
-    ///////////////////////////////////////////////////////////////////////////
-    std::cout << "Fereastra a fost creată\n";
-    /////////////////////////////////////////////////////////////3)//////////////
-    /// NOTE: mandatory use one of vsync or FPS limit (not both)            ///
-    /// This is needed so we do not burn the GPU                            ///
-    // window.setVerticalSyncEnabled(true);                                 ///
-    window.setFramerateLimit(3);                                            ///
-    ///////////////////////////////////////////////////////////////////////////
+    // sf::RenderWindow window;
+    // ///////////////////////////////////////////////////////////////////////////
+    // /// NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:31
+    // window.create(sf::VideoMode({800, 700}), "My Window", sf::Style::Default);
+    // ///////////////////////////////////////////////////////////////////////////
+    // std::cout << "Fereastra a fost creată\n";
+    // /////////////////////////////////////////////////////////////3)//////////////
+    // /// NOTE: mandatory use one of vsync or FPS limit (not both)            ///
+    // /// This is needed so we do not burn the GPU                            ///
+    // // window.setVerticalSyncEnabled(true);                                 ///
+    // window.setFramerateLimit(20);                                            ///
+    // ///////////////////////////////////////////////////////////////////////////
 
     // while(window.isOpen()) {
     //     bool shouldExit = false;
@@ -52,10 +52,14 @@ int main() {
     //     }
     //     using namespace std::chrono_literals;
     //     std::this_thread::sleep_for(300ms);
-
+        
     //     window.clear();
     //     window.display();
     // }
+
+
+
+//////////////////////////////////////////////////////////////////////////
     std::srand(std::time(nullptr));
     std::ifstream intrare("dateIntrare.txt");
     if(!intrare.is_open()) {
@@ -116,6 +120,7 @@ int main() {
     }
     std::cout << "Programul a terminat execuția\n";
 
+    // window.close();
     intrare.close();
     return 0;
 }
