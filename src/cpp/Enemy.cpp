@@ -6,7 +6,6 @@ Enemy::Enemy(int _type, int _hp) : type(_type), hp(_hp) {
     damage = 100;
   }
 }
-
 // void Enemy::Attack(Player &jucator, int chance) {
 //   int hitOrNah = RNG() % chance;
 //   if(hitOrNah) {
@@ -14,7 +13,7 @@ Enemy::Enemy(int _type, int _hp) : type(_type), hp(_hp) {
 //   }
 // }
 std::ostream& operator<<(std::ostream& os,  const Enemy& enemy) {
-  os << "Enemy Type: " << enemy.Type() << ", HP: " << enemy.Hp() 
-     << ", Damage: " << enemy.Damage() << ", Texture: " << enemy.Texture();
+  os << "Enemy Type: " << enemy.type << ", HP: " << enemy.hp
+     << ", Damage: " << enemy.damage << ", Texture: " << enemy.texture;
   return os;
 }

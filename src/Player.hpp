@@ -17,6 +17,8 @@
       ~Player();
       Player(const Player& other);              //  copiatori
       Player& operator=(const Player& other);  //
+      friend std::ostream& operator<<(std::ostream& os,  const Player& player);
+
 ///////////////////////////////////////////////////////////////////////////////////
       void RefillWater();  //  umple inapoi var de apa la numarul max
       void RefillFood();   //  lfl pentru mancare
@@ -24,11 +26,6 @@
       int PlayerStatus();  //verifica daca playerul mai traieste/mai are resurse si cat timp mai are fara, return -1 la moarte
 
       void BackPack() const; //printeaza continutul din backpack
-
-      int Hp()const;       //
-      int Bullets()const;  // printari de variabile private
-      int Water()const;    //
-      int Food()const;     //
 
       // void TakeDmg(int dmg);  // scade hp-ul
 ///////////////////////////////////////////////////////////////////////////////////

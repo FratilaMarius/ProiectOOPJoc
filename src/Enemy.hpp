@@ -18,14 +18,13 @@ class Enemy {
 ///////////////////////////////////////////////////////////////////////////////////
     Enemy(int _type, int _hp);
     ~Enemy() = default;
-    Enemy(const Enemy& other) { *this = other;}
+    Enemy(const Enemy& other) = default;
     Enemy& operator=(const Enemy& other) = default;
+    friend std::ostream& operator<<(std::ostream& os,  const Enemy& enemy);
 ///////////////////////////////////////////////////////////////////////////////////
 
     // void Attack(Player &jucator, int chance); // the higher chance is the rare-er the hits
-int Type() const { return type; }
-int Hp() const { return hp; }
-int Damage() const { return damage; }
+
 const std::string& Texture() const { return texture; }
     ///////////////////////////////////////////////////////////////////////////////////
   private: 

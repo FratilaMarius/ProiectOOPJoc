@@ -4,9 +4,17 @@ Player::Player(int _hp) {
   this->hp = _hp;
 }
 Player::~Player() = default;
-Player::Player(const Player& other) {
-  *this = other;
-}
+Player::Player(const Player& other) :
+movesUntilDemise(other.movesUntilDemise),
+hp(other.hp),
+accuracy(other.accuracy),
+bullets(other.bullets),
+lights(other.lights),
+tent(other.tent),
+meds(other.meds),
+water(other.water),
+food(other.food)
+{}
 Player& Player::operator=(const Player& other) {
   if (this == &other) return *this;
   this->movesUntilDemise = other.movesUntilDemise;
@@ -44,28 +52,16 @@ int Player::PlayerStatus() {
 void Player::BackPack() const {
   std::cout<<"\n"<<"Food: "<<food<<", Water: "<<water<<"\n";
 }
-int Player::Hp() const { 
-  return hp;
-}
-int Player::Bullets()const {
-  return bullets;
-}
-int Player::Water()const {
-  return water;
-}
-int Player::Food()const {
-  return food;
-}
 
 // void Player::TakeDmg(int dmg) {
 //   hp -= dmg;
 // }
 std::ostream& operator<<(std::ostream& os,  const Player& player) {
   os << "Player("
-  << "hp=" << player.Hp()
-  << ", accuracy=" << player.Bullets()
-  << ", bullets=" << player.Water()
-  << ", water=" << player.Food()
+  << "hp=" << player.hp
+  << ", accuracy=" << player.bullets
+  << ", bullets=" << player.water
+  << ", water=" << player.food
   << ")";
   return os;
 }

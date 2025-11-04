@@ -1,11 +1,13 @@
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include <array>
 #include <vector>
 #include <chrono>
 #include <thread>
 #include <../SFML/Graphics.hpp>
 
+namespace fsys = std::filesystem;
 /// texture loader se foloseste la inceput de main, la init deschide toate texturile
 namespace txl {
   class TextureLoader {
@@ -14,12 +16,11 @@ namespace txl {
       ~TextureLoader();
 
       
-      int Load(std::string& fisier);
+      int Load(std::string& fisier, int vectorToLoadInto);
       
       private:
-      std::vector<sf::Texture> oneExits;
-      std::vector<sf::Texture> twoExits;
-      std::vector<sf::Texture> threeExits;
-      std::vector<sf::Texture> fourExits;
-  } 
+      std::vector<sf::Texture> textures[4];
+
+      std::string path = "assets/textures";
+  };
 };

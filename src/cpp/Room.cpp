@@ -3,9 +3,13 @@
 Room::Room(int _id) {
   this->id = _id;
 }
-Room::Room(const Room& other) {
-  *this = other;
-}
+Room::Room(const Room& other) :
+  id(other.id),
+  hasEnemy(other.hasEnemy),
+  hasPlayer(other.hasPlayer),
+  exits {other.exits[0], other.exits[1], other.exits[2], other.exits[3]}
+{}
+
 Room& Room::operator=(const Room& other) {
   if (this == &other) return *this;
   this->id = other.id;
@@ -89,10 +93,10 @@ int Room::FindPickup(int what) { // cauta un pickup in camera. 0-2 nimic, 3-apa,
 std::ostream& operator<<(std::ostream& os,  const Room& room) {
   os << "Room("
   << "ID=" << room.Id()
-  << " exits=" << room.HasExit(0) << "(up) " << room.HasExit(1) << "(down) " 
-               << room.HasExit(2) << "(left) " << room.HasExit(3)
-  << "(rigth) "  << ", hasPlayer=" << room.HasPlayer()
-  << ", hasEnemy=" << room.HasEnemy()
+  << " exits=" << room.exits[0] << "(up) " << room.exits[1] << "(down) " 
+               << room.exits[2] << "(left) " << room.exits[3]
+  << "(rigth) "  << ", hasPlayer=" << room.hasPlayer
+  << ", hasEnemy=" << room.hasEnemy
   << ")";
   return os;
 }

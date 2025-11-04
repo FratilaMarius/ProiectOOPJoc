@@ -12,6 +12,17 @@ Labyrinth::~Labyrinth() {
     layout[i].clear();
   layout.clear();
 }
+Labyrinth::Labyrinth(const Labyrinth &other):
+layout(other.layout),
+width(other.width),
+height(other.height),
+
+playerCords {other.playerCords[0], other.playerCords[1]},
+
+moves(other.moves),
+chanceForExit(other.chanceForExit)
+{}
+
 Labyrinth& Labyrinth::operator=(const Labyrinth& other) {
   for (int i = 0; i < width; ++i) 
     layout[i].clear();
@@ -29,9 +40,6 @@ Labyrinth& Labyrinth::operator=(const Labyrinth& other) {
   this->chanceForExit = other.chanceForExit;
   
   return *this;
-}
-Labyrinth::Labyrinth(const Labyrinth &other) {
-  *this = other;
 }
 void Labyrinth::ResetLayout(int posX, int posY) {
   for(int i = 0; i < width; i++) 

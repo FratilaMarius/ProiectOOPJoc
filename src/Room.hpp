@@ -20,16 +20,15 @@
       Room(const Room& other);
       Room& operator=(const Room& other); 
       ~Room() = default;
+      friend std::ostream& operator<<(std::ostream& os,  const Room& room);
 //////////////////////////////////////////////////////////////////////
       Enemy GenerateEnemy(int _type, int _hp);
 //////////////////////////////////////////////////////////////////////  printari si setari:
       int Id() const{ return id;}
       void Id(int _id) { id =_id;}
-      int HasEnemy() const{ return hasEnemy;}      
-      int HasPlayer() const{ return hasPlayer;}
+
       void HasPlayer(int yesOrNo) { hasPlayer = yesOrNo;}
       int NrRoutes() const{ return exits[0] + exits[1] + exits[2] + exits[3];}
-      int HasExit(int which) const{ return exits[which];}
       int TimesVisited() const{ return timesVisited;}
 ////////////////////////////////////////////////////////////////////// setari si getari pentru iesiri:
       int Exits(const std::string& where);           // pentru setat prin string | up, down, left, right
