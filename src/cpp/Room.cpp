@@ -5,9 +5,12 @@ Room::Room(int _id) {
 }
 Room::Room(const Room& other) :
   id(other.id),
+  texture(other.texture),
+  exits {other.exits[0], other.exits[1], other.exits[2], other.exits[3]},
   hasEnemy(other.hasEnemy),
   hasPlayer(other.hasPlayer),
-  exits {other.exits[0], other.exits[1], other.exits[2], other.exits[3]}
+  timesVisited(other.timesVisited),
+  checkedForPickups(other.checkedForPickups)
 {}
 
 Room& Room::operator=(const Room& other) {
@@ -15,6 +18,9 @@ Room& Room::operator=(const Room& other) {
   this->id = other.id;
   this->hasEnemy = other.hasEnemy;
   this->hasPlayer = other.hasPlayer;
+  texture = other.texture;
+  timesVisited = other.timesVisited;
+  checkedForPickups = other.checkedForPickups;
   std::copy(other.exits, other.exits + 4, this->exits);
   std::copy(other.exits, other.exits + 4, this->exits);
   return *this;

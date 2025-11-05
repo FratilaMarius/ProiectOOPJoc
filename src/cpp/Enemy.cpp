@@ -6,6 +6,12 @@ Enemy::Enemy(int _type, int _hp) : type(_type), hp(_hp) {
     damage = 100;
   }
 }
+Enemy::Enemy(const Enemy& other) :
+type(other.type),
+hp(other.hp),
+damage(other.damage),
+texture(other.texture)
+{}
 // void Enemy::Attack(Player &jucator, int chance) {
 //   int hitOrNah = RNG() % chance;
 //   if(hitOrNah) {

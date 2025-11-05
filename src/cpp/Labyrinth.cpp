@@ -13,11 +13,11 @@ Labyrinth::~Labyrinth() {
   layout.clear();
 }
 Labyrinth::Labyrinth(const Labyrinth &other):
-layout(other.layout),
+playerCords {other.playerCords[0], other.playerCords[1]},
 width(other.width),
 height(other.height),
 
-playerCords {other.playerCords[0], other.playerCords[1]},
+layout(other.layout),
 
 moves(other.moves),
 chanceForExit(other.chanceForExit)

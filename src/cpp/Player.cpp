@@ -5,7 +5,6 @@ Player::Player(int _hp) {
 }
 Player::~Player() = default;
 Player::Player(const Player& other) :
-movesUntilDemise(other.movesUntilDemise),
 hp(other.hp),
 accuracy(other.accuracy),
 bullets(other.bullets),
@@ -13,7 +12,9 @@ lights(other.lights),
 tent(other.tent),
 meds(other.meds),
 water(other.water),
-food(other.food)
+food(other.food),
+
+movesUntilDemise(other.movesUntilDemise)
 {}
 Player& Player::operator=(const Player& other) {
   if (this == &other) return *this;
