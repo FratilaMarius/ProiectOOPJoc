@@ -25,7 +25,6 @@ class Enemy {
 
     // void Attack(Player &jucator, int chance); // the higher chance is the rare-er the hits
 
-const std::string& Texture() const { return texture; }
     ///////////////////////////////////////////////////////////////////////////////////
   private: 
     int type;  //  id, deocamdata 2 tipuri
