@@ -234,12 +234,12 @@ int Labyrinth::Move() {
       return 1;
   }
 std::ostream& operator<<(std::ostream& cout, const Labyrinth &labyrinth) {
-  int iMAX = labyrinth.GetWidth();
-  int jMAX = labyrinth.GetHeight();
+  int iMAX = labyrinth.width;
+  int jMAX = labyrinth.height;
 
   for(int i = 0; i < iMAX; i++) {
     for(int j = 0; j < jMAX; j++) {
-      cout << labyrinth.GetLayoutAt(i, j)<< " ";
+      cout << labyrinth.layout[i][j].Id()<< " ";
     }
     cout<<'\n';
   }

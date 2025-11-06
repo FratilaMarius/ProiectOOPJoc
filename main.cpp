@@ -90,11 +90,13 @@ int main() {
     Labyrinth map(w, h, a, b);
     Player jucator(100);
 
+    std::string prot;
     while(1) {
       if(map.HasFinished()) break;
       std::cout<<map;
       std::cout<<"Continue? (1)  Check for Items? (2)  Check your backpack? (3)  End? (0)   ";
-      std::cin>>a;
+      std::cin>>prot;
+      a = prot[0] - 48;
       if(a == 0) break;
       if(a == 2) {
         int c = map.CheckForItems();

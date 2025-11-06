@@ -97,7 +97,7 @@ int Room::FindPickup(int what) { // cauta un pickup in camera. 0-2 nimic, 3-apa,
 }
 std::ostream& operator<<(std::ostream& os,  const Room& room) {
   os << "Room("
-  << "ID=" << room.Id()
+  << "ID=" << room.id
   << " exits=" << room.exits[0] << "(up) " << room.exits[1] << "(down) " 
                << room.exits[2] << "(left) " << room.exits[3]
   << "(right) "  << ", hasPlayer=" << room.hasPlayer

@@ -17,7 +17,7 @@ class Enemy {
   public:
 ///////////////////////////////////////////////////////////////////////////////////
     Enemy(int _type, int _hp);
-    ~Enemy() = default;
+    ~Enemy();
     Enemy(const Enemy& other);
     Enemy& operator=(const Enemy& other) = default;
     friend std::ostream& operator<<(std::ostream& os,  const Enemy& enemy);

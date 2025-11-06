@@ -6,6 +6,7 @@ Enemy::Enemy(int _type, int _hp) : type(_type), hp(_hp) {
     damage = 100;
   }
 }
+Enemy::~Enemy() {};
 Enemy::Enemy(const Enemy& other) :
 type(other.type),
 hp(other.hp),
