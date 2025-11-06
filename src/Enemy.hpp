@@ -23,7 +23,7 @@ class Enemy {
     friend std::ostream& operator<<(std::ostream& os,  const Enemy& enemy);
 ///////////////////////////////////////////////////////////////////////////////////
 
-    // void Attack(Player &jucator, int chance); // the higher chance is the rare-er the hits
+    // void Attack(Player &jucator, int chance); // the higher chance is the rarer the hits
 
     ///////////////////////////////////////////////////////////////////////////////////
   private: 

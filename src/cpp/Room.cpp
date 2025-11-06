@@ -22,7 +22,6 @@ Room& Room::operator=(const Room& other) {
   timesVisited = other.timesVisited;
   checkedForPickups = other.checkedForPickups;
   std::copy(other.exits, other.exits + 4, this->exits);
-  std::copy(other.exits, other.exits + 4, this->exits);
   return *this;
 }      
 Enemy Room::GenerateEnemy(const int _type, const int _hp) {
@@ -101,7 +100,7 @@ std::ostream& operator<<(std::ostream& os,  const Room& room) {
   << "ID=" << room.Id()
   << " exits=" << room.exits[0] << "(up) " << room.exits[1] << "(down) " 
                << room.exits[2] << "(left) " << room.exits[3]
-  << "(rigth) "  << ", hasPlayer=" << room.hasPlayer
+  << "(right) "  << ", hasPlayer=" << room.hasPlayer
   << ", hasEnemy=" << room.hasEnemy
   << ")";
   return os;

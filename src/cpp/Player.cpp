@@ -39,7 +39,7 @@ void Player::RefillFood() {
 }
       
 int Player::PlayerStatus() {
-  if(hp < 0) return -1;
+  if(hp <= 0) return -1;
   water--;
   food--;
   if(water < 0) movesUntilDemise--;
@@ -60,9 +60,10 @@ void Player::BackPack() const {
 std::ostream& operator<<(std::ostream& os,  const Player& player) {
   os << "Player("
   << "hp=" << player.hp
-  << ", accuracy=" << player.bullets
-  << ", bullets=" << player.water
-  << ", water=" << player.food
+  << ", accuracy=" << player.accuracy
+  << ", bullets=" << player.bullets
+  << ", food=" << player.food
+  << ", water=" << player.water
   << ")";
   return os;
 }

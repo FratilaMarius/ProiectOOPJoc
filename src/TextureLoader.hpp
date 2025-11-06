@@ -16,7 +16,7 @@ namespace txl {
       ~TextureLoader();
 
       
-      int Load(std::string& fisier, int vectorToLoadInto);
+      int Load(const std::string& fisier, int vectorToLoadInto);
       
       private:
       std::vector<sf::Texture> textures[4];

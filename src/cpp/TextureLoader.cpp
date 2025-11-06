@@ -8,7 +8,7 @@ TextureLoader::~TextureLoader() {
   textures[1].clear();
   textures[3].clear();
 }
-int TextureLoader::Load(std::string& path, int vectorToLoadInto) {
+int TextureLoader::Load(const std::string& path, int vectorToLoadInto) {
   for (fsys::directory_iterator fisiere(path); fisiere != fsys::directory_iterator(); fisiere++) {
     const auto &fis = *fisiere;
     if (fis.is_regular_file()) {
@@ -23,4 +23,5 @@ int TextureLoader::Load(std::string& path, int vectorToLoadInto) {
 
     }
   } 
+  return 0;
 }

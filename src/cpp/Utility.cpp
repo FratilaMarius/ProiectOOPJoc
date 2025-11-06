@@ -4,7 +4,7 @@ int RNG() {
   return rand();
 }
 
-std::string _Input() {
+const std::string _Input() {
   std::string a; 
   std::cout<<"\nDirection: ";
   std::cin>>a;

@@ -11,4 +11,4 @@
   
 int RNG();
 
-std::string _Input(); // 0 (up) | 1 (down) | 2 left | 3 right
+const std::string _Input(); // 0 (up) | 1 (down) | 2 left | 3 right
