@@ -36,9 +36,7 @@ public:
   int CheckForItems() { return layout[playerCords[0]][playerCords[1]].FindPickup(RNG() % NR_UNIC_PICKUPS); }
 
   int HasFinished() const { return finish; }
-  int GetWidth() const { return width; }
-  int GetHeight() const { return height; }
-  int GetLayoutAt(int x, int y) const { return layout[x][y].Id(); }
+  
 
 private:
   int playerCords[2] = {0, 0};
