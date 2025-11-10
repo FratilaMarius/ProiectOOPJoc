@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <iostream>
 #include <fstream>
 #include <array>
@@ -8,7 +9,9 @@
 #include <thread>
 
 #include "Enemy.hpp"
-
+#include "TextureLoader.hpp"
+#include <SFML/Graphics.hpp>
+#include "Utility.hpp"
 //////////////////////////////////////////////////////////////////////
 //  Clasa Room retine informatii despre o anumita camera din labirint
 //
@@ -16,7 +19,7 @@ class Room
 {
 public:
   //////////////////////////////////////////////////////////////////////  Constructori, destructori, copiatori:
-  Room() : id(0), texture(""), hasEnemy(0), hasPlayer(0) {}
+  Room() : id(0), hasEnemy(0), hasPlayer(0), texture("") {}
   explicit Room(int _id); //  constructor daca am nevoie de id predefinit
   Room(const Room &other);
   Room &operator=(const Room &other);
@@ -25,6 +28,7 @@ public:
 
   //////////////////////////////////////////////////////////////////////
   Enemy GenerateEnemy(int _type, int _hp);
+  void setTexture(txl::TextureLoader *_textureLoader, int whatKindTexture);
   //////////////////////////////////////////////////////////////////////  printari si setari:
   int Id() const { return id; }
   void Id(int _id) { id = _id; }
@@ -43,16 +47,27 @@ public:
   void ResetRoom();                               // reseteaza complet o camera, fara iesiri, etc
   int FindPickup(int what);                       // cauta un pickup in camera. 0-2 nimic, 3-apa,4-mancare
 
+  void Render(sf::RenderWindow &window);
+  sf::Sprite GetSprite() const { return sprite;}
   //////////////////////////////////////////////////////////////////////  O camera la start are peste tot 1 la iesiri
-private:
+
+
+  private:
   int id;
-  std::string texture = "";
+   
+
   int exits[4] = {1, 1, 1, 1}; // up, down, left, right
   int hasEnemy = 0;            // hasEnemy si hasPlayer sunt 0 default, 1 la nevoie
   int hasPlayer = 0;           //
   int timesVisited = 0;
 
   int checkedForPickups = 0;
+
+  std::string texture = "";
+  sf::Texture emptyTexture;
+  sf::Sprite sprite = sf::Sprite(emptyTexture);
+  
+  sf::Texture tempTextr;
 };
 
 std::ostream &operator<<(std::ostream &os, const Room &room);

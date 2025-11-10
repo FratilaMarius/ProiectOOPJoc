@@ -7,6 +7,8 @@
 #include <chrono>
 #include <thread>
 
+#include <SFML/Graphics.hpp>
+
 #define NR_UNIC_PICKUPS 5
   
 int RNG();
