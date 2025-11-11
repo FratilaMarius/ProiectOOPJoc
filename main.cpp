@@ -17,14 +17,6 @@ int main()
 
   //////////////////////////////////////////////////////////////////////////
   std::srand(std::time(nullptr));
-  std::cout << "\nLoading textures. Warning! This might take a while...\n\n";
-  txl::TextureLoader textureLoader;
-  textureLoader.Load(0, textureLoader.Path0());
-  textureLoader.Load(1, textureLoader.Path1());
-  textureLoader.Load(2, textureLoader.Path2());
-  textureLoader.Load(3, textureLoader.Path3());
-
-  std::cout << textureLoader;
 
   std::ifstream intrare("dateIntrare.txt");
   if (!intrare.is_open())
@@ -54,7 +46,7 @@ int main()
     return -1;
   }
 
-  Labyrinth map(w, h, a, b, &textureLoader);
+  Labyrinth map(w, h, a, b);
   Player jucator(100);
   //////////////////////////////////////////////////////////////////////////
 
@@ -63,7 +55,6 @@ int main()
   /// NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:31
   window.create(sf::VideoMode({800, 700}), "Expedition", sf::Style::Default);
   ///////////////////////////////////////////////////////////////////////////
-  std::cout << "Fereastra a fost creată\n";
   /////////////////////////////////////////////////////////////3)////////////
   /// NOTE: mandatory use one of vsync or FPS limit (not both)            ///
   /// This is needed so we do not burn the GPU                            ///
@@ -79,8 +70,9 @@ int main()
 
     while (const std::optional event = window.pollEvent())
     {
-      if(displayConsoleStuff) {
-        std::cout<<"Continue? (keys)  Check for Items? (1)  Check your backpack? (2)  End? (0)   \n";
+      if (displayConsoleStuff)
+      {
+        std::cout << "Continue? (keys)  Check for Items? (1)  Check your backpack? (2)  End? (0)   \n";
         std::cout << map;
         displayConsoleStuff = 0;
       }
@@ -96,8 +88,6 @@ int main()
       }
       else if (event->is<sf::Event::Resized>())
       {
-        std::cout << "New width: " << window.getSize().x << '\n'
-                  << "New height: " << window.getSize().y << '\n';
       }
       else if (event->is<sf::Event::KeyPressed>())
       {
@@ -192,7 +182,7 @@ int main()
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(300ms);
 
-    map.RenderCurrentRoom(window);
+    map.RenderCurrentRoom(&window);
     window.display();
   }
 

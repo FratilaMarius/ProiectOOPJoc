@@ -9,10 +9,7 @@ Room::Room(const Room &other) : id(other.id),
                                 hasEnemy(other.hasEnemy),
                                 hasPlayer(other.hasPlayer),
                                 timesVisited(other.timesVisited),
-                                checkedForPickups(other.checkedForPickups),
-                                texture(other.texture),
-                                sprite(other.sprite)
-
+                                checkedForPickups(other.checkedForPickups)
 {
 }
 
@@ -23,8 +20,6 @@ Room &Room::operator=(const Room &other)
   this->id = other.id;
   this->hasEnemy = other.hasEnemy;
   this->hasPlayer = other.hasPlayer;
-  texture = other.texture;
-  sprite = other.sprite;
   timesVisited = other.timesVisited;
   checkedForPickups = other.checkedForPickups;
   std::copy(other.exits, other.exits + 4, this->exits);
@@ -35,16 +30,6 @@ Enemy Room::GenerateEnemy(const int _type, const int _hp)
   hasEnemy = 1;
   Enemy inamic(_type, _hp);
   return inamic;
-}
-
-void Room::setTexture(txl::TextureLoader *_textureLoader, int whatKindTexture)
-{
-  int nrOfChoices = _textureLoader->GetNrTextures(whatKindTexture);
-
-  nrOfChoices = RNG() % nrOfChoices; // luam o textura random cu maxim la ulltima textura din vectori
-  texture = _textureLoader->GetTextureName(whatKindTexture, nrOfChoices);
-  sprite.setTexture(_textureLoader->GetTexture(whatKindTexture, nrOfChoices));
-  std::cout<<"\nSet texture"<< texture<<" for room\n";
 }
 
 int Room::Exits(const std::string &where)
@@ -96,7 +81,6 @@ void Room::Exits(int where, int val)
 void Room::ResetRoom()
 { // reseteaza complet o camera, fara iesiri, etc
   id = 0;
-  texture = "";
   exits[0] = 1;
   exits[1] = 1;
   exits[2] = 1;
@@ -137,6 +121,13 @@ int Room::FindPickup(int what)
   }
   return 0;
 }
+
+void Room::SetSprite()
+{
+  realTexture = txl::TextureLoader::Instance().GetTexture(NrRoutes());
+  sprite.setTexture(realTexture);
+}
+
 std::ostream &operator<<(std::ostream &os, const Room &room)
 {
   os << "Room("
@@ -147,9 +138,4 @@ std::ostream &operator<<(std::ostream &os, const Room &room)
      << ", hasEnemy=" << room.hasEnemy
      << ")";
   return os;
-}
-void Room::Render(sf::RenderWindow &window)
-{
-  sprite.setPosition({static_cast<float>(window.getSize().x / 2), static_cast<float>(window.getSize().y / 2)});
-  window.draw(sprite);
 }

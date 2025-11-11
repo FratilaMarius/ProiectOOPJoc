@@ -7,40 +7,39 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <unordered_map>
 
 #include <SFML/Graphics.hpp>
+#include "Utility.hpp"
 
 namespace fsys = std::filesystem;
-/// texture loader se foloseste la inceput de main, la init deschide toate texturile
+
 namespace txl
 {
   class TextureLoader
   {
   public:
-    TextureLoader();
-    ~TextureLoader();
-    TextureLoader& operator=(const TextureLoader& other);
-    TextureLoader(const TextureLoader& other);
-    friend std::ostream &operator<<(std::ostream &out, const TextureLoader &txtrld);
+    TextureLoader(const TextureLoader &other) = delete;
+    TextureLoader &operator=(const TextureLoader &other) = delete;
 
-    int Load(int vectorToLoadInto, const std::string &_path);
+    static TextureLoader &Instance();
 
-    const std::string &Path0() const { return path0; }
-    const std::string &Path1() const { return path1; }
-    const std::string &Path2() const { return path2; }
-    const std::string &Path3() const { return path3; }
+    // friend   std::ostream &operator<<(std::ostream &out, const TextureLoader&);
 
-    int GetNrTextures(int which) { return txtNames[which].size(); }
-    const sf::Texture& GetTexture(int whichVector, int whichTexture);
-    const std::string &GetTextureName(int whichVector, int whichTexture);
+    sf::Texture &GetTexture(int nrOfExits);
 
   private:
-    std::vector<sf::Texture> textures[4];
-    std::vector<std::string> txtNames[4];
+    TextureLoader();
+    ~TextureLoader() = default;
+
+    std::unordered_map<std::string, sf::Texture> map_textures[4];
+
     std::string path0 = "Textures/0";
     std::string path1 = "Textures/1";
     std::string path2 = "Textures/2";
     std::string path3 = "Textures/3";
+
+    void LoadTextures(const std::string &path, int nrOfExits);
   };
-  std::ostream &operator<<(std::ostream &out, const TextureLoader &txtrld);
+  // std::ostream &operator<<(std::ostream &out, const TextureLoader&);
 }

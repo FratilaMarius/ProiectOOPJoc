@@ -19,7 +19,7 @@ class Room
 {
 public:
   //////////////////////////////////////////////////////////////////////  Constructori, destructori, copiatori:
-  Room() : id(0), hasEnemy(0), hasPlayer(0), texture("") {}
+  Room() : id(0), hasEnemy(0), hasPlayer(0) {}
   explicit Room(int _id); //  constructor daca am nevoie de id predefinit
   Room(const Room &other);
   Room &operator=(const Room &other);
@@ -28,7 +28,6 @@ public:
 
   //////////////////////////////////////////////////////////////////////
   Enemy GenerateEnemy(int _type, int _hp);
-  void setTexture(txl::TextureLoader *_textureLoader, int whatKindTexture);
   //////////////////////////////////////////////////////////////////////  printari si setari:
   int Id() const { return id; }
   void Id(int _id) { id = _id; }
@@ -47,14 +46,12 @@ public:
   void ResetRoom();                               // reseteaza complet o camera, fara iesiri, etc
   int FindPickup(int what);                       // cauta un pickup in camera. 0-2 nimic, 3-apa,4-mancare
 
-  void Render(sf::RenderWindow &window);
-  sf::Sprite GetSprite() const { return sprite;}
+  void SetSprite();
+  sf::Sprite& GetSprite() {return sprite;}
   //////////////////////////////////////////////////////////////////////  O camera la start are peste tot 1 la iesiri
 
-
-  private:
+private:
   int id;
-   
 
   int exits[4] = {1, 1, 1, 1}; // up, down, left, right
   int hasEnemy = 0;            // hasEnemy si hasPlayer sunt 0 default, 1 la nevoie
@@ -63,11 +60,8 @@ public:
 
   int checkedForPickups = 0;
 
-  std::string texture = "";
-  sf::Texture emptyTexture;
+  sf::Texture emptyTexture, realTexture;
   sf::Sprite sprite = sf::Sprite(emptyTexture);
-  
-  sf::Texture tempTextr;
 };
 
 std::ostream &operator<<(std::ostream &os, const Room &room);

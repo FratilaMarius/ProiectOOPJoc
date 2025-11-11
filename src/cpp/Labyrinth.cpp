@@ -1,12 +1,11 @@
 #include "../Labyrinth.hpp"
 
-Labyrinth::Labyrinth(int _width, int _height, int plX, int plY, txl::TextureLoader *_txtrLd)
+Labyrinth::Labyrinth(int _width, int _height, int plX, int plY)
 {
   this->width = _width;
   this->height = _height;
-  _labyrinthRefToTheTxtrLd = _txtrLd;
   layout.assign(width, std::vector<Room>(height));
-  Spawn(plX, plY, _txtrLd);
+  Spawn(plX, plY);
 }
 Labyrinth::~Labyrinth()
 {
@@ -21,8 +20,7 @@ Labyrinth::Labyrinth(const Labyrinth &other) : playerCords{other.playerCords[0],
                                                layout(other.layout),
 
                                                moves(other.moves),
-                                               chanceForExit(other.chanceForExit),
-                                               _labyrinthRefToTheTxtrLd(other._labyrinthRefToTheTxtrLd)
+                                               chanceForExit(other.chanceForExit)
 {
 }
 
@@ -55,7 +53,7 @@ void Labyrinth::ResetLayout(int posX, int posY)
       layout[i][j].ResetRoom();
     }
 }
-void Labyrinth::GenerateRoom(int x, int y, int originX, int originY, txl::TextureLoader *_textureLoader)
+void Labyrinth::GenerateRoom(int x, int y, int originX, int originY)
 { // cand intram intr o camera noua daca e goala o generam
   if (layout[x][y].Id() == 0)
   {
@@ -125,10 +123,8 @@ void Labyrinth::GenerateRoom(int x, int y, int originX, int originY, txl::Textur
       finish = 1;
     }
   } // o camera noua are sigur cale de intoarcere + o alta cale
-
-  layout[x][y].setTexture(_textureLoader, layout[x][y].NrRoutes() - 1);
 }
-void Labyrinth::Spawn(int x, int y, txl::TextureLoader *_textureLoader)
+void Labyrinth::Spawn(int x, int y)
 { // functia de mai sus dar apelata la inceput
   layout[x][y].Id(1);
 
@@ -145,7 +141,6 @@ void Labyrinth::Spawn(int x, int y, txl::TextureLoader *_textureLoader)
   layout[x][y].TimesVisited(1);
   playerCords[0] = x;
   playerCords[1] = y;
-  layout[x][y].setTexture(_textureLoader, layout[x][y].NrRoutes() - 1);
 
   std::cout << "\n"
             << layout[playerCords[0]][playerCords[1]] << "\n"
@@ -249,7 +244,7 @@ int Labyrinth::Move(std::string where)
     return 0;
   layout[playerCords[0]][playerCords[1]].HasPlayer(0);
   layout[playerCords[0]][playerCords[1]].Id(1);
-  GenerateRoom(newX, newY, playerCords[0], playerCords[1], _labyrinthRefToTheTxtrLd);
+  GenerateRoom(newX, newY, playerCords[0], playerCords[1]);
   layout[newX][newY].HasPlayer(1);
   layout[newX][newY].TimesVisited(1);
   playerCords[0] = newX;
@@ -277,10 +272,9 @@ int Labyrinth::Move(std::string where)
 
   return 1;
 }
-void Labyrinth::RenderCurrentRoom(sf::RenderWindow &window)
+void Labyrinth::RenderCurrentRoom(sf::RenderWindow *window)
 {
-  window.draw(layout[playerCords[0]][playerCords[1]].GetSprite());
-  // std::cout << "\ndrew the current rooms sprite\n";
+  window->draw(layout[playerCords[0]][playerCords[1]].GetSprite());
 }
 
 std::ostream &operator<<(std::ostream &cout, const Labyrinth &labyrinth)
