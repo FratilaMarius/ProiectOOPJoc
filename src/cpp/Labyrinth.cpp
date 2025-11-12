@@ -147,6 +147,7 @@ void Labyrinth::Spawn(int x, int y)
             << layout[playerCords[0]][playerCords[1]] << "\n"
             << "moves=" << moves << " cFE=" << chanceForExit << "\n";
   layout[playerCords[0]][playerCords[1]].SetSprite();
+
 } ///// Spawn e o functie apelata de constructor. genereaza o camera si plaseaza playerul in ea. camera are minim o iesire
 int Labyrinth::Move(std::string where)
 {
