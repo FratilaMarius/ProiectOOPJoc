@@ -49,22 +49,28 @@ namespace txl
         std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 3\n";
       }
 
-      map_textures[nrOfExits - 1][fis.path().filename()] = temp;
-      std::cout<<"\nLoaded: "<<fis.path().filename()<<"\n";
+      map_textures[nrOfExits][fis.path().filename()] = temp;
+      std::cout << "\nLoaded: " << fis.path().filename() << "\n";
     }
   }
 
   sf::Texture &TextureLoader::GetTexture(int nrOfExits)
   {
     nrOfExits--;
+    if (nrOfExits < 0 || nrOfExits > 3)
+    {
+      /////////throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      std::cout << "\nrOfExits prost\n";
+    }
     // if number of exits > 3 throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
     std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 4\n";
 
     std::string name = "txtr";
     int size = map_textures[nrOfExits].size();
-    if(size <= 0) {
+    if (size <= 0)
+    {
       /////////throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      std::cout<<"\nsize prea mic\n";
+      std::cout << "\nsize prea mic\n";
     }
     name += static_cast<char>('0' + nrOfExits); // adaugam sufixul de nume pentru folder
     name += std::to_string(RNG() % size);       // adaugam sufixul de nume de ID din folder

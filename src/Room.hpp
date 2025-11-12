@@ -60,7 +60,7 @@ private:
 
   int checkedForPickups = 0;
 
-  sf::Texture emptyTexture, realTexture;
+  sf::Texture emptyTexture;
   sf::Sprite sprite = sf::Sprite(emptyTexture);
 };
 

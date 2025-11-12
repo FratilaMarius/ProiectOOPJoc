@@ -124,7 +124,6 @@ int Room::FindPickup(int what)
 
 void Room::SetSprite()
 {
-  realTexture = txl::TextureLoader::Instance().GetTexture(NrRoutes());
   sprite.setTexture(txl::TextureLoader::Instance().GetTexture(NrRoutes()));
 }
 
