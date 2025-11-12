@@ -33,6 +33,7 @@ namespace txl
     ~TextureLoader() = default;
 
     std::unordered_map<std::string, sf::Texture> map_textures[4];
+    sf::Texture defaultTexture;
 
     std::string path0 = "Textures/0";
     std::string path1 = "Textures/1";
