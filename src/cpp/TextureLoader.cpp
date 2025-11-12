@@ -25,7 +25,7 @@ namespace txl
 
     if (nrOfExits > 3)
     {
-      // throw out of bounds pe vector de mape ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 1\n";
     }
     for (fsys::directory_iterator fisiere(path); fisiere != fsys::directory_iterator(); fisiere++)
     {
@@ -33,16 +33,20 @@ namespace txl
       const auto &fis = *fisiere;
       if (!fis.is_regular_file())
       {
+        std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 2\n";
+
         // throw is not regular file/ eroare la deschidere ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       }
       if (!(fis.path().extension().string() == ".png"))
       {
         // throw exception for not png ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 6\n";
       }
       if (!temp.loadFromFile(fis.path().string()))
       {
         // std::cout << "\nfailed to open " << fis.path();
         // throw failde to open texture from openned png ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+        std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 3\n";
       }
 
       map_textures[nrOfExits - 1][fis.path().string()] = temp;
@@ -53,6 +57,8 @@ namespace txl
   {
     nrOfExits--;
     // if number of exits > 3 throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+    std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 4\n";
+
     std::string name = "txtr";
     int size = map_textures[nrOfExits - 1].size();
     name += static_cast<char>('0' + nrOfExits); // adaugam sufixul de nume pentru folder
@@ -61,6 +67,8 @@ namespace txl
 
     if (map_textures[nrOfExits].find(name) == map_textures[nrOfExits].end())
     {
+      std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 5\n";
+
       // daca nu il gasim aruncam exceptie ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
     }
     return map_textures[nrOfExits][name];

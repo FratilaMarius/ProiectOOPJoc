@@ -66,7 +66,6 @@ int main()
   {
 
     bool shouldExit = false;
-    window.clear();
 
     while (const std::optional event = window.pollEvent())
     {
@@ -182,9 +181,14 @@ int main()
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(300ms);
 
+
+    window.clear();
+
     map.RenderCurrentRoom(&window);
     window.display();
   }
+
+
 
   window.close();
   intrare.close();

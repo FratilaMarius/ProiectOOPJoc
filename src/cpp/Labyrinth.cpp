@@ -123,6 +123,7 @@ void Labyrinth::GenerateRoom(int x, int y, int originX, int originY)
       finish = 1;
     }
   } // o camera noua are sigur cale de intoarcere + o alta cale
+  layout[playerCords[0]][playerCords[1]].SetSprite();
 }
 void Labyrinth::Spawn(int x, int y)
 { // functia de mai sus dar apelata la inceput
@@ -145,7 +146,7 @@ void Labyrinth::Spawn(int x, int y)
   std::cout << "\n"
             << layout[playerCords[0]][playerCords[1]] << "\n"
             << "moves=" << moves << " cFE=" << chanceForExit << "\n";
-
+  layout[playerCords[0]][playerCords[1]].SetSprite();
 } ///// Spawn e o functie apelata de constructor. genereaza o camera si plaseaza playerul in ea. camera are minim o iesire
 int Labyrinth::Move(std::string where)
 {

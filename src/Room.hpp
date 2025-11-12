@@ -47,7 +47,7 @@ public:
   int FindPickup(int what);                       // cauta un pickup in camera. 0-2 nimic, 3-apa,4-mancare
 
   void SetSprite();
-  sf::Sprite& GetSprite() {return sprite;}
+  sf::Sprite GetSprite() {return sprite;}
   //////////////////////////////////////////////////////////////////////  O camera la start are peste tot 1 la iesiri
 
 private:

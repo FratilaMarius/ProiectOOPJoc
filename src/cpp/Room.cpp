@@ -125,7 +125,7 @@ int Room::FindPickup(int what)
 void Room::SetSprite()
 {
   realTexture = txl::TextureLoader::Instance().GetTexture(NrRoutes());
-  sprite.setTexture(realTexture);
+  sprite.setTexture(txl::TextureLoader::Instance().GetTexture(NrRoutes()));
 }
 
 std::ostream &operator<<(std::ostream &os, const Room &room)
