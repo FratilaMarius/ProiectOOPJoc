@@ -8,14 +8,14 @@ namespace txl
 
   TextureLoader::TextureLoader()
   {
-    if(!defaultTexture.loadFromFile("Textures/0/txtr01.png")) {
-      // throw eroare
+    if(defaultTexture.loadFromFile("Textures/0/txtr01.png")) {
+      std::cout << "\nLoaded: " << "Textures/0/txtr01.png"<< "\n";
     }
 
-    LoadTextures(path0, 0);
-    LoadTextures(path1, 1);
-    LoadTextures(path2, 2);
-    LoadTextures(path3, 3);
+    LoadTextures(path0, 1);
+    LoadTextures(path1, 2);
+    LoadTextures(path2, 3);
+    LoadTextures(path3, 4);
   }
   TextureLoader &TextureLoader::Instance()
   {
