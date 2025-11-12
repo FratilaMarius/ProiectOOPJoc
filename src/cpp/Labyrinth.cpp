@@ -277,6 +277,7 @@ int Labyrinth::Move(std::string where)
 void Labyrinth::RenderCurrentRoom(sf::RenderWindow *window)
 {
   window->draw(layout[playerCords[0]][playerCords[1]].GetSprite());
+  std::cout<<"Rendered\n";
 }
 
 std::ostream &operator<<(std::ostream &cout, const Labyrinth &labyrinth)
