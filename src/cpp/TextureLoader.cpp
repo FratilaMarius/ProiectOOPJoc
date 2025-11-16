@@ -51,7 +51,7 @@ namespace txl
         std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 3\n";
       }
 
-      map_textures[nrOfExits][fis.path().filename()] = temp;
+      map_textures[nrOfExits][fis.path().filename().string()] = temp;
       std::cout << "\nLoaded: " << fis.path().filename() <<" pe vectorul "<<nrOfExits<< "\n";
     }
   }
