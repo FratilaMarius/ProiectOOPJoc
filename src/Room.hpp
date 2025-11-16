@@ -9,9 +9,10 @@
 #include <thread>
 
 #include "Enemy.hpp"
-#include "TextureLoader.hpp"
 #include <SFML/Graphics.hpp>
 #include "Utility.hpp"
+#include "TextureLoader.hpp"
+
 //////////////////////////////////////////////////////////////////////
 //  Clasa Room retine informatii despre o anumita camera din labirint
 //
@@ -19,10 +20,9 @@ class Room
 {
 public:
   //////////////////////////////////////////////////////////////////////  Constructori, destructori, copiatori:
-  Room() : id(0), hasEnemy(0), hasPlayer(0) {}
-  explicit Room(int _id); //  constructor daca am nevoie de id predefinit
-  Room(const Room &other);
-  Room &operator=(const Room &other);
+  Room() : id(0), hasEnemy(0), hasPlayer(0), timesVisited(0), checkedForPickups(0) {}
+  Room(const Room &other) = default;
+  Room &operator=(const Room &other) = default;
   ~Room() = default;
   friend std::ostream &operator<<(std::ostream &os, const Room &room);
 
@@ -47,7 +47,9 @@ public:
   int FindPickup(int what);                       // cauta un pickup in camera. 0-2 nimic, 3-apa,4-mancare
 
   void SetSprite();
+  void FitSpriteToFrmae(const sf::RenderWindow &window);
   const sf::Sprite& GetSprite() const {return sprite;}
+
   //////////////////////////////////////////////////////////////////////  O camera la start are peste tot 1 la iesiri
 
 private:
@@ -60,8 +62,7 @@ private:
 
   int checkedForPickups = 0;
 
-  sf::Texture emptyTexture;
-  sf::Sprite sprite = sf::Sprite(emptyTexture);
+  sf::Sprite sprite = sf::Sprite(txl::TextureLoader::Instance().GetDefaultTexture());
 };
 
 std::ostream &operator<<(std::ostream &os, const Room &room);

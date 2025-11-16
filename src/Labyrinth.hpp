@@ -12,8 +12,8 @@
 #include "Enemy.hpp"
 #include "Utility.hpp"
 #include "Room.hpp"
-#include "TextureLoader.hpp"
 #include <SFML/Graphics.hpp>
+#include "TextureLoader.hpp"
 
 ////////////////////////////////////////////
 // clasa Labyrinth e clasa "principala", in ea imi retin harta "labirintului" si, pentru demo, ma ocup si de movement
@@ -36,10 +36,11 @@ public:
   void Spawn(int x, int y);
   int Move(std::string where); // muta playerul in functie de input
   int CheckForItems() { return layout[playerCords[0]][playerCords[1]].FindPickup(RNG() % NR_UNIC_PICKUPS); }
-
+  
   int HasFinished() const { return finish; }
 
-  void RenderCurrentRoom(sf::RenderWindow *window);
+  const sf::Sprite& GetCurrentRoomSprite() const {  return layout[playerCords[0]][playerCords[1]].GetSprite();}
+  void SetCurrentRoomSprScale(const sf::RenderWindow& window) {layout[playerCords[0]][playerCords[1]].FitSpriteToFrmae(window);}
 
 private:
   int playerCords[2] = {0, 0};

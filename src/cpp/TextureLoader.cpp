@@ -8,14 +8,15 @@ namespace txl
 
   TextureLoader::TextureLoader()
   {
-    if(defaultTexture.loadFromFile("Textures/0/txtr01.png")) {
-      std::cout << "\nLoaded: " << "Textures/0/txtr01.png"<< "\n";
+    if (defaultTexture.loadFromFile("Textures/0/txtr01.png"))
+    {
+      std::cout << "\nLoaded: Textures/0/txtr01.png as default" << "\n";
     }
 
-    LoadTextures(path0, 1);
-    LoadTextures(path1, 2);
-    LoadTextures(path2, 3);
-    LoadTextures(path3, 4);
+    LoadTextures(path0, 0);
+    LoadTextures(path1, 1);
+    LoadTextures(path2, 2);
+    LoadTextures(path3, 3);
   }
   TextureLoader &TextureLoader::Instance()
   {
@@ -25,8 +26,6 @@ namespace txl
 
   void TextureLoader::LoadTextures(const std::string &path, int nrOfExits)
   {
-    nrOfExits--;
-
     if (nrOfExits > 3)
     {
       std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 1\n";
@@ -38,7 +37,6 @@ namespace txl
       if (!fis.is_regular_file())
       {
         std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 2\n";
-
         // throw is not regular file/ eroare la deschidere ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
       }
       if (!(fis.path().extension().string() == ".png"))
@@ -54,61 +52,43 @@ namespace txl
       }
 
       map_textures[nrOfExits][fis.path().filename()] = temp;
-      std::cout << "\nLoaded: " << fis.path().filename() << "\n";
+      std::cout << "\nLoaded: " << fis.path().filename() <<" pe vectorul "<<nrOfExits<< "\n";
     }
   }
 
   sf::Texture &TextureLoader::GetTexture(int nrOfExits)
   {
-    // nrOfExits--;
-    // if (nrOfExits < 0 || nrOfExits > 3)
-    // {
-    //   /////////throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-    //   std::cout << "\nrOfExits prost\n";
-    // }
-    // // if number of exits > 3 throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-    // std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 4\n";
+    nrOfExits--;
+    std::cout<<"    GetTexture() in TXL: nrOfExits e "<< nrOfExits;
+    if (nrOfExits < 0 || nrOfExits > 3)
+    {
+      /////////throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      std::cout << "\nrOfExits prost\n";
+    }
+    // if number of exits > 3 throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
-    // std::string name = "txtr";
-    // int size;
-    // size = map_textures[nrOfExits].size();
-    // if (size <= 0)
-    // {
-    //   /////////throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-    //   std::cout << "\nsize prea mic\n";
-    // }
-    // name += static_cast<char>('0' + nrOfExits); // adaugam sufixul de nume pentru folder
-    // name += std::to_string(RNG() % size);       // adaugam sufixul de nume de ID din folder
-    // name += ".png";                             // adaugam .png
+    std::string name = "txtr";
+    int size;
+    size = map_textures[nrOfExits].size();
+    if (size <= 0)
+    {
+      /////////throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      std::cout << "\nsize prea mic\n";
+    }
+    name += static_cast<char>('0' + nrOfExits); // adaugam sufixul de nume pentru folder
+    int temp = RNG() % size;
+    if (temp == 0)
+      temp++;
+    name += std::to_string(temp); // adaugam sufixul de nume de ID din folder
+    name += ".png";               // adaugam .png
 
-    // if (map_textures[nrOfExits].find(name) == map_textures[nrOfExits].end())
-    // {
-    //   std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 5\n";
+    if (map_textures[nrOfExits].find(name) == map_textures[nrOfExits].end())
+    {
+      std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 5\n";
 
-    //   // daca nu il gasim aruncam exceptie ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-    // }
-    return defaultTexture;
+      // daca nu il gasim aruncam exceptie ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+    }
+    std::cout << "\nGAVE TEXTURE " << name <<" de pe vectorul "<<nrOfExits<<"\n";
+    return map_textures[nrOfExits][name];
   }
-  // std::ostream &operator<<(std::ostream &out, const TextureLoader &)
-  // {
-  //   out << "\n";
-  //   for (const auto &[key, value] : TextureLoader::Instance().map_textures[0])
-  //   {
-  //     out << key << '\n';
-  //   }
-  //   for (const auto &[key, value] : TextureLoader::Instance().map_textures[1])
-  //   {
-  //     out << key << '\n';
-  //   }
-  //   for (const auto &[key, value] : TextureLoader::Instance().map_textures[2])
-  //   {
-  //     out << key << '\n';
-  //   }
-  //   for (const auto &[key, value] : TextureLoader::Instance().map_textures[3])
-  //   {
-  //     out << key << '\n';
-  //   }
-  //   out << "\n";
-  //   return out;
-  // }
 };

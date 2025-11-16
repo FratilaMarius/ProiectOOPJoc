@@ -24,9 +24,8 @@ namespace txl
 
     static TextureLoader &Instance();
 
-    // friend   std::ostream &operator<<(std::ostream &out, const TextureLoader&);
-
     sf::Texture &GetTexture(int nrOfExits);
+    sf::Texture &GetDefaultTexture() { return defaultTexture;}
 
   private:
     TextureLoader();
@@ -35,10 +34,10 @@ namespace txl
     std::unordered_map<std::string, sf::Texture> map_textures[4];
     sf::Texture defaultTexture;
 
-    std::string path0 = "Textures/0";
-    std::string path1 = "Textures/1";
-    std::string path2 = "Textures/2";
-    std::string path3 = "Textures/3";
+    std::string path0 = "Textures/0/";
+    std::string path1 = "Textures/1/";
+    std::string path2 = "Textures/2/";
+    std::string path3 = "Textures/3/";
 
     void LoadTextures(const std::string &path, int nrOfExits);
   };

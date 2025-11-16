@@ -123,7 +123,7 @@ void Labyrinth::GenerateRoom(int x, int y, int originX, int originY)
       finish = 1;
     }
   } // o camera noua are sigur cale de intoarcere + o alta cale
-  layout[playerCords[0]][playerCords[1]].SetSprite();
+  layout[x][y].SetSprite();
 }
 void Labyrinth::Spawn(int x, int y)
 { // functia de mai sus dar apelata la inceput
@@ -147,7 +147,6 @@ void Labyrinth::Spawn(int x, int y)
             << layout[playerCords[0]][playerCords[1]] << "\n"
             << "moves=" << moves << " cFE=" << chanceForExit << "\n";
   layout[playerCords[0]][playerCords[1]].SetSprite();
-
 } ///// Spawn e o functie apelata de constructor. genereaza o camera si plaseaza playerul in ea. camera are minim o iesire
 int Labyrinth::Move(std::string where)
 {
@@ -246,7 +245,9 @@ int Labyrinth::Move(std::string where)
     return 0;
   layout[playerCords[0]][playerCords[1]].HasPlayer(0);
   layout[playerCords[0]][playerCords[1]].Id(1);
-  GenerateRoom(newX, newY, playerCords[0], playerCords[1]);
+  if(layout[newX][newY].TimesVisited() == 0) {
+    GenerateRoom(newX, newY, playerCords[0], playerCords[1]);
+  }
   layout[newX][newY].HasPlayer(1);
   layout[newX][newY].TimesVisited(1);
   playerCords[0] = newX;
@@ -273,11 +274,6 @@ int Labyrinth::Move(std::string where)
             << "moves=" << moves << " cFE=" << chanceForExit << "\n";
 
   return 1;
-}
-void Labyrinth::RenderCurrentRoom(sf::RenderWindow *window)
-{
-  window->draw(layout[playerCords[0]][playerCords[1]].GetSprite());
-  std::cout<<"Rendered\n";
 }
 
 std::ostream &operator<<(std::ostream &cout, const Labyrinth &labyrinth)

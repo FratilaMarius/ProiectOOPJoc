@@ -1,30 +1,5 @@
 #include "../Room.hpp"
 
-Room::Room(int _id)
-{
-  this->id = _id;
-}
-Room::Room(const Room &other) : id(other.id),
-                                exits{other.exits[0], other.exits[1], other.exits[2], other.exits[3]},
-                                hasEnemy(other.hasEnemy),
-                                hasPlayer(other.hasPlayer),
-                                timesVisited(other.timesVisited),
-                                checkedForPickups(other.checkedForPickups)
-{
-}
-
-Room &Room::operator=(const Room &other)
-{
-  if (this == &other)
-    return *this;
-  this->id = other.id;
-  this->hasEnemy = other.hasEnemy;
-  this->hasPlayer = other.hasPlayer;
-  timesVisited = other.timesVisited;
-  checkedForPickups = other.checkedForPickups;
-  std::copy(other.exits, other.exits + 4, this->exits);
-  return *this;
-}
 Enemy Room::GenerateEnemy(const int _type, const int _hp)
 {
   hasEnemy = 1;
@@ -124,9 +99,21 @@ int Room::FindPickup(int what)
 
 void Room::SetSprite()
 {
+  std::cout<<"\n\nSetSprite() in room: NrROutes e "<< NrRoutes();
   sprite.setTexture(txl::TextureLoader::Instance().GetTexture(NrRoutes()));
 }
+void Room::FitSpriteToFrmae(const sf::RenderWindow &window) {
+  float WinScaleX = window.getSize().x;
+  float WinScaleY = window.getSize().y;
+  float TextureScaleX = sprite.getTexture().getSize().x;
+  float TextureScaleY = sprite.getTexture().getSize().y;
 
+  float scale = std::min(WinScaleX/TextureScaleX, WinScaleY/TextureScaleY);
+  sprite.setScale({scale, scale});
+
+  sprite.setOrigin({sprite.getLocalBounds().getCenter().x, sprite.getLocalBounds().getCenter().y}); // centru
+  sprite.setPosition({WinScaleX/2, WinScaleY/2});
+}  
 std::ostream &operator<<(std::ostream &os, const Room &room)
 {
   os << "Room("

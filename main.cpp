@@ -12,6 +12,7 @@
 #include "src/Labyrinth.hpp"
 #include "src/TextureLoader.hpp"
 
+
 int main()
 {
 
@@ -53,18 +54,17 @@ int main()
   sf::RenderWindow window;
   ///////////////////////////////////////////////////////////////////////////
   /// NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:31
-  window.create(sf::VideoMode({800, 700}), "Expedition", sf::Style::Default);
+  window.create(sf::VideoMode({1920/2, 1080/2}), "Expedition", sf::Style::Default);
   ///////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////3)////////////
   /// NOTE: mandatory use one of vsync or FPS limit (not both)            ///
   /// This is needed so we do not burn the GPU                            ///
   // window.setVerticalSyncEnabled(true);                                 ///
-  window.setFramerateLimit(20); ///
+  window.setFramerateLimit(60); ///
   ///////////////////////////////////////////////////////////////////////////
   int displayConsoleStuff = 1;
   while (window.isOpen())
   {
-
     bool shouldExit = false;
 
     while (const std::optional event = window.pollEvent())
@@ -85,8 +85,10 @@ int main()
         window.close();
         std::cout << "Fereastra a fost închisă\n";
       }
-      else if (event->is<sf::Event::Resized>())
+      else if (const auto* resized = event->getIf<sf::Event::Resized>())
       {
+        sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
+        window.setView(sf::View(visibleArea));
       }
       else if (event->is<sf::Event::KeyPressed>())
       {
@@ -179,12 +181,13 @@ int main()
       break;
     }
     using namespace std::chrono_literals;
-    std::this_thread::sleep_for(300ms);
+    std::this_thread::sleep_for(10ms);
 
 
     window.clear();
-
-    map.RenderCurrentRoom(&window);
+    map.SetCurrentRoomSprScale(window);
+    window.draw(map.GetCurrentRoomSprite());
+    // window.draw(testSprite);
     window.display();
   }
 
