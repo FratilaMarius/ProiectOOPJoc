@@ -64,6 +64,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
     src/cpp/Labyrinth.cpp
     src/cpp/Room.cpp
     src/cpp/TextureLoader.cpp
+    src/cpp/Exceptions.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

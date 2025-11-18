@@ -8,43 +8,38 @@
 #include <thread>
 
 ///////////////////////////////////////////////////////////////////////////////////
-// clasa player retine toate informatiile despre player, un fel de inventar.
-// nu este un lucru "fizic", nu contine date despre pozitia playerului spre exemplu
-class Player
-{
+// Class player stores the current status of the player (i.e. inventory not stuff about position)
+class Player {
 public:
-  ///////////////////////////////////////////////////////////////////////////////////
   explicit Player(int _hp);
   ~Player();
-  Player(const Player &other);            //  copiatori
-  Player &operator=(const Player &other); //
+  Player(const Player &other);            
+  Player &operator=(const Player &other); 
   friend std::ostream &operator<<(std::ostream &os, const Player &player);
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  // Gameplay:  
+  void RefillWater();
+  void RefillFood();
+  int PlayerStatus();
+  void BackPack() const;
+  // void TakeDmg(int dmg);
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-  ///////////////////////////////////////////////////////////////////////////////////
-  void RefillWater(); //  umple inapoi var de apa la numarul max
-  void RefillFood();  //  lfl pentru mancare
-
-  int PlayerStatus(); // verifica daca playerul mai traieste/mai are resurse si cat timp mai are fara, return -1 la moarte
-
-  void BackPack() const; // printeaza continutul din backpack
-
-  // void TakeDmg(int dmg);  // scade hp-ul
-  ///////////////////////////////////////////////////////////////////////////////////
 private:
   int hp;
-  int accuracy = 1;
-  int bullets = 6;
-  int lights = 8;
-  int tent = 0;
-  int meds = 25;
+  int accuracy = 1;  // unused
+  int bullets = 6;   // unused
+  int lights = 8;    // unused
+  int tent = 0;      // unuesd
+  int meds = 25;     // unused
   int water = 15;
   int food = 12;
 
   int movesUntilDemise = 5;
 
-  const std::string OutOfFood = "\nYou have run out of food!\n";
-  const std::string OutOfWater = "\nYou have run out of water!\n";
+  const std::string OutOfFood = "\nYou have run out of food!";
+  const std::string OutOfWater = "\nYou have run out of water!";
   const std::string outOfSupplies = "\nYou are out of supplies! Days until the elements overtake you: ";
 };
-///////////////////////////////////////////////////////////////////////////////////
+
 std::ostream &operator<<(std::ostream &os, const Player &player);

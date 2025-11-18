@@ -10,14 +10,16 @@
 #include <unordered_map>
 
 #include <SFML/Graphics.hpp>
+#include "Exceptions.hpp"
 #include "Utility.hpp"
 
 namespace fsys = std::filesystem;
 
-namespace txl
-{
-  class TextureLoader
-  {
+//////////////////////////////////////////////////////////////////////
+//  Class TextureLoader stores all the used textures/fonts
+//
+namespace txl {
+  class TextureLoader {
   public:
     TextureLoader(const TextureLoader &other) = delete;
     TextureLoader &operator=(const TextureLoader &other) = delete;
@@ -32,14 +34,13 @@ namespace txl
     ~TextureLoader() = default;
 
     std::unordered_map<std::string, sf::Texture> map_textures[4];
-    sf::Texture defaultTexture;
 
     std::string path0 = "Textures/0/";
     std::string path1 = "Textures/1/";
     std::string path2 = "Textures/2/";
     std::string path3 = "Textures/3/";
 
+    sf::Texture defaultTexture;
     void LoadTextures(const std::string &path, int nrOfExits);
   };
-  // std::ostream &operator<<(std::ostream &out, const TextureLoader&);
 }

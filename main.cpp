@@ -11,18 +11,20 @@
 #include "src/Room.hpp"
 #include "src/Labyrinth.hpp"
 #include "src/TextureLoader.hpp"
+#include "src/Exceptions.hpp"
 
 
 int main()
 {
-
-  //////////////////////////////////////////////////////////////////////////
   std::srand(std::time(nullptr));
 
+//////////////////////////////////////////////////////////////////////////
+// reading the info needded for building the labyrinth:
+// spawn coordonates and labyrinth dimmensions
   std::ifstream intrare("dateIntrare.txt");
   if (!intrare.is_open())
   {
-    std::cout << "Eroare la deschiderea fisierului de intrare!\n";
+    std::cout << "\nEroare la deschiderea fisierului de intrare!";
     return -1;
   }
 
@@ -30,38 +32,44 @@ int main()
   intrare >> w >> h;
   if ((w < 3 || h < 3) || (w > 500 || h > 500))
   {
-    std::cout << "Dimensiuni invalide pentru labirint! (minim 3x3, maxim 500x500)\n";
+    std::cout << "\nDimensiuni invalide pentru labirint! (minim 3x3, maxim 500x500)";
     intrare.close();
     return -1;
   }
-  std::cout << "\nDimm lab: " << w << " " << h << "\n";
+  std::cout << "\nDimm lab: " << w << " x " << h;
 
   int a = 2, b = 5;
   intrare >> a >> b;
-  std::cout << "\nCoord Spawn: " << a << " " << b << "\n";
-
   if (a >= w - 1 || b >= h - 1 || a <= 1 || b <= 1)
   {
     std::cout << "Coordonate invalide pentru spawn!\n";
     intrare.close();
     return -1;
   }
-
-  Labyrinth map(w, h, a, b);
-  Player jucator(100);
-  //////////////////////////////////////////////////////////////////////////
-
+  std::cout << "\nCoord Spawn: " << a << ", " << b;
+//////////////////////////////////////////////////////////////////////////
+// Graphics:
   sf::RenderWindow window;
-  ///////////////////////////////////////////////////////////////////////////
   /// NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:31
   window.create(sf::VideoMode({1920/2, 1080/2}), "Expedition", sf::Style::Default);
-  ///////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////3)////////////
-  /// NOTE: mandatory use one of vsync or FPS limit (not both)            ///
-  /// This is needed so we do not burn the GPU                            ///
-  // window.setVerticalSyncEnabled(true);                                 ///
-  window.setFramerateLimit(60); ///
-  ///////////////////////////////////////////////////////////////////////////
+
+  /// NOTE: mandatory use one of vsync or FPS limit (not both)            
+  /// This is needed so we do not burn the GPU                            
+  // window.setVerticalSyncEnabled(true);                                 
+  window.setFramerateLimit(60); 
+///////////////////////////////////////////////////////////////////////////
+// Building the labyrinth and player:
+  Labyrinth map;
+  try{
+    map = Labyrinth(w, h, a, b);
+  }
+  catch() {
+  ||||||||||||||||||||||||||||||| EXCEPTIII YAAAY
+  }
+  Player jucator(100);
+
+///////////////////////////////////////////////////////////////////////////
+// Gameplay:
   int displayConsoleStuff = 1;
   while (window.isOpen())
   {

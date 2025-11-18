@@ -14,53 +14,47 @@
 #include "TextureLoader.hpp"
 
 //////////////////////////////////////////////////////////////////////
-//  Clasa Room retine informatii despre o anumita camera din labirint
+//  Class Room stores info about a specific room from the labyrinth
 //
-class Room
-{
+class Room {
 public:
-  //////////////////////////////////////////////////////////////////////  Constructori, destructori, copiatori:
-  Room() : id(0), hasEnemy(0), hasPlayer(0), timesVisited(0), checkedForPickups(0) {}
+  Room() : hasEnemy(0), hasPlayer(0), timesVisited(0), checkedForPickups(0) {}
   Room(const Room &other) = default;
   Room &operator=(const Room &other) = default;
   ~Room() = default;
   friend std::ostream &operator<<(std::ostream &os, const Room &room);
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  // printing and setting:
+  int GetHasEnemy() const { return hasEnemy; }
+  int GetHasPlayer() const { return hasPlayer; }
+  void SetHasPlayer(int yesOrNo) { hasPlayer = yesOrNo; }
+  int GetNrRoutes() const { return exits[0] + exits[1] + exits[2] + exits[3]; }
+  int GetTimesVisited() const { return timesVisited; }
 
-  //////////////////////////////////////////////////////////////////////
+  int SeeIfExitHere(const std::string &where);    // for setting to 1 via string | up, down, left, right
+  int Exits(int where);                           // for setting to 1 via index  | 0-up,1-down,2-left,3-right
+  void Exits(const std::string &where, int val);  // for setting to specific value via string
+  void Exits(int where, int val);                 // for setting to specific value via index
+
+  void IncrTimesVisited(int x) { timesVisited += x; } // increments the number of visits
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  // Gameplay:
+  void ResetRoom();                       // resets a room
   Enemy GenerateEnemy(int _type, int _hp);
-  //////////////////////////////////////////////////////////////////////  printari si setari:
-  int Id() const { return id; }
-  void Id(int _id) { id = _id; }
-  int HasEnemy() const { return hasEnemy; }
-  int HasPlayer() const { return hasPlayer; }
-  void HasPlayer(int yesOrNo) { hasPlayer = yesOrNo; }
-  int NrRoutes() const { return exits[0] + exits[1] + exits[2] + exits[3]; }
-  int TimesVisited() const { return timesVisited; }
-  ////////////////////////////////////////////////////////////////////// setari si getari pentru iesiri:
-  int Exits(const std::string &where);            // pentru setat prin string | up, down, left, right
-  int Exits(int where);                           // pentru setat prin index | 0-up,1-down,2-left,3-right
-  void Exits(const std::string &where, int val);  // ca mai sus dar pentru setat, index string
-  void Exits(int where, int val);                 // ca mai sus dar pentru setat, index int
-                                                  //////////////////////////////////////////////////////////////////////
-  void TimesVisited(int x) { timesVisited += x; } // incrementeaza numarul de vizitari
-  void ResetRoom();                               // reseteaza complet o camera, fara iesiri, etc
-  int FindPickup(int what);                       // cauta un pickup in camera. 0-2 nimic, 3-apa,4-mancare
-
-  void SetSprite();
-  void FitSpriteToFrmae(const sf::RenderWindow &window);
+  int FindPickup(int what);               // looks for a pickup-able item
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  // GFX:
+  void SetSprite();                                      // chooses a random txtr f(number of exits)
+  void FitSpriteToFrmae(const sf::RenderWindow &window); // centers and scales the sprite
   const sf::Sprite& GetSprite() const {return sprite;}
-
-  //////////////////////////////////////////////////////////////////////  O camera la start are peste tot 1 la iesiri
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 private:
-  int id;
-
   int exits[4] = {1, 1, 1, 1}; // up, down, left, right
-  int hasEnemy = 0;            // hasEnemy si hasPlayer sunt 0 default, 1 la nevoie
+  int hasEnemy = 0;            // hasEnemy and hasPlayer are 0 by default
   int hasPlayer = 0;           //
-  int timesVisited = 0;
-
-  int checkedForPickups = 0;
+  int timesVisited = 0;        // how many times have we been here?
+  int checkedForPickups = 0;   // have we looked for items here?
 
   sf::Sprite sprite = sf::Sprite(txl::TextureLoader::Instance().GetDefaultTexture());
 };

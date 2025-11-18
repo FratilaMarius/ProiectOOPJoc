@@ -2,93 +2,99 @@
 
 namespace fsys = std::filesystem;
 
-/// texture loader se foloseste la inceput de main, la init deschide toate texturile
 namespace txl
 {
 
-  TextureLoader::TextureLoader()
-  {
-    if (defaultTexture.loadFromFile("Textures/0/txtr01.png"))
-    {
-      std::cout << "\nLoaded: Textures/0/txtr01.png as default" << "\n";
+  TextureLoader::TextureLoader() {
+    try {
+      if(!defaultTexture.loadFromFile("Textures/0/txtr01.png")) throw(FileException("default texture"));
+      else std::cout << "\nLoaded: Textures/0/txtr01.png as default";
+    }
+    catch(FileException &exp) {
+      std::cout<< exp.what() <<'\n';
+      exit(-1);
     }
 
-    LoadTextures(path0, 0);
-    LoadTextures(path1, 1);
-    LoadTextures(path2, 2);
-    LoadTextures(path3, 3);
+    try{
+      LoadTextures(path0, 0);
+      LoadTextures(path1, 1);
+      LoadTextures(path2, 2);
+      LoadTextures(path3, 3);
+    } 
+    catch(TextureFileExceptionOutOfBounds &exp) {
+      std::cout<< exp.what() <<'\n';
+      exit(-1);
+    }    
+    catch(TextureFileExceptionCorrupted &exp) {
+      std::cout<< exp.what() <<'\n';
+      exit(-1);      
+    }    
+    catch(TextureFileExceptionExtension &exp) {
+      std::cout<< exp.what() <<'\n';
+      exit(-1);      
+    }    
+    catch(FileException &exp) {
+      std::cout<< exp.what() <<'\n';
+      exit(-1);     
+    }
   }
-  TextureLoader &TextureLoader::Instance()
-  {
+  TextureLoader &TextureLoader::Instance() {
     static TextureLoader instance;
     return instance;
   }
 
-  void TextureLoader::LoadTextures(const std::string &path, int nrOfExits)
-  {
-    if (nrOfExits > 3)
-    {
-      std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 1\n";
+  // Loads all the room textures from the numbered folders 0,1,2,3
+  void TextureLoader::LoadTextures(const std::string &path, int nrOfExits) {
+    if (nrOfExits > 3 || nrOfExits < 0) {
+      throw(TextureFileExceptionOutOfBounds(nrOfExits));
     }
-    for (fsys::directory_iterator fisiere(path); fisiere != fsys::directory_iterator(); fisiere++)
-    {
+
+    for (fsys::directory_iterator file(path); file != fsys::directory_iterator(); file++) {
       sf::Texture temp;
-      const auto &fis = *fisiere;
-      if (!fis.is_regular_file())
-      {
-        std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 2\n";
-        // throw is not regular file/ eroare la deschidere ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      const auto &fis = *file;
+      if (!fis.is_regular_file()) {
+        throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
       }
-      if (!(fis.path().extension().string() == ".png"))
-      {
-        // throw exception for not png ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-        std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 6\n";
+      if (!(fis.path().extension().string() == ".png")) {
+        throw(TextureFileExceptionExtension(fis.path().filename().string()));
       }
-      if (!temp.loadFromFile(fis.path().string()))
-      {
-        // std::cout << "\nfailed to open " << fis.path();
-        // throw failde to open texture from openned png ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-        std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 3\n";
+      if (!temp.loadFromFile(fis.path().string())) {
+        throw(FileException(fis.path().filename().string()));
       }
 
       map_textures[nrOfExits][fis.path().filename().string()] = temp;
-      std::cout << "\nLoaded: " << fis.path().filename() <<" pe vectorul "<<nrOfExits<< "\n";
+      std::cout << "\nLoaded: " << fis.path().filename();
     }
   }
 
-  sf::Texture &TextureLoader::GetTexture(int nrOfExits)
-  {
+  // ret a random texture depending on nrOfExits
+  // possible Exceptions: OutOfBounds, EmptyArray, NoSuchFile
+  sf::Texture &TextureLoader::GetTexture(int nrOfExits) {
     nrOfExits--;
-    std::cout<<"    GetTexture() in TXL: nrOfExits e "<< nrOfExits;
-    if (nrOfExits < 0 || nrOfExits > 3)
-    {
-      /////////throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      std::cout << "\nrOfExits prost\n";
+    if (nrOfExits < 0 || nrOfExits > 3) {
+      throw(TextureFileExceptionOutOfBounds(nrOfExits));
     }
-    // if number of exits > 3 throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
     std::string name = "txtr";
     int size;
     size = map_textures[nrOfExits].size();
-    if (size <= 0)
-    {
-      /////////throw ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-      std::cout << "\nsize prea mic\n";
+    if (size <= 0) {
+      throw(TextureFileExceptionEmptyArray(nrOfExits));
     }
-    name += static_cast<char>('0' + nrOfExits); // adaugam sufixul de nume pentru folder
+    
+    // building the name of the file//////////////
+    name += static_cast<char>('0' + nrOfExits);
     int temp = RNG() % size;
     if (temp == 0)
       temp++;
-    name += std::to_string(temp); // adaugam sufixul de nume de ID din folder
-    name += ".png";               // adaugam .png
+    name += std::to_string(temp); 
+    name += ".png";               
+    ///////////////////////////////////////////////
 
     if (map_textures[nrOfExits].find(name) == map_textures[nrOfExits].end())
     {
-      std::cout << "\n||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 5\n";
-
-      // daca nu il gasim aruncam exceptie ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      throw(TextureFileExceptionNoSuchFile(nrOfExits, name));
     }
-    std::cout << "\nGAVE TEXTURE " << name <<" de pe vectorul "<<nrOfExits<<"\n";
     return map_textures[nrOfExits][name];
   }
 };

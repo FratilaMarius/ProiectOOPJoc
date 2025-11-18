@@ -35,7 +35,7 @@ public:
   ///// Spawn e o functie apelata de constructor. genereaza o camera si plaseaza playerul in ea. camera are minim o iesire
   void Spawn(int x, int y);
   int Move(std::string where); // muta playerul in functie de input
-  int CheckForItems() { return layout[playerCords[0]][playerCords[1]].FindPickup(RNG() % NR_UNIC_PICKUPS); }
+  int CheckForItems() { return layout[playerCords[0]][playerCords[1]].FindPickup(RNG() % NR_UNIQUE_PICKUPS); }
   
   int HasFinished() const { return finish; }
 
