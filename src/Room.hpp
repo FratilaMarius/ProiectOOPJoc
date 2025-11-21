@@ -25,8 +25,10 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const Room &room);
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // printing and setting:
-  int GetHasEnemy() const { return hasEnemy; }
-  int GetHasPlayer() const { return hasPlayer; }
+  
+  [[maybe_unsused]] int GetHasEnemy() const { return hasEnemy; }
+  [[maybe_unsused]] int GetHasPlayer() const { return hasPlayer; }
+
   void SetHasPlayer(int yesOrNo) { hasPlayer = yesOrNo; }
   int GetNrRoutes() const { return exits[0] + exits[1] + exits[2] + exits[3]; }
   int GetTimesVisited() const { return timesVisited; }
@@ -40,7 +42,7 @@ public:
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // Gameplay:
   void ResetRoom();                       // resets a room
-  Enemy GenerateEnemy(int _type, int _hp);
+  [[maybe_unsused]] Enemy GenerateEnemy(int _type, int _hp);
   int FindPickup(int what);               // looks for a pickup-able item
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // GFX:

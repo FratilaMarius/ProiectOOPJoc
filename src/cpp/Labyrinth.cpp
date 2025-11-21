@@ -160,7 +160,7 @@ void Labyrinth::Spawn(int x, int y) { // we only call this one in the constructo
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Gameplay/ movement:
 //
-int Labyrinth::Move(std::string where) {
+int Labyrinth::Move(const std::string& where) {
 
   // if (layout[playerCords[0]][playerCords[1]].GetHasEnemy()) {
   //   std::cout << "Enemy encountered!";

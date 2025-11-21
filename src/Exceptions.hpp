@@ -68,11 +68,10 @@ private:
 class TextureFileExceptionNoSuchFile : public FileException {
 public:
   explicit TextureFileExceptionNoSuchFile(int index, const std::string& filename)
-    : FileException(Format(index, filename)), _filename(filename),_index(index) {}
+    : FileException(Format(index, filename)), _filename(filename) {}
 
 private:
   std::string _filename;
-  int _index;
 
   static std::string Format(int index, const std::string& filename);
 };
