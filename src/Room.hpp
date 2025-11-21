@@ -12,7 +12,6 @@
 #include <SFML/Graphics.hpp>
 #include "Utility.hpp"
 #include "TextureLoader.hpp"
-#include <cassert>
 
 //////////////////////////////////////////////////////////////////////
 //  Class Room stores info about a specific room from the labyrinth
@@ -27,8 +26,8 @@ public:
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // printing and setting:
   
-  [[maybe_unsused]] int GetHasEnemy() const { return hasEnemy; }
-  [[maybe_unsused]] int GetHasPlayer() const { return hasPlayer; }
+  // int GetHasEnemy() const { return hasEnemy; }
+  // int GetHasPlayer() const { return hasPlayer; }
 
   void SetHasPlayer(int yesOrNo) { hasPlayer = yesOrNo; }
   int GetNrRoutes() const { return exits[0] + exits[1] + exits[2] + exits[3]; }
@@ -43,7 +42,7 @@ public:
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // Gameplay:
   void ResetRoom();                       // resets a room
-  [[maybe_unsused]] Enemy GenerateEnemy(int _type, int _hp);
+  // Enemy GenerateEnemy(int _type, int _hp);
   int FindPickup(int what);               // looks for a pickup-able item
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // GFX:

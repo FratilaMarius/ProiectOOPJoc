@@ -64,11 +64,11 @@ void Room::ResetRoom() {
   timesVisited = 0;
 }
 // work in progress:
-Enemy Room::GenerateEnemy(const int _type, const int _hp) {
-  hasEnemy = 1;
-  Enemy enemy(_type, _hp);
-  return enemy;
-}
+// Enemy Room::GenerateEnemy(const int _type, const int _hp) {
+//   hasEnemy = 1;
+//   Enemy enemy(_type, _hp);
+//   return enemy;
+// }
 // looks for a pickup, takes the type of item as param, max 4
 int Room::FindPickup(int what) {
   if (checkedForPickups) {
