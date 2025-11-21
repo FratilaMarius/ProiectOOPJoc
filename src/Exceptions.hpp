@@ -79,3 +79,12 @@ private:
 //
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Labyrinth exceptions:
+//
+class LabExceptionCouldntMove : public AppException {
+  public:
+    explicit LabExceptionCouldntMove(int posX, int posY) : AppException(Format(posX, posY)) {}
+
+  private:
+    static std::string Format(int posX, int posY);
+};

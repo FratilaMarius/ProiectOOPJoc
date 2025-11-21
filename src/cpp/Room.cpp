@@ -69,7 +69,7 @@ Enemy Room::GenerateEnemy(const int _type, const int _hp) {
   Enemy enemy(_type, _hp);
   return enemy;
 }
-// looks for a pickup, takes the type of item as param: 0/1/2 = nothing, 3 = water, 4 = food
+// looks for a pickup, takes the type of item as param, max 4
 int Room::FindPickup(int what) {
   if (checkedForPickups) {
     std::cout << "\nYou've already checked here";

@@ -14,45 +14,59 @@
 #include "Room.hpp"
 #include <SFML/Graphics.hpp>
 #include "TextureLoader.hpp"
+#include "Exceptions.hpp"
 
-////////////////////////////////////////////
-// clasa Labyrinth e clasa "principala", in ea imi retin harta "labirintului" si, pentru demo, ma ocup si de movement
-class Labyrinth
-{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Labyrinth class is the main one, handling the movement and map
+//
+class Labyrinth {
+
 public:
-  ////////////////////////
-  // pl = player coords
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construcotrs/ destrucotrs:
+//
   explicit Labyrinth(int _width, int _height, int plX, int plY);
   ~Labyrinth();
+
   Labyrinth &operator=(const Labyrinth &other);
   Labyrinth(const Labyrinth &other);
-  friend std::ostream &operator<<(std::ostream &os, const Labyrinth &labyrinth);
-  ////////////////////////
-  void ResetLayout(int posX, int posY); // reseteaza toate camerele cu exceptia celei in care e playeru
-                                        // o camera noua are sigur cale de intoarcere + o alta cale
-                                        // cand intram intr o camera noua daca e goala o generam
-  void GenerateRoom(int x, int y, int originX, int originY);
-  ///// Spawn e o functie apelata de constructor. genereaza o camera si plaseaza playerul in ea. camera are minim o iesire
-  void Spawn(int x, int y);
-  int Move(std::string where); // muta playerul in functie de input
-  int CheckForItems() { return layout[playerCords[0]][playerCords[1]].FindPickup(RNG() % NR_UNIQUE_PICKUPS); }
-  
-  int HasFinished() const { return finish; }
 
+  friend std::ostream &operator<<(std::ostream &os, const Labyrinth &labyrinth);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Gameplay:
+//
+  void ResetLayout(int posX, int posY); // resets the entire map, minus the room[posX][posY]
+
+  void GenerateRoom(int x, int y, int originX, int originY); // generates a new room (gives it a texture and exits)
+  void Spawn(int x, int y); // the equivalent of GenerateRoom but only called on start
+
+  int Move(std::string where); // moves the player from one room to another, f(string) : up/down/left/right
+
+  int CheckForItems() { return layout[playerCords[0]][playerCords[1]].FindPickup(RNG() % NR_UNIQUE_PICKUPS); }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// GFX:
+//
   const sf::Sprite& GetCurrentRoomSprite() const {  return layout[playerCords[0]][playerCords[1]].GetSprite();}
   void SetCurrentRoomSprScale(const sf::RenderWindow& window) {layout[playerCords[0]][playerCords[1]].FitSpriteToFrmae(window);}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Setters/Getters:
+//
+  int CheckIfFinished() const { return finish; }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 private:
-  int playerCords[2] = {0, 0};
+  int playerCords[2] = {0, 0}; // used to store the current player coords
+
   int width, height;
   std::vector<std::vector<Room>> layout;
-  int moves = 0;
-  int chanceForExit = 101; // se va folosi ca rand() % cFE == 0?, astfel cFE = 100 --> 1% sansa pentru exit, cFE = 1 --> 100% sansa
-  int finish = 0;
-  //////////////////////////
-  // in layout imi retin asezarea curenta a lucrurilor pe harta
-  //
-  //
+  
+  int moves = 0; // how many moves we have done
+  int chanceForExit = 101; // is used as rand() % cFE == 0?, so cFE = 100 --> 1% chance to exit, cFE = 1 --> 100% chance
+                           // it is decremented by 10 each time we make a move to a new room
+  int finish = 0; // if this is 1 we end (win)
 };
 
 std::ostream &operator<<(std::ostream &cout, const Labyrinth &labyrinth);

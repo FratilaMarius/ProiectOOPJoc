@@ -1,18 +1,23 @@
 #include "../Labyrinth.hpp"
 
-Labyrinth::Labyrinth(int _width, int _height, int plX, int plY)
-{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construcotrs/ destrucotrs:
+//
+Labyrinth::Labyrinth(int _width, int _height, int plX, int plY) {
   this->width = _width;
   this->height = _height;
+
   layout.assign(width, std::vector<Room>(height));
+
   Spawn(plX, plY);
 }
-Labyrinth::~Labyrinth()
-{
+
+Labyrinth::~Labyrinth() {
   for (int i = 0; i < width; ++i)
     layout[i].clear();
   layout.clear();
 }
+
 Labyrinth::Labyrinth(const Labyrinth &other) : playerCords{other.playerCords[0], other.playerCords[1]},
                                                width(other.width),
                                                height(other.height),
@@ -21,11 +26,9 @@ Labyrinth::Labyrinth(const Labyrinth &other) : playerCords{other.playerCords[0],
 
                                                moves(other.moves),
                                                chanceForExit(other.chanceForExit)
-{
-}
+{}
 
-Labyrinth &Labyrinth::operator=(const Labyrinth &other)
-{
+Labyrinth &Labyrinth::operator=(const Labyrinth &other) {
   for (int i = 0; i < width; ++i)
     layout[i].clear();
   layout.clear();
@@ -43,8 +46,11 @@ Labyrinth &Labyrinth::operator=(const Labyrinth &other)
 
   return *this;
 }
-void Labyrinth::ResetLayout(int posX, int posY)
-{
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Gameplay/ dealing with the rooms:
+//
+void Labyrinth::ResetLayout(int posX, int posY) {
   for (int i = 0; i < width; i++)
     for (int j = 0; j < height; j++)
     {
@@ -53,40 +59,43 @@ void Labyrinth::ResetLayout(int posX, int posY)
       layout[i][j].ResetRoom();
     }
 }
-void Labyrinth::GenerateRoom(int x, int y, int originX, int originY)
-{ // cand intram intr o camera noua daca e goala o generam
-  if (layout[x][y].Id() == 0)
-  {
-    moves++;
+
+void Labyrinth::GenerateRoom(int x, int y, int originX, int originY) { // when entering a new room we give it exits and a texture
+  if (layout[x][y].GetTimesVisited() == 0) {
+
+// we delete all the exits it has by default:
     layout[x][y].Exits(0, 0);
     layout[x][y].Exits(1, 0);
     layout[x][y].Exits(2, 0);
     layout[x][y].Exits(3, 0);
-    layout[x][y].Id(1);
+
+///////////////////////////////////////////
+// making sure we can go back the way we came:
     int retur = -1;
-    if (originX - x < 0)
-    {
+    if (originX - x < 0) {
       layout[x][y].Exits("up", 1);
       retur = 0;
-    } // daca a venit de sus setam iesire in sus
-    if (x - originX < 0)
-    {
+    }
+    if (x - originX < 0) {
       layout[x][y].Exits("down", 1);
       retur = 1;
-    } // daca a venit de jos setam iesire in jos
-    if (y - originY < 0)
-    {
+    }
+    if (y - originY < 0) {
       layout[x][y].Exits("right", 1);
       retur = 3;
-    } // daca a venit din dreapta setam iesire in jos
-    if (originY - y < 0)
-    {
+    }
+    if (originY - y < 0) {
       layout[x][y].Exits("left", 1);
       retur = 2;
-    } // daca a venit din stanga setam iesire in jos
+    }
+///////////////////////////////////////////
+// we give it some exits depending on this chance:
     int chance = RNG() % 100;
-    if (chance < 97)
-    { // facem doar cu 2 iesiri
+    int chanceFor2 = 97;  // the higher these chances the more likely that's how many exits we generate
+    int chanceFor3 = 60;
+    int chanceFor4 = 25;
+    
+    if (chance < chanceFor2) {
       int z = RNG() % 4;
       if (z == retur)
       {
@@ -95,8 +104,7 @@ void Labyrinth::GenerateRoom(int x, int y, int originX, int originY)
       }
       layout[x][y].Exits(z, 1);
     }
-    if ((chance) <= 60)
-    { // facem doar cu 3 iesiri
+    if ((chance) <= chanceFor3) {
       int z = RNG() % 4;
       if (z == retur)
       {
@@ -111,128 +119,135 @@ void Labyrinth::GenerateRoom(int x, int y, int originX, int originY)
       z %= 4;
       layout[x][y].Exits(z, 1);
     }
-    if ((chance) < 25)
-    { // facem cu 4 iesiri
+    if ((chance) < chanceFor4) {
       layout[x][y].Exits(0, 1);
       layout[x][y].Exits(2, 1);
       layout[x][y].Exits(1, 1);
       layout[x][y].Exits(3, 1);
     }
-    if (RNG() % chanceForExit == 0)
-    {
-      finish = 1;
-    }
-  } // o camera noua are sigur cale de intoarcere + o alta cale
-  layout[x][y].SetSprite();
+///////////////////////////////////////////
+    layout[x][y].SetSprite();
+  }
 }
-void Labyrinth::Spawn(int x, int y)
-{ // functia de mai sus dar apelata la inceput
-  layout[x][y].Id(1);
 
+
+
+void Labyrinth::Spawn(int x, int y) { // we only call this one in the constructor
+
+/////////////////////////////////////////////
+// we give the starting room at least 1 exit
   layout[x][y].Exits("up", RNG() % 2);
   layout[x][y].Exits("down", RNG() % 2);
   layout[x][y].Exits("left", RNG() % 2);
   layout[x][y].Exits("right", RNG() % 2);
-  if (layout[x][y].NrRoutes() < 1)
-  {
+
+  if (layout[x][y].GetNrRoutes() < 1) {
     int z = RNG() % 4;
     layout[x][y].Exits(z, 1);
   }
-  layout[x][y].HasPlayer(1);
-  layout[x][y].TimesVisited(1);
+/////////////////////////////////////////////
+  layout[x][y].SetHasPlayer(1);
+  layout[x][y].IncrTimesVisited(1);
   playerCords[0] = x;
   playerCords[1] = y;
 
-  std::cout << "\n"
-            << layout[playerCords[0]][playerCords[1]] << "\n"
-            << "moves=" << moves << " cFE=" << chanceForExit << "\n";
   layout[playerCords[0]][playerCords[1]].SetSprite();
-} ///// Spawn e o functie apelata de constructor. genereaza o camera si plaseaza playerul in ea. camera are minim o iesire
-int Labyrinth::Move(std::string where)
-{
-  if (layout[playerCords[0]][playerCords[1]].HasEnemy())
-  {
-    std::cout << "Enemy encountered!";
-  }
 
+  std::cout << "\n"
+            << layout[playerCords[0]][playerCords[1]];
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Gameplay/ movement:
+//
+int Labyrinth::Move(std::string where) {
+
+  // if (layout[playerCords[0]][playerCords[1]].GetHasEnemy()) {
+  //   std::cout << "Enemy encountered!";
+  // }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// interpreting the param string to see which way we go:
   int newX = -1, newY = -1;
-  switch (where[0])
-  {
+  switch (where[0]) {
+
   case 'u':
-    if (playerCords[0] - 1 == -1) // daca vrea sa mearga in (up) dar iese din lab
-    {
+    if (playerCords[0] - 1 == -1) { // check for out of bounds
       std::cout << "\nWall\n";
       break;
     }
-    if (!layout[playerCords[0]][playerCords[1]].Exits("up"))
-    {
+    if (!layout[playerCords[0]][playerCords[1]].SeeIfExitHere("up")) {  // if we cant go that way 
       std::cout << "\nDead end\n";
       break;
-    } /// daca casuta curenta nu il lasa sa mearga in sus
-    if (layout[playerCords[0] - 1][playerCords[1]].Id() != 0 && !layout[playerCords[0] - 1][playerCords[1]].Exits("down"))
-    {
+    }
+    // if the way we want to go has no door facing us:
+    if (layout[playerCords[0] - 1][playerCords[1]].GetTimesVisited() != 0 && !layout[playerCords[0] - 1][playerCords[1]].SeeIfExitHere("down")) {
       std::cout << "\nDead end\n";
       break;
-    } /// daca casuta care trebuie sa il primeasca nu are deschidere catre casuta curenta
+    }
+
+    // we passed the checks, we are moving:
     newX = playerCords[0] - 1;
     newY = playerCords[1];
     break;
+
   case 'd':
-    if (playerCords[0] + 1 == width) // daca vrea sa mearga in (down) dar iese din lab
-    {
+    if (playerCords[0] + 1 == width) { // check for out of bounds
       std::cout << "\nWall\n";
       break;
     }
-    if (!layout[playerCords[0]][playerCords[1]].Exits("down"))
-    {
+    if (!layout[playerCords[0]][playerCords[1]].SeeIfExitHere("down")) { // if we cant go that way 
       std::cout << "\nDead end\n";
       break;
     }
-    if (layout[playerCords[0] + 1][playerCords[1]].Id() != 0 && !layout[playerCords[0] + 1][playerCords[1]].Exits("up"))
-    {
+    // if the way we want to go has no door facing us:
+    if (layout[playerCords[0] + 1][playerCords[1]].GetTimesVisited() != 0 && !layout[playerCords[0] + 1][playerCords[1]].SeeIfExitHere("up")) {
       std::cout << "\nDead end\n";
       break;
-    } /// daca casuta care trebuie sa il primeasca nu are deschidere catre casuta curenta
+    }
+
+    // we passed the checks, we are moving:
     newX = playerCords[0] + 1;
     newY = playerCords[1];
     break;
 
   case 'l':
-    if (playerCords[1] - 1 == -1) // daca vrea sa mearga in stanga dar iese din lab
-    {
+    if (playerCords[1] - 1 == -1) { // check for out of bounds
       std::cout << "\nWall\n";
       break;
     }
-    if (!layout[playerCords[0]][playerCords[1]].Exits("left"))
-    {
+    if (!layout[playerCords[0]][playerCords[1]].SeeIfExitHere("left")) { // if we cant go that way 
       std::cout << "\nDead end\n";
       break;
     }
-    if (layout[playerCords[0]][playerCords[1] - 1].Id() != 0 && !layout[playerCords[0]][playerCords[1] - 1].Exits("right"))
-    {
+    // if the way we want to go has no door facing us:
+    if (layout[playerCords[0]][playerCords[1] - 1].GetTimesVisited() != 0 && !layout[playerCords[0]][playerCords[1] - 1].SeeIfExitHere("right")) {
       std::cout << "\nDead end\n";
       break;
-    } /// daca casuta care trebuie sa il primeasca nu are deschidere catre casuta curenta
+    }
+
+    // we passed the checks, we are moving:
     newX = playerCords[0];
     newY = playerCords[1] - 1;
     break;
 
   case 'r':
-    if (playerCords[1] + 1 == height) // daca vrea sa mearga in dreapta dar iese din lab
-    {
+    if (playerCords[1] + 1 == height) { // check for out of bounds
       std::cout << "\nWall\n";
       break;
     }
-    if (!layout[playerCords[0]][playerCords[1]].Exits("right"))
-    {
+    if (!layout[playerCords[0]][playerCords[1]].SeeIfExitHere("right")) { // if we cant go that way 
       std::cout << "\nDead end\n";
       break;
     }
-    if (layout[playerCords[0]][playerCords[1] + 1].Id() != 0 && !layout[playerCords[0]][playerCords[1] + 1].Exits("left"))
-    {
+    // if the way we want to go has no door facing us:
+    if (layout[playerCords[0]][playerCords[1] + 1].GetTimesVisited() != 0 && !layout[playerCords[0]][playerCords[1] + 1].SeeIfExitHere("left")) {
       std::cout << "\nDead end\n";
       break;
-    } /// daca casuta care trebuie sa il primeasca nu are deschidere catre casuta curenta
+    }
+
+    // we passed the checks, we are moving:
     newX = playerCords[0];
     newY = playerCords[1] + 1;
     break;
@@ -240,52 +255,63 @@ int Labyrinth::Move(std::string where)
   default:
     break;
   }
+  if (newX == -1 && newY == -1) throw(LabExceptionCouldntMove(playerCords[0], playerCords[1]));
+  // at the end of the switch() we have newX/newY as the coordonates for out room we need to move into
+  // and playercoords[0] and [1] still stores the coords of where we came from
 
-  if (newX == -1 && newY == -1)
-    return 0;
-  layout[playerCords[0]][playerCords[1]].HasPlayer(0);
-  layout[playerCords[0]][playerCords[1]].Id(1);
-  if(layout[newX][newY].TimesVisited() == 0) {
+  moves++;
+  chanceForExit -=10;
+
+  layout[playerCords[0]][playerCords[1]].SetHasPlayer(0);
+  
+  if(layout[newX][newY].GetTimesVisited() == 0) {
     GenerateRoom(newX, newY, playerCords[0], playerCords[1]);
   }
-  layout[newX][newY].HasPlayer(1);
-  layout[newX][newY].TimesVisited(1);
+  layout[newX][newY].SetHasPlayer(1);
+  layout[newX][newY].IncrTimesVisited(1);
+  
+  // if we've already been to this room >3 times we reset the layout, minus the room we're moving to
+  if (layout[newX][newY].GetTimesVisited() > 3) { 
+    ResetLayout(newY, newX);
+  }
+
+  // // generating an enemy in the new rooom:
+  // if (RNG() % 4 == 0 && layout[playerCords[0]][playerCords[1]].TimesVisited() == 0)
+  // {
+  //   layout[playerCords[0]][playerCords[1]].GenerateEnemy(1, 50);
+  // }
+
   playerCords[0] = newX;
   playerCords[1] = newY;
-  layout[playerCords[0]][playerCords[1]].Id(2);
-  if (layout[newX][newY].TimesVisited() > 2)
-  {
-    ResetLayout(playerCords[0], playerCords[1]);
-  }
-  if (RNG() % 4 == 0 && layout[playerCords[0]][playerCords[1]].TimesVisited() == 0)
-  {
-    layout[playerCords[0]][playerCords[1]].GenerateEnemy(1, 50);
-  }
 
-  if (moves > 10 && chanceForExit > 10)
-  {
-    chanceForExit -= 10; // dupa 10 mutari sansele pentru a castiga devin mai mari cu 10% la fiecare noua mutare
+  if (moves > 10 && chanceForExit > 10) { // after 10 moves we start to get close to the exit
+    chanceForExit -= 10;
   }
-  if (finish)
+  if (finish) {
     std::cout << "Congrats! You have escaped!";
+    return 2;
+  }
 
   std::cout << "\n"
-            << layout[playerCords[0]][playerCords[1]] << "\n"
-            << "moves=" << moves << " cFE=" << chanceForExit << "\n";
-
+            << layout[playerCords[0]][playerCords[1]];
   return 1;
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Printing the labyrinth by timesVisited of each room:
+//
 std::ostream &operator<<(std::ostream &cout, const Labyrinth &labyrinth)
 {
   int iMAX = labyrinth.width;
   int jMAX = labyrinth.height;
+  cout << '\n';
 
   for (int i = 0; i < iMAX; i++)
   {
     for (int j = 0; j < jMAX; j++)
     {
-      cout << labyrinth.layout[i][j].Id() << " ";
+      cout << labyrinth.layout[i][j].GetTimesVisited() << " ";
     }
     cout << '\n';
   }

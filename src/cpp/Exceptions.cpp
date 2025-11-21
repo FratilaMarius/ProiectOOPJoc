@@ -35,3 +35,9 @@ std::string TextureFileExceptionNoSuchFile::Format(int index, const std::string&
   os << "\nTexture loader error: no such texture('"<<filename<<"') exists on array of index '"<< index<<"'";
   return os.str();
 }
+
+std::string LabExceptionCouldntMove::Format(int posX, int posY) {
+  std::ostringstream os;
+  os << "\nLabyrinth error: could not move the player to new coordonates: "<< posX << ", " << posY<<". Coordonates remained unchanged.";
+  return os.str();
+}

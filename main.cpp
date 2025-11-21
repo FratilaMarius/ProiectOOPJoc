@@ -59,112 +59,107 @@ int main()
   window.setFramerateLimit(60); 
 ///////////////////////////////////////////////////////////////////////////
 // Building the labyrinth and player:
-  Labyrinth map;
-  try{
-    map = Labyrinth(w, h, a, b);
-  }
-  catch() {
-  ||||||||||||||||||||||||||||||| EXCEPTIII YAAAY
-  }
+  Labyrinth map(w, h, a, b);
   Player jucator(100);
 
 ///////////////////////////////////////////////////////////////////////////
 // Gameplay:
   int displayConsoleStuff = 1;
-  while (window.isOpen())
-  {
+  while (window.isOpen()) {
     bool shouldExit = false;
 
-    while (const std::optional event = window.pollEvent())
-    {
-      if (displayConsoleStuff)
-      {
-        std::cout << "Continue? (keys)  Check for Items? (1)  Check your backpack? (2)  End? (0)   \n";
+    while (const std::optional event = window.pollEvent()) {
+      if (displayConsoleStuff) {
+        std::cout << "\nContinue? (keys)  Check for Items? (1)  Check your backpack? (2)  End? (0)";
         std::cout << map;
         displayConsoleStuff = 0;
       }
-      if (map.HasFinished())
-      {
+      if (map.CheckIfFinished()) {
         shouldExit = true;
         break;
       }
-      if (event->is<sf::Event::Closed>())
-      {
+      if (event->is<sf::Event::Closed>()) {
         window.close();
-        std::cout << "Fereastra a fost închisă\n";
       }
-      else if (const auto* resized = event->getIf<sf::Event::Resized>())
-      {
+      else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
         sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
         window.setView(sf::View(visibleArea));
       }
-      else if (event->is<sf::Event::KeyPressed>())
-      {
+      else if (event->is<sf::Event::KeyPressed>()) {
         const auto *keyPressed = event->getIf<sf::Event::KeyPressed>();
 
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Up)
-        {
+//////////////////////////////////////////////////////////////////////////////////
+// handling the input
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Up) {
           displayConsoleStuff = 1;
-          if (map.Move("up"))
-          {
+          try {
+            map.Move("up");
+
             int alive = jucator.PlayerStatus();
-            if (alive < 0)
-            {
+            if (alive < 0) {
               std::cout << "\nYou died\n\n";
               shouldExit = true;
             }
-          }
+          } catch(LabExceptionCouldntMove &exp) {
+              std::cout<< exp.what();
+            }
           continue;
         }
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Down)
-        {
+
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
           displayConsoleStuff = 1;
-          if (map.Move("down"))
-          {
+          try {
+            map.Move("down");
+
             int alive = jucator.PlayerStatus();
-            if (alive < 0)
-            {
+            if (alive < 0) {
               std::cout << "\nYou died\n\n";
               shouldExit = true;
             }
-          }
+          } catch(LabExceptionCouldntMove &exp) {
+              std::cout<< exp.what(); 
+            }
           continue;
         }
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Left)
-        {
+
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Left) {
           displayConsoleStuff = 1;
-          if (map.Move("left"))
-          {
+          try{
+            map.Move("left");
+          
             int alive = jucator.PlayerStatus();
-            if (alive < 0)
-            {
+            if (alive < 0) {
               std::cout << "\nYou died\n\n";
               shouldExit = true;
             }
-          }
+          } catch(LabExceptionCouldntMove &exp) {
+              std::cout<< exp.what(); 
+            }
           continue;
         }
+
         if (keyPressed->scancode == sf::Keyboard::Scancode::Right)
         {
           displayConsoleStuff = 1;
-          if (map.Move("right"))
-          {
+          try{
+            map.Move("right");
+
             int alive = jucator.PlayerStatus();
-            if (alive < 0)
-            {
+            if (alive < 0) {
               std::cout << "\nYou died\n\n";
               shouldExit = true;
             }
-          }
+          } catch (LabExceptionCouldntMove &exp) {
+              std::cout<< exp.what(); 
+            }
           continue;
         }
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Num0)
-        {
+//////////////////////////////////////////////////////////////////////////////////
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Num0) {
           shouldExit = true;
           break;
         }
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Num1)
-        {
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Num1) {
           displayConsoleStuff = 1;
           int c = map.CheckForItems();
           if (c == 1)
@@ -173,8 +168,7 @@ int main()
             jucator.RefillFood();
           continue;
         }
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Num2)
-        {
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Num2) {
           displayConsoleStuff = 1;
           jucator.BackPack();
           continue;
@@ -182,23 +176,19 @@ int main()
         std::cout << "\nUnrecognised input\n";
       }
     }
-    if (shouldExit)
-    {
+    if (shouldExit) {
       window.close();
-      std::cout << "Fereastra a fost închisă (shouldExit == true)\n";
       break;
     }
+
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(10ms);
-
 
     window.clear();
     map.SetCurrentRoomSprScale(window);
     window.draw(map.GetCurrentRoomSprite());
-    // window.draw(testSprite);
     window.display();
   }
-
 
 
   window.close();
