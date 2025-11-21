@@ -12,6 +12,7 @@
 #include <SFML/Graphics.hpp>
 #include "Utility.hpp"
 #include "TextureLoader.hpp"
+#include <cassert>
 
 //////////////////////////////////////////////////////////////////////
 //  Class Room stores info about a specific room from the labyrinth
