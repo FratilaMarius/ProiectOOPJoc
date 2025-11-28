@@ -12,6 +12,7 @@
 #include "src/Labyrinth.hpp"
 #include "src/TextureLoader.hpp"
 #include "src/Exceptions.hpp"
+#include "src/UI.hpp"
 
 
 int main()
@@ -65,6 +66,7 @@ int main()
 ///////////////////////////////////////////////////////////////////////////
 // Gameplay:
   int displayConsoleStuff = 1;
+
   while (window.isOpen()) {
     bool shouldExit = false;
 
@@ -185,8 +187,26 @@ int main()
     std::this_thread::sleep_for(10ms);
 
     window.clear();
+
     map.SetCurrentRoomSprScale(window);
     window.draw(map.GetCurrentRoomSprite());
+
+    UI::Instance().PositionUI(window);
+    window.draw(UI::Instance().GetText(1));
+    window.draw(UI::Instance().GetText(2));
+    for(int i = 0; i < 4; i++) {
+      const int *tempExitArray = map.FigureWhatUItoRender();
+      if(tempExitArray[0] == 1) window.draw(UI::Instance().GetUI_Sprites(0));
+        else window.draw(UI::Instance().GetEmptyUI_Sprites(0));
+      if(tempExitArray[1] == 1) window.draw(UI::Instance().GetUI_Sprites(1));
+        else window.draw(UI::Instance().GetEmptyUI_Sprites(1));
+      if(tempExitArray[2] == 1) window.draw(UI::Instance().GetUI_Sprites(2));
+        else window.draw(UI::Instance().GetEmptyUI_Sprites(2));
+      if(tempExitArray[3] == 1) window.draw(UI::Instance().GetUI_Sprites(3));
+        else window.draw(UI::Instance().GetEmptyUI_Sprites(3));
+    }
+    if(map.GetShouldDisplayDeadEndText()) window.draw(UI::Instance().GetText(3));
+
     window.display();
   }
 

@@ -165,25 +165,28 @@ int Labyrinth::Move(const std::string& where) {
   // if (layout[playerCords[0]][playerCords[1]].GetHasEnemy()) {
   //   std::cout << "Enemy encountered!";
   // }
-
+  shouldDisplayDeadEndText = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // interpreting the param string to see which way we go:
   int newX = -1, newY = -1;
   switch (where[0]) {
-
+  
   case 'u':
     if (playerCords[0] - 1 == -1) { // check for out of bounds
       std::cout << "\nWall\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
     if (!layout[playerCords[0]][playerCords[1]].SeeIfExitHere("up")) {  // if we cant go that way 
       std::cout << "\nDead end\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
     // if the way we want to go has no door facing us:
     if (layout[playerCords[0] - 1][playerCords[1]].GetTimesVisited() != 0 && !layout[playerCords[0] - 1][playerCords[1]].SeeIfExitHere("down")) {
       std::cout << "\nDead end\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
 
@@ -195,15 +198,18 @@ int Labyrinth::Move(const std::string& where) {
   case 'd':
     if (playerCords[0] + 1 == width) { // check for out of bounds
       std::cout << "\nWall\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
     if (!layout[playerCords[0]][playerCords[1]].SeeIfExitHere("down")) { // if we cant go that way 
       std::cout << "\nDead end\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
     // if the way we want to go has no door facing us:
     if (layout[playerCords[0] + 1][playerCords[1]].GetTimesVisited() != 0 && !layout[playerCords[0] + 1][playerCords[1]].SeeIfExitHere("up")) {
       std::cout << "\nDead end\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
 
@@ -215,15 +221,18 @@ int Labyrinth::Move(const std::string& where) {
   case 'l':
     if (playerCords[1] - 1 == -1) { // check for out of bounds
       std::cout << "\nWall\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
     if (!layout[playerCords[0]][playerCords[1]].SeeIfExitHere("left")) { // if we cant go that way 
       std::cout << "\nDead end\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
     // if the way we want to go has no door facing us:
     if (layout[playerCords[0]][playerCords[1] - 1].GetTimesVisited() != 0 && !layout[playerCords[0]][playerCords[1] - 1].SeeIfExitHere("right")) {
       std::cout << "\nDead end\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
 
@@ -235,15 +244,18 @@ int Labyrinth::Move(const std::string& where) {
   case 'r':
     if (playerCords[1] + 1 == height) { // check for out of bounds
       std::cout << "\nWall\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
     if (!layout[playerCords[0]][playerCords[1]].SeeIfExitHere("right")) { // if we cant go that way 
       std::cout << "\nDead end\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
     // if the way we want to go has no door facing us:
     if (layout[playerCords[0]][playerCords[1] + 1].GetTimesVisited() != 0 && !layout[playerCords[0]][playerCords[1] + 1].SeeIfExitHere("left")) {
       std::cout << "\nDead end\n";
+      shouldDisplayDeadEndText = 1;
       break;
     }
 

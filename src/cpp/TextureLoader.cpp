@@ -20,6 +20,10 @@ namespace txl
       LoadTextures(path1, 1);
       LoadTextures(path2, 2);
       LoadTextures(path3, 3);
+
+      LoadUI();
+      if(!font.openFromFile("Textures/CourierPrime-Regular.ttf")) throw(FileException("Textures/CourierPrime-Regular.ttf"));
+        else std::cout << "\nLoaded: CourierPrime-Regular.ttf as font";
     } 
     catch(TextureFileExceptionOutOfBounds &exp) {
       std::cout<< exp.what() <<'\n';
@@ -67,6 +71,26 @@ namespace txl
     }
   }
 
+  // Loads all UI related textures
+  void TextureLoader::LoadUI() {
+    for (fsys::directory_iterator file(pathUI); file != fsys::directory_iterator(); file++) {
+      sf::Texture temp;
+      const auto &fis = *file;
+      if (!fis.is_regular_file()) {
+        throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
+      }
+      if (!(fis.path().extension().string() == ".png")) {
+        throw(TextureFileExceptionExtension(fis.path().filename().string()));
+      }
+      if (!temp.loadFromFile(fis.path().string())) {
+        throw(FileException(fis.path().filename().string()));
+      }
+
+      map_UI[fis.path().filename().string()] = temp;
+      std::cout << "\nLoaded: " << fis.path().filename().string();
+    }
+  }
+
   // ret a random texture depending on nrOfExits
   // possible Exceptions: OutOfBounds, EmptyArray, NoSuchFile
   sf::Texture &TextureLoader::GetTexture(int nrOfExits) {
@@ -91,10 +115,18 @@ namespace txl
     name += ".png";               
     ///////////////////////////////////////////////
 
-    if (map_textures[nrOfExits].find(name) == map_textures[nrOfExits].end())
-    {
+    if (map_textures[nrOfExits].find(name) == map_textures[nrOfExits].end()) {
       throw(TextureFileExceptionNoSuchFile(nrOfExits, name));
     }
     return map_textures[nrOfExits][name];
   }
+
+  // returns a UI related texture, by name
+  sf::Texture &TextureLoader::GetUITexture(std::string which) {
+    if (map_UI.find(which) == map_UI.end()) {
+      throw(TextureFileExceptionNoSuchFile(5, which));
+    }
+    return map_UI[which];
+  }
 };
+  

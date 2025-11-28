@@ -37,6 +37,7 @@ public:
   int Exits(int where);                           // for setting to 1 via index  | 0-up,1-down,2-left,3-right
   void Exits(const std::string &where, int val);  // for setting to specific value via string
   void Exits(int where, int val);                 // for setting to specific value via index
+  const int *GetExitsArray() const { return exits; }
 
   void IncrTimesVisited(int x) { timesVisited += x; } // increments the number of visits
   ///////////////////////////////////////////////////////////////////////////////////////////////////

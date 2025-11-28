@@ -51,14 +51,18 @@ public:
   const sf::Sprite& GetCurrentRoomSprite() const {  return layout[playerCords[0]][playerCords[1]].GetSprite();}
   void SetCurrentRoomSprScale(const sf::RenderWindow& window) {layout[playerCords[0]][playerCords[1]].FitSpriteToFrmae(window);}
 
+  const int* FigureWhatUItoRender() const { return layout[playerCords[0]][playerCords[1]].GetExitsArray(); }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Setters/Getters:
 //
   int CheckIfFinished() const { return finish; }
+  int GetShouldDisplayDeadEndText() const { return shouldDisplayDeadEndText; }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 private:
   int playerCords[2] = {0, 0}; // used to store the current player coords
+  int shouldDisplayDeadEndText = 0;
 
   int width, height;
   std::vector<std::vector<Room>> layout;

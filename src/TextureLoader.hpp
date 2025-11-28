@@ -27,6 +27,8 @@ namespace txl {
     static TextureLoader &Instance();
 
     sf::Texture &GetTexture(int nrOfExits);
+    sf::Texture &GetUITexture(std::string which);
+    sf::Font &GetFont() { return font; }
     sf::Texture &GetDefaultTexture() { return defaultTexture;}
 
   private:
@@ -34,13 +36,19 @@ namespace txl {
     ~TextureLoader() = default;
 
     std::unordered_map<std::string, sf::Texture> map_textures[4];
+    std::unordered_map<std::string, sf::Texture> map_UI;
+    sf::Font font;
 
     std::string path0 = "Textures/0/";
     std::string path1 = "Textures/1/";
     std::string path2 = "Textures/2/";
     std::string path3 = "Textures/3/";
 
+    std::string pathUI = "Textures/UI";
+    // std::string pathDefault = "Textures/";
+
     sf::Texture defaultTexture;
     void LoadTextures(const std::string &path, int nrOfExits);
+    void LoadUI();
   };
 }
