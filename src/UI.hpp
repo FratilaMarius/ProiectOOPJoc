@@ -87,7 +87,7 @@ class UI {
       DirectionActive[2]->setScale({0.55f, 0.55f});
       DirectionActive[3]->setScale({0.55f, 0.55f});
 
-      DirectionDeActive[0]->setScale({0.55f, 0.55f});
+      DirectionDeActive[0]->setScale({0.55f, 0.55f}); 
       DirectionDeActive[1]->setScale({0.55f, 0.55f});
       DirectionDeActive[2]->setScale({0.55f, 0.55f});
       DirectionDeActive[3]->setScale({0.55f, 0.55f});
