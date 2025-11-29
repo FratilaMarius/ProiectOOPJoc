@@ -82,15 +82,15 @@ class UI {
       DirectionDeActive[2]->setTexture(txl::TextureLoader::Instance().GetUITexture("Left-Empty.png"));
       DirectionDeActive[3]->setTexture(txl::TextureLoader::Instance().GetUITexture("Right-Empty.png"));
 
-      DirectionActive[0]->setScale({0.55, 0.55f});
-      DirectionActive[1]->setScale({0.55, 0.55f});
-      DirectionActive[2]->setScale({0.55, 0.55f});
-      DirectionActive[3]->setScale({0.55, 0.55f});
+      DirectionActive[0]->setScale({0.55f, 0.55f});
+      DirectionActive[1]->setScale({0.55f, 0.55f});
+      DirectionActive[2]->setScale({0.55f, 0.55f});
+      DirectionActive[3]->setScale({0.55f, 0.55f});
 
-      DirectionDeActive[0]->setScale({0.55, 0.55f});
-      DirectionDeActive[1]->setScale({0.55, 0.55f});
-      DirectionDeActive[2]->setScale({0.55, 0.55f});
-      DirectionDeActive[3]->setScale({0.55, 0.55f});
+      DirectionDeActive[0]->setScale({0.55f, 0.55f});
+      DirectionDeActive[1]->setScale({0.55f, 0.55f});
+      DirectionDeActive[2]->setScale({0.55f, 0.55f});
+      DirectionDeActive[3]->setScale({0.55f, 0.55f});
     }
     catch(TextureFileExceptionNoSuchFile &exp) {
       std::cout<<exp.what()<<"\n";
