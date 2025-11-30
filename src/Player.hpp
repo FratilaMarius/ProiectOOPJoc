@@ -18,6 +18,11 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const Player &player);
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // Gameplay:  
+  void DealDamage(int dmg) { hp -= dmg;}
+  void HurtAccuracy(int howMuch) { accuracy-= howMuch; }
+  int GetAccuracy() const { return accuracy; }
+  int GetHp() const { return hp; }
+
   void RefillWater();
   void RefillFood();
   int PlayerStatus();
@@ -27,7 +32,7 @@ public:
 
 private:
   int hp;
-  int accuracy = 1;  // unused
+  int accuracy = 100;  // unused
   int bullets = 6;   // unused
   int lights = 8;    // unused
   int tent = 0;      // unuesd

@@ -26,7 +26,8 @@ public:
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // printing and setting:
   
-  // int GetHasEnemy() const { return hasEnemy; }
+  int GetHasEnemy() const { return hasEnemy; }
+  void SetHasEnemy(int num) { hasEnemy = num; }
   // int GetHasPlayer() const { return hasPlayer; }
 
   void SetHasPlayer(int yesOrNo) { hasPlayer = yesOrNo; }
@@ -43,7 +44,6 @@ public:
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // Gameplay:
   void ResetRoom();                       // resets a room
-  // Enemy GenerateEnemy(int _type, int _hp);
   int FindPickup(int what);               // looks for a pickup-able item
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // GFX:

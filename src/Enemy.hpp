@@ -6,9 +6,12 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <memory>
 
 #include "Player.hpp"
 #include "Utility.hpp"
+#include "TextureLoader.hpp"
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 //
@@ -16,22 +19,81 @@
 class Enemy {
   public:
 ///////////////////////////////////////////////////////////////////////////////////
-    Enemy(int _type, int _hp);
-    ~Enemy();
-    Enemy(const Enemy& other);
+// Constr/Destr:
+    Enemy(int _hp, sf::Texture &_texture) : hp(_hp) { sprite.emplace(_texture); };
+    ~Enemy() = default;
+    Enemy(const Enemy& other) = default;
     Enemy& operator=(const Enemy& other) = default;
-    friend std::ostream& operator<<(std::ostream& os,  const Enemy& enemy);
 ///////////////////////////////////////////////////////////////////////////////////
+// Gameplay:
+  virtual void attack(Player* player) = 0;
 
-    // void Attack(Player &jucator, int chance); // the higher chance is the rarer the hits
+  virtual std::unique_ptr<Enemy> Clone() const = 0;
 
-    ///////////////////////////////////////////////////////////////////////////////////
+  void Messages(int which) { PlaySounds(which); }
+
+  void SetDamge(int amount) { damage = amount; }
+  int GetDamage() { return damage; }
+
+  sf::Sprite& GetSprite() { return sprite.value();}
+  sf::Sprite* GetSpriteAddr() { return &sprite.value(); }
+  virtual void PositionSprite() = 0;
+
+  int GetHp() { return hp;}
+  void HurtEnemy(int dmg) { hp -= dmg; }
+///////////////////////////////////////////////////////////////////////////////////
   private: 
-    int type;  //  id, deocamdata 2 tipuri
     int hp = 1;
     int damage;
-    std::string texture = "";
+    std::optional<sf::Sprite> sprite;
 
-  };
+    virtual void PlaySounds(int which) = 0;
+};
+
+
 ///////////////////////////////////////////////////////////////////////////////////
-std::ostream& operator<<(std::ostream& os,  const Enemy& enemy);
+class Shade : public Enemy {
+  public:
+    Shade(sf::Texture& _texture, sf::RenderWindow &_window) : Enemy(RNG() % 20 + 13, _texture), window(_window) {};
+
+    void PositionSprite() override;
+
+    std::unique_ptr<Enemy> Clone() const override { return std::make_unique<Shade>(*this); }
+
+    // if the chance hits right, the shade deals dmg to the hp and accuracy of the player
+    void attack(Player* player) override;
+
+  private:
+    int psichDmg;
+    sf::RenderWindow &window;
+
+    void PlaySounds(int which) override;
+};
+
+class Minotaur : public Enemy {
+  public:
+  private:
+};
+
+class Guy : public Enemy { 
+  public:
+  private:
+};
+
+class Blob : public Enemy {
+  public:
+  private:
+};
+
+class EncounterManager {
+  public:
+    static EncounterManager &Instance();
+
+    // we call this when a bool in main is true and we press leftClck
+    int Fight(Enemy *enemy, Player* player);
+
+    std::unique_ptr<Enemy> GenerateAnEnemy(sf::RenderWindow &window);
+  private:
+    EncounterManager() = default;
+    ~EncounterManager() = default;
+};

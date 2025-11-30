@@ -162,9 +162,6 @@ void Labyrinth::Spawn(int x, int y) { // we only call this one in the constructo
 //
 int Labyrinth::Move(const std::string& where) {
 
-  // if (layout[playerCords[0]][playerCords[1]].GetHasEnemy()) {
-  //   std::cout << "Enemy encountered!";
-  // }
   shouldDisplayDeadEndText = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -280,6 +277,10 @@ int Labyrinth::Move(const std::string& where) {
     GenerateRoom(newX, newY, playerCords[0], playerCords[1]);
   }
   layout[newX][newY].SetHasPlayer(1);
+  // generating an enemy in the new rooom:
+  if (RNG() % 100 < 25 && layout[newX][newY].GetTimesVisited() == 0) {
+    layout[newX][newY].SetHasEnemy(1);
+  }
   layout[newX][newY].IncrTimesVisited(1);
   
   // if we've already been to this room >3 times we reset the layout, minus the room we're moving to
@@ -287,14 +288,10 @@ int Labyrinth::Move(const std::string& where) {
     ResetLayout(newY, newX);
   }
 
-  // // generating an enemy in the new rooom:
-  // if (RNG() % 4 == 0 && layout[playerCords[0]][playerCords[1]].TimesVisited() == 0)
-  // {
-  //   layout[playerCords[0]][playerCords[1]].GenerateEnemy(1, 50);
-  // }
-
   playerCords[0] = newX;
   playerCords[1] = newY;
+
+
 
   if (moves > 10 && chanceForExit > 10) { // after 10 moves we start to get close to the exit
     chanceForExit -= 10;
@@ -303,6 +300,7 @@ int Labyrinth::Move(const std::string& where) {
     std::cout << "Congrats! You have escaped!";
     return 2;
   }
+  if(layout [playerCords[0]][playerCords[1]].GetHasEnemy() == 1) return 2;
 
   std::cout << "\n"
             << layout[playerCords[0]][playerCords[1]];

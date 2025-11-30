@@ -61,14 +61,21 @@ int main()
 ///////////////////////////////////////////////////////////////////////////
 // Building the labyrinth and player:
   Labyrinth map(w, h, a, b);
-  Player jucator(100);
+  Player player(100);
 
 ///////////////////////////////////////////////////////////////////////////
 // Gameplay:
   int displayConsoleStuff = 1;
+  int isFighting = 0;
+  int hasGeneratedEnemy = 0;
+  static std::unique_ptr<Enemy> _enemy = NULL;
 
   while (window.isOpen()) {
     bool shouldExit = false;
+    if(isFighting & !hasGeneratedEnemy) {
+      _enemy = EncounterManager::Instance().GenerateAnEnemy(window);
+      hasGeneratedEnemy = 1;
+    }
 
     while (const std::optional event = window.pollEvent()) {
       if (displayConsoleStuff) {
@@ -87,17 +94,35 @@ int main()
         sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
         window.setView(sf::View(visibleArea));
       }
+      else if (event->is<sf::Event::MouseButtonPressed>()) {
+      //////////////////////////////////////////////////////////////////////////////////
+      // handling the input for fighting
+        const auto *buttonPressed = event->getIf<sf::Event::MouseButtonPressed>();
+
+        if(buttonPressed->button == sf::Mouse::Button::Left && isFighting && hasGeneratedEnemy) {
+          int status = EncounterManager::Instance().Fight(_enemy.get(), &player);
+          if(status == 1) { // the player won
+            isFighting = 0;
+            hasGeneratedEnemy = 0;
+          }
+          if(status == -1) { // the player died
+            isFighting = 0;
+            hasGeneratedEnemy = 0;
+          }
+          // else the fight continues
+        }
+      }
       else if (event->is<sf::Event::KeyPressed>()) {
         const auto *keyPressed = event->getIf<sf::Event::KeyPressed>();
-
-//////////////////////////////////////////////////////////////////////////////////
-// handling the input
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Up) {
+    
+        //////////////////////////////////////////////////////////////////////////////////
+        // handling the input for moving
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Up && !isFighting) {
           displayConsoleStuff = 1;
           try {
-            map.Move("up");
+            if(map.Move("up") == 2) isFighting = 1;
 
-            int alive = jucator.PlayerStatus();
+            int alive = player.PlayerStatus();
             if (alive < 0) {
               std::cout << "\nYou died\n\n";
               shouldExit = true;
@@ -108,12 +133,12 @@ int main()
           continue;
         }
 
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Down) {
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Down && !isFighting) {
           displayConsoleStuff = 1;
           try {
-            map.Move("down");
+            if(map.Move("down") == 2) isFighting = 1;
 
-            int alive = jucator.PlayerStatus();
+            int alive = player.PlayerStatus();
             if (alive < 0) {
               std::cout << "\nYou died\n\n";
               shouldExit = true;
@@ -124,12 +149,12 @@ int main()
           continue;
         }
 
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Left) {
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Left && !isFighting) {
           displayConsoleStuff = 1;
           try{
-            map.Move("left");
+           if(map.Move("left") == 2) isFighting = 1;;
           
-            int alive = jucator.PlayerStatus();
+            int alive = player.PlayerStatus();
             if (alive < 0) {
               std::cout << "\nYou died\n\n";
               shouldExit = true;
@@ -140,13 +165,13 @@ int main()
           continue;
         }
 
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Right)
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Right && !isFighting)
         {
           displayConsoleStuff = 1;
           try{
-            map.Move("right");
+            if(map.Move("right") == 2) isFighting = 1;;
 
-            int alive = jucator.PlayerStatus();
+            int alive = player.PlayerStatus();
             if (alive < 0) {
               std::cout << "\nYou died\n\n";
               shouldExit = true;
@@ -165,14 +190,14 @@ int main()
           displayConsoleStuff = 1;
           int c = map.CheckForItems();
           if (c == 1)
-            jucator.RefillWater();
+            player.RefillWater();
           if (c == 2)
-            jucator.RefillFood();
+            player.RefillFood();
           continue;
         }
         if (keyPressed->scancode == sf::Keyboard::Scancode::Num2) {
           displayConsoleStuff = 1;
-          jucator.BackPack();
+          player.BackPack();
           continue;
         }
         std::cout << "\nUnrecognised input\n";
@@ -206,7 +231,7 @@ int main()
         else window.draw(UI::Instance().GetEmptyUI_Sprites(3));
     }
     if(map.GetShouldDisplayDeadEndText()) window.draw(UI::Instance().GetText(3));
-
+    if(isFighting && hasGeneratedEnemy) window.draw(_enemy->GetSprite());
     window.display();
   }
 

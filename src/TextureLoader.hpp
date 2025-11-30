@@ -28,6 +28,7 @@ namespace txl {
 
     sf::Texture &GetTexture(int nrOfExits);
     sf::Texture &GetUITexture(std::string which);
+    sf::Texture &GetEnemyTexture(std::string which);
     sf::Font &GetFont() { return font; }
     sf::Texture &GetDefaultTexture() { return defaultTexture;}
 
@@ -37,6 +38,7 @@ namespace txl {
 
     std::unordered_map<std::string, sf::Texture> map_textures[4];
     std::unordered_map<std::string, sf::Texture> map_UI;
+    std::unordered_map<std::string, sf::Texture> map_Enemy;
     sf::Font font;
 
     std::string path0 = "Textures/0/";
@@ -45,10 +47,12 @@ namespace txl {
     std::string path3 = "Textures/3/";
 
     std::string pathUI = "Textures/UI";
+    std::string pathEnemy = "Textures/Enemy";
     // std::string pathDefault = "Textures/";
 
     sf::Texture defaultTexture;
     void LoadTextures(const std::string &path, int nrOfExits);
     void LoadUI();
+    void LoadEnemyTex();
   };
 }

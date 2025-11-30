@@ -22,6 +22,7 @@ namespace txl
       LoadTextures(path3, 3);
 
       LoadUI();
+      LoadEnemyTex();
       if(!font.openFromFile("Textures/CourierPrime-Regular.ttf")) throw(FileException("Textures/CourierPrime-Regular.ttf"));
         else std::cout << "\nLoaded: CourierPrime-Regular.ttf as font";
     } 
@@ -91,6 +92,26 @@ namespace txl
     }
   }
 
+  // Loads all enemy related textures
+  void TextureLoader::LoadEnemyTex() {
+    for (fsys::directory_iterator file(pathEnemy); file != fsys::directory_iterator(); file++) {
+      sf::Texture temp;
+      const auto &fis = *file;
+      if (!fis.is_regular_file()) {
+        throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
+      }
+      if (!(fis.path().extension().string() == ".png")) {
+        throw(TextureFileExceptionExtension(fis.path().filename().string()));
+      }
+      if (!temp.loadFromFile(fis.path().string())) {
+        throw(FileException(fis.path().filename().string()));
+      }
+
+      map_Enemy[fis.path().filename().string()] = temp;
+      std::cout << "\nLoaded: " << fis.path().filename().string();
+    }
+  }
+
   // ret a random texture depending on nrOfExits
   // possible Exceptions: OutOfBounds, EmptyArray, NoSuchFile
   sf::Texture &TextureLoader::GetTexture(int nrOfExits) {
@@ -127,6 +148,13 @@ namespace txl
       throw(TextureFileExceptionNoSuchFile(5, which));
     }
     return map_UI[which];
+  }  
+  
+  sf::Texture &TextureLoader::GetEnemyTexture(std::string which) {
+    if (map_Enemy.find(which) == map_Enemy.end()) {
+      throw(TextureFileExceptionNoSuchFile(5, which));
+    }
+    return map_Enemy[which];
   }
 };
   
