@@ -55,7 +55,7 @@ class Enemy {
 class Shade : public Enemy {
   public:
     Shade(sf::Texture& _texture, sf::RenderWindow &_window);
-    ~Shade() = default;
+    ~Shade() override = default;
     Shade(const Shade& other);
     Shade& operator=(const Shade &other) = delete; // nu pot avea op= din cauza referintei la &window
 
