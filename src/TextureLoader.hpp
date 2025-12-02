@@ -35,7 +35,7 @@ namespace txl {
     sf::Texture &GetDefaultTexture() { return defaultTexture;}
 
     void GetSound(const std::string &which);
-    sf::Music &GetMusic(const std::string &which);
+    // sf::Music &GetMusic(const std::string &which);
   private:
     TextureLoader();
     ~TextureLoader() = default;

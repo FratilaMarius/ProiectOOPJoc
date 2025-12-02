@@ -95,7 +95,7 @@ class EncounterManager {
     // we call this when a bool in main is true and we press leftClck
     int Fight(Enemy& enemy, Player& player, int &RenderTextMissed);
 
-    std::unique_ptr<Enemy> GenerateAnEnemy(sf::RenderWindow &window, Player &player);
+    std::unique_ptr<Enemy> GenerateAnEnemy(sf::RenderWindow &window, const Player &player);
   private:
     EncounterManager() = default;
     ~EncounterManager() = default;

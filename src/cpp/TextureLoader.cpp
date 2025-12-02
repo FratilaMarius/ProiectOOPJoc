@@ -197,12 +197,12 @@ namespace txl
     return map_Enemy[which];
   }
   
-  sf::Music &TextureLoader::GetMusic(const std::string& which) {
-    if (ambientMusic.find(which) == ambientMusic.end()) {
-      throw(TextureFileExceptionNoSuchFile(7, which));
-    }
-    return ambientMusic[which];
-  }
+  // sf::Music &TextureLoader::GetMusic(const std::string& which) {
+  //   if (ambientMusic.find(which) == ambientMusic.end()) {
+  //     throw(TextureFileExceptionNoSuchFile(7, which));
+  //   }
+  //   return ambientMusic[which];
+  // }
   
   void TextureLoader::GetSound(const std::string& which) {
     if (soundBuffers.find(which) == soundBuffers.end()) {

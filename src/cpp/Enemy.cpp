@@ -74,7 +74,7 @@ int EncounterManager::Fight(Enemy& enemy, Player& player, int &RenderTextMissed)
   if(player.GetHp() < 0) return -1;
   return 0;
 }
-std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &window, Player &player) {
+std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &window, const Player &player) {
     // int i = RNG() % 1;
         
     if (player.GetAccuracy() > 10) {
