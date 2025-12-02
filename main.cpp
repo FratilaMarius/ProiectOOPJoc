@@ -75,8 +75,9 @@ int main()
 
   while (window.isOpen()) {
     bool shouldExit = false;
-    if(isFighting & !hasGeneratedEnemy) {
+    if(isFighting && !hasGeneratedEnemy) {
       _enemy = EncounterManager::Instance().GenerateAnEnemy(window, player);
+      _enemy->PositionSprite();
       hasGeneratedEnemy = 1;
     }
 

@@ -44,7 +44,7 @@ class Enemy {
 ///////////////////////////////////////////////////////////////////////////////////
   private: 
     int hp = 1;
-    int damage;
+    int damage = 1;
     std::optional<sf::Sprite> sprite;
 
     virtual void PlaySounds(int which) = 0;

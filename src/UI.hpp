@@ -37,7 +37,7 @@ class UI {
   const sf::Sprite &GetEmptyUI_Sprites(int which) {
     return *DirectionDeActive[which];
   }
-  const sf::Sprite &GetMiscUIsprite(std::string which) {
+  const sf::Sprite &GetMiscUIsprite(const std::string &which) {
     return *(miscUIsprites[which]);
   }
   /////////////////////////////////////////////////////////////////////////////

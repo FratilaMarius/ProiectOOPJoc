@@ -8,7 +8,6 @@ Shade::Shade(sf::Texture& _texture, sf::RenderWindow &_window) : Enemy(RNG() % 2
   SetDamge(RNG() % 10);
   psichDmg = RNG() % 30 + 15;
   GetSpriteAddr()->setOrigin({60, 60});
-  PositionSprite();
   PlayAudio(1);
 }
 
@@ -76,13 +75,13 @@ int EncounterManager::Fight(Enemy& enemy, Player& player, int &RenderTextMissed)
   return 0;
 }
 std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &window, Player &player) {
-    int i = RNG() % 1;
+    // int i = RNG() % 1;
         
-    if (i == 0 && player.GetAccuracy() > 10) {
+    if (player.GetAccuracy() > 10) {
       return std::make_unique<Shade>(txl::TextureLoader::Instance().GetEnemyTexture("Shade.png"), window); 
     }
-    if (i == 1) {}
-    if (i == 2) {}
+    // if (i == 1) {}
+    // if (i == 2) {}
 
     return NULL;
 }
