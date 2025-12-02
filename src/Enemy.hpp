@@ -21,7 +21,7 @@ class Enemy {
 ///////////////////////////////////////////////////////////////////////////////////
 // Constr/Destr:
     Enemy(int _hp, sf::Texture &_texture) : hp(_hp) { sprite.emplace(_texture); };
-    ~Enemy() = default;
+    virtual ~Enemy() = default;
     Enemy(const Enemy& other) = default;
     Enemy& operator=(const Enemy& other) = default;
 ///////////////////////////////////////////////////////////////////////////////////
@@ -56,8 +56,8 @@ class Shade : public Enemy {
   public:
     Shade(sf::Texture& _texture, sf::RenderWindow &_window);
     ~Shade() = default;
-    Shade(const Shade& other) = default;
-    Shade& operator=(const Shade &other) = default;
+    Shade(const Shade& other);
+    Shade& operator=(const Shade &other) = delete; // nu pot avea op= din cauza referintei la &window
 
     void PositionSprite() override;
 
@@ -67,8 +67,8 @@ class Shade : public Enemy {
     void attack(Player& player) override;
 
   private:
-    int psichDmg;
     sf::RenderWindow &window;
+    int psichDmg;
 
     void PlaySounds(int which) override;
 };

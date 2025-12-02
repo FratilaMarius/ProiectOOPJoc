@@ -10,6 +10,11 @@ Shade::Shade(sf::Texture& _texture, sf::RenderWindow &_window) : Enemy(RNG() % 2
   GetSpriteAddr()->setOrigin({60, 60});
   PlayAudio(1);
 }
+Shade::Shade(const Shade& other) : Enemy(other), window(other.window), psichDmg(other.psichDmg) {};
+// Shade& Shade::operator=(const Shade &other) {
+//   Enemy::operator=(other);
+//   this->psichDmg = other.psichDmg;  
+// }
 
 void Shade::PositionSprite() {
   float randomizerPosX = 1.9 + (RNG() % 200) / 1000;      ////////
