@@ -29,13 +29,13 @@ namespace txl {
     static TextureLoader &Instance();
 
     sf::Texture &GetTexture(int nrOfExits);
-    sf::Texture &GetUITexture(std::string which);
-    sf::Texture &GetEnemyTexture(std::string which);
+    sf::Texture &GetUITexture(const std::string& which);
+    sf::Texture &GetEnemyTexture(const std::string& which);
     sf::Font &GetFont() { return font; }
     sf::Texture &GetDefaultTexture() { return defaultTexture;}
 
-    void GetSound(std::string which);
-    sf::Music &GetMusic(std::string which);
+    void GetSound(const std::string &which);
+    sf::Music &GetMusic(const std::string &which);
   private:
     TextureLoader();
     ~TextureLoader() = default;

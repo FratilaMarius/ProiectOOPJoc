@@ -20,9 +20,9 @@ class UI {
   public:  
 
   static UI &Instance();
-  void UpdateTheHp(Player &player);
-  void UpdateTheAcc(Player &player);
-  void UpdateTheBullets(Player &player);
+  void UpdateTheHp(const Player &player);
+  void UpdateTheAcc(const Player &player);
+  void UpdateTheBullets(const Player &player);
 
   // positions all UI elements. to be used either on resize or on every frame
   void PositionUI(sf::RenderWindow &window);

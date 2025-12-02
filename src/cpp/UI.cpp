@@ -6,17 +6,17 @@ UI &UI::Instance() {
   return instance;
 }
 
-void UI::UpdateTheHp(Player &player) {
+void UI::UpdateTheHp(const Player &player) {
   int hp = player.GetHp();
   if(hp < 0) hp = 0;
   miscUIsprites["hpBar"]->setScale({2 * (static_cast<float>(hp)/100), 2});
 }
-void UI::UpdateTheAcc(Player &player) {
+void UI::UpdateTheAcc(const Player &player) {
   int acc = player.GetAccuracy();
   if(acc < 0) acc = 0;
   miscUIsprites["accBar"]->setScale({2 * (static_cast<float>(acc)/100), 2});
 }
-void UI::UpdateTheBullets(Player &player) {
+void UI::UpdateTheBullets(const Player &player) {
   int b = player.GetBullets();
   Texts["Bullets: "]->setString("Bullets: " + std::to_string(b));
 }

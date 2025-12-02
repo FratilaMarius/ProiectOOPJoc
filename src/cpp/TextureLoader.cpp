@@ -183,28 +183,28 @@ namespace txl
   }
 
   // returns a UI related texture, by name
-  sf::Texture &TextureLoader::GetUITexture(std::string which) {
+  sf::Texture &TextureLoader::GetUITexture(const std::string& which) {
     if (map_UI.find(which) == map_UI.end()) {
       throw(TextureFileExceptionNoSuchFile(5, which));
     }
     return map_UI[which];
   }  
   
-  sf::Texture &TextureLoader::GetEnemyTexture(std::string which) {
+  sf::Texture &TextureLoader::GetEnemyTexture(const std::string& which) {
     if (map_Enemy.find(which) == map_Enemy.end()) {
       throw(TextureFileExceptionNoSuchFile(6, which));
     }
     return map_Enemy[which];
   }
   
-  sf::Music &TextureLoader::GetMusic(std::string which) {
+  sf::Music &TextureLoader::GetMusic(const std::string& which) {
     if (ambientMusic.find(which) == ambientMusic.end()) {
       throw(TextureFileExceptionNoSuchFile(7, which));
     }
     return ambientMusic[which];
   }
   
-  void TextureLoader::GetSound(std::string which) {
+  void TextureLoader::GetSound(const std::string& which) {
     if (soundBuffers.find(which) == soundBuffers.end()) {
       throw(TextureFileExceptionNoSuchFile(8, which));
     }
