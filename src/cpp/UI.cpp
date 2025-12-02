@@ -61,6 +61,7 @@ const sf::Text &UI::GetText(int which) {
     default:
       break;
   }
+  return *(Texts["deadEnd"]);
 }
 
 UI::UI() {
