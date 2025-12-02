@@ -13,16 +13,19 @@
 #include "TextureLoader.hpp"
 #include "Exceptions.hpp"
 #include "Utility.hpp"
+#include "Player.hpp"
 
 // we use this one as a singleton
 class UI {
   public:  
 
   static UI &Instance();
+  void UpdateTheHp(Player &player);
+  void UpdateTheAcc(Player &player);
+  void UpdateTheBullets(Player &player);
 
   // positions all UI elements. to be used either on resize or on every frame
   void PositionUI(sf::RenderWindow &window);
-
 
   ////////////////////////////////////////////////////////////////////////////
   // Getters for the UI elements:
@@ -33,6 +36,9 @@ class UI {
   }
   const sf::Sprite &GetEmptyUI_Sprites(int which) {
     return *DirectionDeActive[which];
+  }
+  const sf::Sprite &GetMiscUIsprite(std::string which) {
+    return *(miscUIsprites[which]);
   }
   /////////////////////////////////////////////////////////////////////////////
 
@@ -45,15 +51,10 @@ class UI {
 
   std::optional<sf::Sprite> DirectionActive[4];
   std::optional<sf::Sprite> DirectionDeActive[4];
-  
-  std::optional<sf::Text> checkBackpack;
-  std::optional<sf::Text> checkRoom;
-  std::optional<sf::Text> deadEnd;
 
-  // std::optional<sf::Text> foundSomeFood;
-  // std::optional<sf::Text> foundSomeWater;
-  // std::optional<sf::Text> youAlreadyCheckHere;
+  std::unordered_map<std::string,std::optional<sf::Sprite>> miscUIsprites;
   
+  std::unordered_map<std::string, std::optional<sf::Text>> Texts;
   
 
 };

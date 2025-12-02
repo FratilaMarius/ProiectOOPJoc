@@ -8,8 +8,10 @@
 #include <chrono>
 #include <thread>
 #include <unordered_map>
+#include <list>
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Exceptions.hpp"
 #include "Utility.hpp"
 
@@ -32,6 +34,8 @@ namespace txl {
     sf::Font &GetFont() { return font; }
     sf::Texture &GetDefaultTexture() { return defaultTexture;}
 
+    void GetSound(std::string which);
+    sf::Music &GetMusic(std::string which);
   private:
     TextureLoader();
     ~TextureLoader() = default;
@@ -40,6 +44,9 @@ namespace txl {
     std::unordered_map<std::string, sf::Texture> map_UI;
     std::unordered_map<std::string, sf::Texture> map_Enemy;
     sf::Font font;
+    std::unordered_map<std::string, sf::SoundBuffer> soundBuffers;
+    std::optional<sf::Sound> sound;
+    std::unordered_map<std::string, sf::Music> ambientMusic;
 
     std::string path0 = "Textures/0/";
     std::string path1 = "Textures/1/";
@@ -48,11 +55,18 @@ namespace txl {
 
     std::string pathUI = "Textures/UI";
     std::string pathEnemy = "Textures/Enemy";
+
+    std::string pathSounds = "Audio/Sounds";
+    std::string pathMusic = "Audio/Music";
     // std::string pathDefault = "Textures/";
 
     sf::Texture defaultTexture;
     void LoadTextures(const std::string &path, int nrOfExits);
     void LoadUI();
+
     void LoadEnemyTex();
+
+    void LoadSounds();
+    void LoadMusic();
   };
 }

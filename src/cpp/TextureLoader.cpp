@@ -25,6 +25,11 @@ namespace txl
       LoadEnemyTex();
       if(!font.openFromFile("Textures/CourierPrime-Regular.ttf")) throw(FileException("Textures/CourierPrime-Regular.ttf"));
         else std::cout << "\nLoaded: CourierPrime-Regular.ttf as font";
+
+      LoadMusic();
+      LoadSounds();
+      sound.emplace(soundBuffers["ShadeSpawn.mp3"]);
+
     } 
     catch(TextureFileExceptionOutOfBounds &exp) {
       std::cout<< exp.what() <<'\n';
@@ -112,6 +117,41 @@ namespace txl
     }
   }
 
+  void TextureLoader::LoadSounds() {
+    for (fsys::directory_iterator file(pathSounds); file != fsys::directory_iterator(); file++) {
+      sf::SoundBuffer temp;
+      const auto &fis = *file;
+      if (!fis.is_regular_file()) {
+        throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
+      }
+      if (!(fis.path().extension().string() == ".mp3")) {
+        throw(TextureFileExceptionExtension(fis.path().filename().string()));
+      }
+      if (!temp.loadFromFile(fis.path().string())) {
+        throw(FileException(fis.path().filename().string()));
+      }
+
+      soundBuffers[fis.path().filename().string()] = temp;
+      std::cout << "\nLoaded: " << fis.path().filename().string();
+    }
+  }
+
+  void TextureLoader::LoadMusic() {
+    for (fsys::directory_iterator file(pathMusic); file != fsys::directory_iterator(); file++) {
+      const auto &fis = *file;
+      if (!fis.is_regular_file()) {
+        throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
+      }
+      if (!(fis.path().extension().string() == ".mp3")) {
+        throw(TextureFileExceptionExtension(fis.path().filename().string()));
+      }
+      if (!ambientMusic[fis.path().filename().string()].openFromFile(fis.path().string())) {
+        throw(FileException(fis.path().filename().string()));
+      }
+
+      std::cout << "\nLoaded: " << fis.path().filename().string();
+    }
+  }
   // ret a random texture depending on nrOfExits
   // possible Exceptions: OutOfBounds, EmptyArray, NoSuchFile
   sf::Texture &TextureLoader::GetTexture(int nrOfExits) {
@@ -152,9 +192,27 @@ namespace txl
   
   sf::Texture &TextureLoader::GetEnemyTexture(std::string which) {
     if (map_Enemy.find(which) == map_Enemy.end()) {
-      throw(TextureFileExceptionNoSuchFile(5, which));
+      throw(TextureFileExceptionNoSuchFile(6, which));
     }
     return map_Enemy[which];
   }
-};
   
+  sf::Music &TextureLoader::GetMusic(std::string which) {
+    if (ambientMusic.find(which) == ambientMusic.end()) {
+      throw(TextureFileExceptionNoSuchFile(7, which));
+    }
+    return ambientMusic[which];
+  }
+  
+  void TextureLoader::GetSound(std::string which) {
+    if (soundBuffers.find(which) == soundBuffers.end()) {
+      throw(TextureFileExceptionNoSuchFile(8, which));
+    }
+    
+    sound->setBuffer(soundBuffers[which]); 
+    sound->setVolume(50.f);
+    sound->play();
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(1000ms);
+  };  
+}

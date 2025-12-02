@@ -22,6 +22,8 @@ public:
   void HurtAccuracy(int howMuch) { accuracy-= howMuch; }
   int GetAccuracy() const { return accuracy; }
   int GetHp() const { return hp; }
+  int GetBullets() const { return bullets; }
+  void SetBullets(int n) { bullets = n; }
 
   void RefillWater();
   void RefillFood();
@@ -32,7 +34,7 @@ public:
 
 private:
   int hp;
-  int accuracy = 100;  // unused
+  int accuracy = 100;
   int bullets = 6;   // unused
   int lights = 8;    // unused
   int tent = 0;      // unuesd

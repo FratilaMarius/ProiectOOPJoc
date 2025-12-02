@@ -68,12 +68,15 @@ int main()
   int displayConsoleStuff = 1;
   int isFighting = 0;
   int hasGeneratedEnemy = 0;
+
+  int timer = 0;
+  int RenderTextMissed = 0;
   static std::unique_ptr<Enemy> _enemy = NULL;
 
   while (window.isOpen()) {
     bool shouldExit = false;
     if(isFighting & !hasGeneratedEnemy) {
-      _enemy = EncounterManager::Instance().GenerateAnEnemy(window);
+      _enemy = EncounterManager::Instance().GenerateAnEnemy(window, player);
       hasGeneratedEnemy = 1;
     }
 
@@ -100,7 +103,7 @@ int main()
         const auto *buttonPressed = event->getIf<sf::Event::MouseButtonPressed>();
 
         if(buttonPressed->button == sf::Mouse::Button::Left && isFighting && hasGeneratedEnemy) {
-          int status = EncounterManager::Instance().Fight(_enemy.get(), &player);
+          int status = EncounterManager::Instance().Fight(*_enemy.get() , player, RenderTextMissed);
           if(status == 1) { // the player won
             isFighting = 0;
             hasGeneratedEnemy = 0;
@@ -217,21 +220,42 @@ int main()
     window.draw(map.GetCurrentRoomSprite());
 
     UI::Instance().PositionUI(window);
-    window.draw(UI::Instance().GetText(1));
-    window.draw(UI::Instance().GetText(2));
-    for(int i = 0; i < 4; i++) {
-      const int *tempExitArray = map.FigureWhatUItoRender();
-      if(tempExitArray[0] == 1) window.draw(UI::Instance().GetUI_Sprites(0));
-        else window.draw(UI::Instance().GetEmptyUI_Sprites(0));
-      if(tempExitArray[1] == 1) window.draw(UI::Instance().GetUI_Sprites(1));
-        else window.draw(UI::Instance().GetEmptyUI_Sprites(1));
-      if(tempExitArray[2] == 1) window.draw(UI::Instance().GetUI_Sprites(2));
-        else window.draw(UI::Instance().GetEmptyUI_Sprites(2));
-      if(tempExitArray[3] == 1) window.draw(UI::Instance().GetUI_Sprites(3));
-        else window.draw(UI::Instance().GetEmptyUI_Sprites(3));
+
+    window.draw(UI::Instance().GetMiscUIsprite("hpBar"));
+    window.draw(UI::Instance().GetMiscUIsprite("hpBar_empty"));
+    window.draw(UI::Instance().GetMiscUIsprite("accBar"));
+    window.draw(UI::Instance().GetMiscUIsprite("accBar_empty"));
+
+    if(!isFighting)  
+      for(int i = 0; i < 4; i++) {
+        const int *tempExitArray = map.FigureWhatUItoRender();
+        if(tempExitArray[0] == 1) window.draw(UI::Instance().GetUI_Sprites(0));
+          else window.draw(UI::Instance().GetEmptyUI_Sprites(0));
+        if(tempExitArray[1] == 1) window.draw(UI::Instance().GetUI_Sprites(1));
+          else window.draw(UI::Instance().GetEmptyUI_Sprites(1));
+        if(tempExitArray[2] == 1) window.draw(UI::Instance().GetUI_Sprites(2));
+          else window.draw(UI::Instance().GetEmptyUI_Sprites(2));
+        if(tempExitArray[3] == 1) window.draw(UI::Instance().GetUI_Sprites(3));
+          else window.draw(UI::Instance().GetEmptyUI_Sprites(3));
+      }
+    if(isFighting && hasGeneratedEnemy) {
+      _enemy->PositionSprite();
+      window.draw(_enemy->GetSprite());
     }
-    if(map.GetShouldDisplayDeadEndText()) window.draw(UI::Instance().GetText(3));
-    if(isFighting && hasGeneratedEnemy) window.draw(_enemy->GetSprite());
+
+    UI::Instance().UpdateTheBullets(player);
+    window.draw(UI::Instance().GetText(2));
+
+    if(map.GetShouldDisplayDeadEndText()) window.draw(UI::Instance().GetText(0));
+    if(RenderTextMissed) {
+      window.draw(UI::Instance().GetText(1));
+      timer++;
+      if(timer == 120) {
+        RenderTextMissed = 0;
+        timer = 0;
+      }
+    }
+    
     window.display();
   }
 
