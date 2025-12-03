@@ -24,6 +24,7 @@ public:
   int GetHp() const { return hp; }
   int GetBullets() const { return bullets; }
   void SetBullets(int n) { bullets = n; }
+  void StealResources(int _water, int _food, int _bullets) { water -= _water; food -= _food; bullets -= _bullets; }
 
   void RefillWater();
   void RefillFood();

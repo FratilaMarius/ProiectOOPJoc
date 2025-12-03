@@ -26,7 +26,7 @@ namespace txl
       if(!font.openFromFile("Textures/CourierPrime-Regular.ttf")) throw(FileException("Textures/CourierPrime-Regular.ttf"));
         else std::cout << "\nLoaded: CourierPrime-Regular.ttf as font";
 
-      LoadMusic();
+      // LoadMusic();
       LoadSounds();
       sound.emplace(soundBuffers["ShadeSpawn.mp3"]);
 
@@ -136,22 +136,22 @@ namespace txl
     }
   }
 
-  void TextureLoader::LoadMusic() {
-    for (fsys::directory_iterator file(pathMusic); file != fsys::directory_iterator(); file++) {
-      const auto &fis = *file;
-      if (!fis.is_regular_file()) {
-        throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
-      }
-      if (!(fis.path().extension().string() == ".mp3")) {
-        throw(TextureFileExceptionExtension(fis.path().filename().string()));
-      }
-      if (!ambientMusic[fis.path().filename().string()].openFromFile(fis.path().string())) {
-        throw(FileException(fis.path().filename().string()));
-      }
+  // void TextureLoader::LoadMusic() {
+  //   for (fsys::directory_iterator file(pathMusic); file != fsys::directory_iterator(); file++) {
+  //     const auto &fis = *file;
+  //     if (!fis.is_regular_file()) {
+  //       throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
+  //     }
+  //     if (!(fis.path().extension().string() == ".mp3")) {
+  //       throw(TextureFileExceptionExtension(fis.path().filename().string()));
+  //     }
+  //     if (!ambientMusic[fis.path().filename().string()].openFromFile(fis.path().string())) {
+  //       throw(FileException(fis.path().filename().string()));
+  //     }
 
-      std::cout << "\nLoaded: " << fis.path().filename().string();
-    }
-  }
+  //     std::cout << "\nLoaded: " << fis.path().filename().string();
+  //   }
+  // }
   // ret a random texture depending on nrOfExits
   // possible Exceptions: OutOfBounds, EmptyArray, NoSuchFile
   sf::Texture &TextureLoader::GetTexture(int nrOfExits) {
@@ -194,7 +194,6 @@ namespace txl
       std::cout<<exp.what()<<"\n";
       exit(-1);
     }
-    
     return map_textures[nrOfExits][name];
   }
 

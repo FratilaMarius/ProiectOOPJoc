@@ -72,13 +72,18 @@ int main()
   int timer = 0;
   int RenderTextMissed = 0;
   static std::unique_ptr<Enemy> _enemy = NULL;
+  int shots = 6; // this is used when we fight a mminotaur
 
   while (window.isOpen()) {
     bool shouldExit = false;
     if(isFighting && !hasGeneratedEnemy) {
       _enemy = EncounterManager::Instance().GenerateAnEnemy(window, player);
       _enemy->PositionSprite();
-      hasGeneratedEnemy = 1;
+
+      _enemy->PlayAudio(1);
+
+      if(_enemy == NULL) isFighting = 0;
+      else hasGeneratedEnemy = 1;
     }
 
     while (const std::optional event = window.pollEvent()) {
@@ -104,12 +109,15 @@ int main()
         const auto *buttonPressed = event->getIf<sf::Event::MouseButtonPressed>();
 
         if(buttonPressed->button == sf::Mouse::Button::Left && isFighting && hasGeneratedEnemy) {
-          int status = EncounterManager::Instance().Fight(*_enemy.get() , player, RenderTextMissed);
+          int status = EncounterManager::Instance().Fight(_enemy.get() , player, RenderTextMissed, shots);
+          shots--;
           if(status == 1) { // the player won
+            shots = 6;
             isFighting = 0;
             hasGeneratedEnemy = 0;
           }
-          if(status == -1) { // the player died
+          if(status == -1) { // the player lost
+            shots = 6;
             isFighting = 0;
             hasGeneratedEnemy = 0;
           }
