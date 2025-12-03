@@ -156,44 +156,73 @@ namespace txl
   // possible Exceptions: OutOfBounds, EmptyArray, NoSuchFile
   sf::Texture &TextureLoader::GetTexture(int nrOfExits) {
     nrOfExits--;
-    if (nrOfExits < 0 || nrOfExits > 3) {
-      throw(TextureFileExceptionOutOfBounds(nrOfExits));
-    }
-
     std::string name = "txtr";
-    int size;
-    size = map_textures[nrOfExits].size();
-    if (size <= 0) {
-      throw(TextureFileExceptionEmptyArray(nrOfExits));
+    
+    try {
+      if (nrOfExits < 0 || nrOfExits > 3) {
+        throw(TextureFileExceptionOutOfBounds(nrOfExits));
+      }
+
+      int size;
+      size = map_textures[nrOfExits].size();
+      if (size <= 0) {
+        throw(TextureFileExceptionEmptyArray(nrOfExits));
+      }
+      
+      // building the name of the file//////////////
+      name += static_cast<char>('0' + nrOfExits);
+      int temp = RNG() % size;
+      if (temp == 0)
+        temp++;
+      name += std::to_string(temp); 
+      name += ".png";               
+      ///////////////////////////////////////////////
+
+      if (map_textures[nrOfExits].find(name) == map_textures[nrOfExits].end()) {
+        throw(TextureFileExceptionNoSuchFile(nrOfExits, name));
+      }
+    } 
+    catch(TextureFileExceptionOutOfBounds &exp) {
+      std::cout<<exp.what()<<"\n";
+      exit(-1);
+    }
+    catch(TextureFileExceptionEmptyArray &exp) {
+      std::cout<<exp.what()<<"\n";
+      exit(-1);
+    }
+    catch(TextureFileExceptionNoSuchFile &exp) {
+      std::cout<<exp.what()<<"\n";
+      exit(-1);
     }
     
-    // building the name of the file//////////////
-    name += static_cast<char>('0' + nrOfExits);
-    int temp = RNG() % size;
-    if (temp == 0)
-      temp++;
-    name += std::to_string(temp); 
-    name += ".png";               
-    ///////////////////////////////////////////////
-
-    if (map_textures[nrOfExits].find(name) == map_textures[nrOfExits].end()) {
-      throw(TextureFileExceptionNoSuchFile(nrOfExits, name));
-    }
     return map_textures[nrOfExits][name];
   }
 
   // returns a UI related texture, by name
   sf::Texture &TextureLoader::GetUITexture(const std::string& which) {
-    if (map_UI.find(which) == map_UI.end()) {
-      throw(TextureFileExceptionNoSuchFile(5, which));
+    try{ 
+      if (map_UI.find(which) == map_UI.end()) {
+        throw(TextureFileExceptionNoSuchFile(5, which));
+      }
+    }
+    catch (TextureFileExceptionNoSuchFile &exp) {
+      std::cout<<exp.what()<<"\n";
+      exit(-1);
     }
     return map_UI[which];
   }  
   
   sf::Texture &TextureLoader::GetEnemyTexture(const std::string& which) {
-    if (map_Enemy.find(which) == map_Enemy.end()) {
-      throw(TextureFileExceptionNoSuchFile(6, which));
+    try{ 
+      if (map_Enemy.find(which) == map_Enemy.end()) {
+        throw(TextureFileExceptionNoSuchFile(6, which));
+      }
     }
+    catch (TextureFileExceptionNoSuchFile &exp) {
+      std::cout<<exp.what()<<"\n";
+      exit(-1);
+    }
+    
     return map_Enemy[which];
   }
   
@@ -205,8 +234,14 @@ namespace txl
   // }
   
   void TextureLoader::GetSound(const std::string& which) {
-    if (soundBuffers.find(which) == soundBuffers.end()) {
-      throw(TextureFileExceptionNoSuchFile(8, which));
+    try{ 
+      if (soundBuffers.find(which) == soundBuffers.end()) {
+        throw(TextureFileExceptionNoSuchFile(8, which));
+      }
+    }
+    catch (TextureFileExceptionNoSuchFile &exp) {
+      std::cout<<exp.what()<<"\n";
+      exit(-1);
     }
     
     sound->setBuffer(soundBuffers[which]); 
