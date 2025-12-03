@@ -78,12 +78,12 @@ int main()
     bool shouldExit = false;
     if(isFighting && !hasGeneratedEnemy) {
       _enemy = EncounterManager::Instance().GenerateAnEnemy(window, player);
-      _enemy->PositionSprite();
-
-      _enemy->PlayAudio(1);
-
       if(_enemy == NULL) isFighting = 0;
-      else hasGeneratedEnemy = 1;
+      else {
+        hasGeneratedEnemy = 1;
+        _enemy->PositionSprite();
+        _enemy->PlayAudio(1);
+      }
     }
 
     while (const std::optional event = window.pollEvent()) {
