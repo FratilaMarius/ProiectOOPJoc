@@ -18,7 +18,7 @@ void Shade::PositionSprite() {
   float randomizerPosX = 1.9 + (RNG() % 200) / 1000;      ////////
   float randomizerPosY = 1.9 + (RNG() % 200) / 1000;      // These give the sprite some personality
 
-  GetSpriteAddr()->setScale({3, 3});  
+  GetSpriteAddr()->setScale({3.f, 3.f});  
   GetSpriteAddr()->setPosition({static_cast<float>(window.getSize().x/ randomizerPosX), static_cast<float>(window.getSize().y/randomizerPosY)});
 }
 void Shade::attack(Player& player) {
@@ -54,7 +54,7 @@ Minotaur::Minotaur(sf::Texture& _texture, sf::RenderWindow &_window) : Enemy(150
   GetSpriteAddr()->setOrigin({125, 125});
 }
 void Minotaur::PositionSprite() {
-  GetSpriteAddr()->setScale({2.3, 2.3});  
+  GetSpriteAddr()->setScale({2.3f, 2.3f});  
   GetSpriteAddr()->setPosition({static_cast<float>(window.getSize().x/ 2), static_cast<float>(window.getSize().y/ 2)});
 };
 
@@ -93,7 +93,7 @@ void Blob::PositionSprite() {
   float randomizerPosX = 1.7 + (RNG() % 600) / 1000;      ////////
   float randomizerPosY = 1.7 + (RNG() % 600) / 1000;      // These give the sprite some personality
 
-  GetSpriteAddr()->setScale({2.5, 2.5});  
+  GetSpriteAddr()->setScale({2.5f, 2.5f});  
   GetSpriteAddr()->setPosition({static_cast<float>(window.getSize().x/ randomizerPosX), static_cast<float>(window.getSize().y/ randomizerPosY)});
 };
 
@@ -122,7 +122,7 @@ EncounterManager &EncounterManager::Instance() {
   return instance;
 }
 int EncounterManager::Fight(Enemy* enemy, Player& player, int &RenderTextMissed, int &Shots) {
-  Shade* s = dynamic_cast<Shade*>(enemy);
+  const Shade* s = dynamic_cast<Shade*>(enemy);
     if (s != nullptr) { // shade combat
       // the player shoots
       if(player.GetAccuracy() - (RNG() % 100)> 0 && player.GetBullets() > 0) {
@@ -147,7 +147,7 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, int &RenderTextMissed,
       return 0;
     }
 
-  Blob* b = dynamic_cast<Blob*>(enemy);
+  const Blob* b = dynamic_cast<Blob*>(enemy);
     if (b != nullptr) { // Blob combat
       // the player shoots
       if(player.GetAccuracy() - (RNG() % 100)> 0 && player.GetBullets() > 0) {
@@ -173,7 +173,7 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, int &RenderTextMissed,
       return 0;
     }
 
-  Minotaur* m = dynamic_cast<Minotaur*>(enemy);
+  const Minotaur* m = dynamic_cast<Minotaur*>(enemy);
     if (m != nullptr) { // Minotaur combat
       // the player shoots 6 times
       if(player.GetAccuracy() - (RNG() % 100)> 0 && player.GetBullets() > 0 && Shots > 0) {
