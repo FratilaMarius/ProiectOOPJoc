@@ -27,7 +27,7 @@ class Enemy {
     Enemy& operator=(const Enemy& other) = default;
 ///////////////////////////////////////////////////////////////////////////////////
 // Gameplay:
-  virtual void attack(Player& player) = 0;
+  virtual int attack(Player& player) = 0;
 
   virtual std::unique_ptr<Enemy> Clone() const = 0;
 
@@ -65,7 +65,7 @@ class Shade : public Enemy {
     std::unique_ptr<Enemy> Clone() const override { return std::make_unique<Shade>(*this); }
 
     // if the chance hits right, the shade deals dmg to the hp and accuracy of the player
-    void attack(Player& player) override;
+    int attack(Player& player) override;
 
   private:
     sf::RenderWindow &window;
@@ -86,7 +86,7 @@ class Minotaur : public Enemy {
     std::unique_ptr<Enemy> Clone() const override { return std::make_unique<Minotaur>(*this); }
 
     // if the chance hits right, the Minotaur deals dmg to the hp of the player
-    void attack(Player& player) override;
+    int attack(Player& player) override;
 
   private:
     sf::RenderWindow &window;
@@ -104,16 +104,15 @@ class Blob : public Enemy {  public:
     std::unique_ptr<Enemy> Clone() const override { return std::make_unique<Blob>(*this); }
 
     // if the chance hits right, the blob will steal some of the players resources
-    void attack(Player& player) override;
+    int attack(Player& player) override;
 
   private:
     sf::RenderWindow &window;
     void PlaySounds(int which) override;
 };
 
-class Guy : public Enemy { 
+class Trader : public Enemy {
   public:
-  private:
 };
 
 class EncounterManager {
@@ -121,7 +120,7 @@ class EncounterManager {
     static EncounterManager &Instance();
 
     // we call this when a bool in main is true and we press leftClck
-    int Fight(Enemy* enemy, Player& player, int &RenderTextMissed, int &Shots);
+    int Fight(Enemy* enemy, Player& player, int &RenderTextMissed, int &EnemyRenderTextMissed, int &Shots);
 
     std::unique_ptr<Enemy> GenerateAnEnemy(sf::RenderWindow &window, const Player &player);
   private:

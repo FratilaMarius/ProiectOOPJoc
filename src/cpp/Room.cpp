@@ -67,28 +67,21 @@ void Room::ResetRoom() {
 // looks for a pickup, takes the type of item as param, max 4
 int Room::FindPickup(int what) {
   if (checkedForPickups) {
-    std::cout << "\nYou've already checked here";
-    return 0;
+    return -1; // already checked
   }
   checkedForPickups = 1;
   switch (what) {
   case 0:
   case 1:
   case 2:
-    std::cout << "\nFound nothing";
-    return 0;
+    return 0; // nothing
     break;
 
   case 3:
-    std::cout << "\nFound some water";
-    return 1;
+    return 1; // some resources
     break;
-
   case 4:
-    std::cout << "\nFound some food";
-    return 2;
-    break;
-
+    return 2; // some bullets
   default:
     break;
   }

@@ -23,10 +23,10 @@ class UI {
   void UpdateTheHp(const Player &player);
   void UpdateTheAcc(const Player &player);
   void UpdateTheBullets(const Player &player);
+  void UpdateTheInv(const Player &player);
 
   // positions all UI elements. to be used either on resize or on every frame
   void PositionUI(sf::RenderWindow &window);
-
   ////////////////////////////////////////////////////////////////////////////
   // Getters for the UI elements:
   const sf::Text &GetText(int which);
@@ -41,7 +41,6 @@ class UI {
     return *(miscUIsprites[which]);
   }
   /////////////////////////////////////////////////////////////////////////////
-
   
   private:
 

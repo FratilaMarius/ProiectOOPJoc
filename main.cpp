@@ -58,6 +58,7 @@ int main()
   /// This is needed so we do not burn the GPU                            
   // window.setVerticalSyncEnabled(true);                                 
   window.setFramerateLimit(60); 
+  // window.setKeyRepeatEnabled(false);
 ///////////////////////////////////////////////////////////////////////////
 // Building the labyrinth and player:
   Labyrinth map(w, h, a, b);
@@ -65,15 +66,15 @@ int main()
 
 ///////////////////////////////////////////////////////////////////////////
 // Gameplay:
-  int displayConsoleStuff = 1;
   int isFighting = 0;
   int hasGeneratedEnemy = 0;
 
-  int timer = 0;
-  int RenderTextMissed = 0;
+  int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0;
+  int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0;
   static std::unique_ptr<Enemy> _enemy = NULL;
   int shots = 6; // this is used when we fight a mminotaur
 
+  std::cout << map;
   while (window.isOpen()) {
     bool shouldExit = false;
     if(isFighting && !hasGeneratedEnemy) {
@@ -87,11 +88,6 @@ int main()
     }
 
     while (const std::optional event = window.pollEvent()) {
-      if (displayConsoleStuff) {
-        std::cout << "\nContinue? (keys)  Check for Items? (1)  Check your backpack? (2)  End? (0)";
-        std::cout << map;
-        displayConsoleStuff = 0;
-      }
       if (map.CheckIfFinished()) {
         shouldExit = true;
         break;
@@ -109,8 +105,7 @@ int main()
         const auto *buttonPressed = event->getIf<sf::Event::MouseButtonPressed>();
 
         if(buttonPressed->button == sf::Mouse::Button::Left && isFighting && hasGeneratedEnemy) {
-          int status = EncounterManager::Instance().Fight(_enemy.get() , player, RenderTextMissed, shots);
-          shots--;
+          int status = EncounterManager::Instance().Fight(_enemy.get() , player, RenderTextMissed, EnemyRenderTextMissed, shots);
           if(status == 1) { // the player won
             shots = 6;
             isFighting = 0;
@@ -130,7 +125,6 @@ int main()
         //////////////////////////////////////////////////////////////////////////////////
         // handling the input for moving
         if (keyPressed->scancode == sf::Keyboard::Scancode::Up && !isFighting) {
-          displayConsoleStuff = 1;
           try {
             if(map.Move("up") == 2) isFighting = 1;
 
@@ -142,11 +136,11 @@ int main()
           } catch(LabExceptionCouldntMove &exp) {
               std::cout<< exp.what();
             }
+          std::cout << map;
           continue;
         }
 
         if (keyPressed->scancode == sf::Keyboard::Scancode::Down && !isFighting) {
-          displayConsoleStuff = 1;
           try {
             if(map.Move("down") == 2) isFighting = 1;
 
@@ -158,11 +152,11 @@ int main()
           } catch(LabExceptionCouldntMove &exp) {
               std::cout<< exp.what(); 
             }
+          std::cout << map;
           continue;
         }
 
         if (keyPressed->scancode == sf::Keyboard::Scancode::Left && !isFighting) {
-          displayConsoleStuff = 1;
           try{
            if(map.Move("left") == 2) isFighting = 1;;
           
@@ -174,12 +168,11 @@ int main()
           } catch(LabExceptionCouldntMove &exp) {
               std::cout<< exp.what(); 
             }
+          std::cout << map;
           continue;
         }
 
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Right && !isFighting)
-        {
-          displayConsoleStuff = 1;
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Right && !isFighting) {
           try{
             if(map.Move("right") == 2) isFighting = 1;;
 
@@ -191,6 +184,7 @@ int main()
           } catch (LabExceptionCouldntMove &exp) {
               std::cout<< exp.what(); 
             }
+          std::cout << map;
           continue;
         }
 //////////////////////////////////////////////////////////////////////////////////
@@ -198,20 +192,24 @@ int main()
           shouldExit = true;
           break;
         }
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Num1) {
-          displayConsoleStuff = 1;
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Num1 && !isFighting) {
           int c = map.CheckForItems();
-          if (c == 1)
+
+          timerPickupText = 0;
+          if(c == -1) RenderPickupText = 1; // we alr checked
+          if(c == 0) RenderPickupText = 2;// nothing
+          if (c == 1) { 
+            RenderPickupText = 3;// resources
             player.RefillWater();
-          if (c == 2)
             player.RefillFood();
+          }
+          if(c == 2) RenderPickupText = 4;// bullets
           continue;
         }
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Num2) {
-          displayConsoleStuff = 1;
-          player.BackPack();
-          continue;
-        }
+        // if (keyPressed->scancode == sf::Keyboard::Scancode::Num2 && !isFighting) { // we display the inventory
+        //   player.BackPack();
+        //   continue;
+        // }
         std::cout << "\nUnrecognised input\n";
       }
     }
@@ -253,18 +251,41 @@ int main()
     }
 
     UI::Instance().UpdateTheBullets(player);
-    window.draw(UI::Instance().GetText(2));
+    window.draw(UI::Instance().GetText(3));
+
+    UI::Instance().UpdateTheInv(player);
+    window.draw(UI::Instance().GetText(8));
 
     if(map.GetShouldDisplayDeadEndText()) window.draw(UI::Instance().GetText(0));
     if(RenderTextMissed) {
       window.draw(UI::Instance().GetText(1));
-      timer++;
-      if(timer == 120) {
+      timerPlayer++;
+      if(timerPlayer >= 120) {
         RenderTextMissed = 0;
-        timer = 0;
+        timerPlayer = 0;
       }
     }
-    
+    if(EnemyRenderTextMissed) {
+      window.draw(UI::Instance().GetText(2));
+      timerEnemy++;
+      if(timerEnemy >= 120) {
+        EnemyRenderTextMissed = 0;
+        timerEnemy = 0;
+      }
+    }
+    if(RenderPickupText) {
+      timerPickupText++;
+
+      if(RenderPickupText == 1) window.draw(UI::Instance().GetText(4));
+      if(RenderPickupText == 2) window.draw(UI::Instance().GetText(7));
+      if(RenderPickupText == 3) window.draw(UI::Instance().GetText(5));
+      if(RenderPickupText == 4) window.draw(UI::Instance().GetText(6));
+      
+      if(timerPickupText >= 120) {
+        RenderPickupText = 0;
+        timerPickupText = 0;
+      }
+    }
     window.display();
   }
 

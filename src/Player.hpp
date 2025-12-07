@@ -23,6 +23,8 @@ public:
   int GetAccuracy() const { return accuracy; }
   int GetHp() const { return hp; }
   int GetBullets() const { return bullets; }
+  int GetFood() const { return food; }  
+  int GetWater() const { return water; }
   void SetBullets(int n) { bullets = n; }
   void StealResources(int _water, int _food, int _bullets) { water -= _water; food -= _food; bullets -= _bullets; }
 
@@ -35,13 +37,13 @@ public:
 
 private:
   int hp;
-  int accuracy = 100;
-  int bullets = 6;   // unused
+  int accuracy = 0;
+  int bullets = 8;   // unused
   int lights = 8;    // unused
   int tent = 0;      // unuesd
   int meds = 25;     // unused
-  int water = 15;
-  int food = 12;
+  int water = 105;
+  int food = 102;
 
   int movesUntilDemise = 5;
 

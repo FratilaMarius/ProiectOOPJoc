@@ -20,6 +20,10 @@ void UI::UpdateTheBullets(const Player &player) {
   int b = player.GetBullets();
   Texts["Bullets: "]->setString("Bullets: " + std::to_string(b));
 }
+void UI::UpdateTheInv(const Player &player) {
+  const std::string s = "Food: " + std::to_string(player.GetFood()) + " | Water: " + std::to_string(player.GetWater());
+  Texts["RescInv"]->setString(s);
+}
 
 void UI::PositionUI(sf::RenderWindow &window) {
   float winX = window.getSize().x, winY = window.getSize().y;
@@ -28,7 +32,14 @@ void UI::PositionUI(sf::RenderWindow &window) {
 
   Texts["deadEnd"]->setPosition({20, 110});
   Texts["Missed"]->setPosition({200, 200});
+  Texts["Enemy Missed"]->setPosition({250, 310});
   Texts["Bullets: "]->setPosition({10, 80});
+  Texts["RescInv"]->setPosition({winX - 210, winY - 25});
+
+  Texts["AlrCheck: "]->setPosition({10, winY - 25});
+  Texts["Resources"]->setPosition({10, winY - 25});
+  Texts["FoundBull"]->setPosition({10, winY - 25});
+  Texts["Nothing"]->setPosition({10, winY - 25});
 
   miscUIsprites["hpBar"]->setPosition({10, 10});
   miscUIsprites["hpBar_empty"]->setPosition({10, 10});
@@ -52,29 +63,59 @@ const sf::Text &UI::GetText(int which) {
       return *(Texts["deadEnd"]);
       break;
     case 1:
+      // Texts["Missed"]->setPosition({100 + RNG(), 100 + RNG()});
       return *(Texts["Missed"]);
       break;
     case 2:
+      return *(Texts["Enemy Missed"]);
+      break;
+    case 3:
       return *(Texts["Bullets: "]);
       break;
-    
+    case 4:
+      return *(Texts["AlrCheck: "]);
+      break;
+    case 5:
+      return *(Texts["Resources"]);
+      break;
+    case 6:
+      return *(Texts["FoundBull"]);
+      break;
+    case 7:
+      return *(Texts["Nothing"]);
+      break;
+    case 8:
+      return *(Texts["RescInv"]);
+      break;
+
     default:
       break;
   }
   return *(Texts["deadEnd"]);
 }
 
+
+
 UI::UI() {
     for (int i = 0; i < 4; ++i) {
       DirectionActive[i].emplace(txl::TextureLoader::Instance().GetDefaultTexture());
       DirectionDeActive[i].emplace(txl::TextureLoader::Instance().GetDefaultTexture());
     }
-
-    Texts["deadEnd"].emplace(txl::TextureLoader::Instance().GetFont(), ">Dead end", 15);
-    Texts["Missed"].emplace(txl::TextureLoader::Instance().GetFont(), "Missed", 15);
-    Texts["Bullets: "].emplace(txl::TextureLoader::Instance().GetFont(), "Ammo:", 15);
   
     try {
+
+      Texts["deadEnd"].emplace(txl::TextureLoader::Instance().GetFont(), ">Dead end", 15);
+      Texts["Missed"].emplace(txl::TextureLoader::Instance().GetFont(), "Missed", 18);
+      Texts["Enemy Missed"].emplace(txl::TextureLoader::Instance().GetFont(), "Enemy Missed", 18);
+      Texts["Bullets: "].emplace(txl::TextureLoader::Instance().GetFont(), "Ammo:", 18);    
+      
+      Texts["AlrCheck: "].emplace(txl::TextureLoader::Instance().GetFont(), "You already checked here.", 15);    
+      Texts["Resources"].emplace(txl::TextureLoader::Instance().GetFont(), "Found some resources.", 15);  
+      Texts["FoundBull"].emplace(txl::TextureLoader::Instance().GetFont(), "Found some bullets.", 15);    
+      Texts["Nothing"].emplace(txl::TextureLoader::Instance().GetFont(), "There's nothing here.", 15);    
+    
+      Texts["RescInv"].emplace(txl::TextureLoader::Instance().GetFont(), "Food: Water:", 15);  
+
 
       miscUIsprites["hpBar"].emplace(txl::TextureLoader::Instance().GetUITexture("HP.png"));
       miscUIsprites["hpBar_empty"].emplace(txl::TextureLoader::Instance().GetUITexture("HP_Outline.png"));

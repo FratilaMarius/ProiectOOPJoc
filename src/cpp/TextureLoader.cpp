@@ -244,9 +244,9 @@ namespace txl
     }
     
     sound->setBuffer(soundBuffers[which]); 
-    sound->setVolume(50.f);
+    sound->setVolume(25.f);
     sound->play();
     using namespace std::chrono_literals;
-    std::this_thread::sleep_for(1000ms);
+    std::this_thread::sleep_for(100ms);
   };  
 }

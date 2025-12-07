@@ -275,12 +275,13 @@ int Labyrinth::Move(const std::string& where) {
   
   if(layout[newX][newY].GetTimesVisited() == 0) {
     GenerateRoom(newX, newY, playerCords[0], playerCords[1]);
+    
+    // generating an enemy in the new rooom:
+    if (RNG() % 100 < 25)
+      layout[newX][newY].SetHasEnemy(1);
   }
+
   layout[newX][newY].SetHasPlayer(1);
-  // generating an enemy in the new rooom:
-  if (RNG() % 100 < 25 && layout[newX][newY].GetTimesVisited() == 0) {
-    layout[newX][newY].SetHasEnemy(1);
-  }
   layout[newX][newY].IncrTimesVisited(1);
   
   // if we've already been to this room >3 times we reset the layout, minus the room we're moving to

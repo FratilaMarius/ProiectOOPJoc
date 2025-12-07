@@ -21,7 +21,7 @@ void Shade::PositionSprite() {
   GetSpriteAddr()->setScale({3.f, 3.f});  
   GetSpriteAddr()->setPosition({static_cast<float>(window.getSize().x/ randomizerPosX), static_cast<float>(window.getSize().y/randomizerPosY)});
 }
-void Shade::attack(Player& player) {
+int Shade::attack(Player& player) {
   int chanceToHit = RNG() % 100;
 
   if(chanceToHit > 45) {
@@ -30,7 +30,9 @@ void Shade::attack(Player& player) {
     UI::Instance().UpdateTheHp(player);
     UI::Instance().UpdateTheAcc(player);
     PlayAudio(0);
+    return 1;
   }
+  return 0;
 }
 void Shade::PlaySounds(int which) {
   if(which == 0) {
@@ -50,7 +52,7 @@ void Shade::PlaySounds(int which) {
 ////////////////////////////////////////////////////////////////////////////
 // Minotaur:
 Minotaur::Minotaur(sf::Texture& _texture, sf::RenderWindow &_window) : Enemy(150, _texture), window(_window) {
-  SetDamge(40 + RNG() % 20);
+  SetDamge(60 + RNG() % 20);
   GetSpriteAddr()->setOrigin({125, 125});
 }
 void Minotaur::PositionSprite() {
@@ -58,14 +60,16 @@ void Minotaur::PositionSprite() {
   GetSpriteAddr()->setPosition({static_cast<float>(window.getSize().x/ 2), static_cast<float>(window.getSize().y/ 2)});
 };
 
-void Minotaur::attack(Player& player) {
+int Minotaur::attack(Player& player) {
   int chanceToHit = RNG() % 100;
 
-  if(chanceToHit > 49) {
+  if(chanceToHit > 35) {
     player.DealDamage(GetDamage());
     UI::Instance().UpdateTheHp(player);
     PlayAudio(0);
+    return 1;
   }
+  return 0;
 }
 
 void Minotaur::PlaySounds(int which) {
@@ -97,13 +101,15 @@ void Blob::PositionSprite() {
   GetSpriteAddr()->setPosition({static_cast<float>(window.getSize().x/ randomizerPosX), static_cast<float>(window.getSize().y/ randomizerPosY)});
 };
 
-void Blob::attack(Player& player) {
+int Blob::attack(Player& player) {
   int chanceToHit = RNG() % 100;
 
   if(chanceToHit > 70) {
     player.StealResources(RNG() % 3, RNG() % 3, RNG() % 2);
     PlayAudio(0);
+    return 1;
   }
+  return 0;
 }
 
 void Blob::PlaySounds(int which) {
@@ -121,22 +127,24 @@ EncounterManager &EncounterManager::Instance() {
   static EncounterManager instance;
   return instance;
 }
-int EncounterManager::Fight(Enemy* enemy, Player& player, int &RenderTextMissed, int &Shots) {
+int EncounterManager::Fight(Enemy* enemy, Player& player, int &RenderTextMissed, int &EnemyRenderTextMissed, int &Shots) {
   const Shade* s = dynamic_cast<Shade*>(enemy);
     if (s != nullptr) { // shade combat
       // the player shoots
-      if(player.GetAccuracy() - (RNG() % 100)> 0 && player.GetBullets() > 0) {
-        enemy->HurtEnemy(30);
-        enemy->PlayAudio(2);
-
+      if(player.GetBullets() > 0) {
+        txl::TextureLoader::Instance().GetSound("Pistol.mp3");
+        if(player.GetAccuracy() - (RNG() % 100) > 0) {
+          enemy->HurtEnemy(30);
+          enemy->PlayAudio(2);
+        }
+        else {
+          RenderTextMissed = 1;
+        }
         player.SetBullets(player.GetBullets() - 1);
-      }
-      else {
-        RenderTextMissed = 1;
       }
       // then the enemy has a chance to hit back
       if(enemy->GetHp() > 0)
-        enemy->attack(player);
+        if(!enemy->attack(player)) EnemyRenderTextMissed = 1;
 
       if(player.GetAccuracy() < 10) return 1;
       if(enemy->GetHp() < 0) {
@@ -150,18 +158,20 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, int &RenderTextMissed,
   const Blob* b = dynamic_cast<Blob*>(enemy);
     if (b != nullptr) { // Blob combat
       // the player shoots
-      if(player.GetAccuracy() - (RNG() % 100)> 0 && player.GetBullets() > 0) {
-        enemy->HurtEnemy(30);
-        enemy->PlayAudio(0);
-
+      if(player.GetBullets() > 0) {
+        txl::TextureLoader::Instance().GetSound("Pistol.mp3");
+        if(player.GetAccuracy() - (RNG() % 100)> 0) {
+          enemy->HurtEnemy(30);
+          enemy->PlayAudio(0);
+        }
+        else {
+          RenderTextMissed = 1;
+        }
         player.SetBullets(player.GetBullets() - 1);
-      }
-      else {
-        RenderTextMissed = 1;
       }
       // then the enemy has a chance to hit back
       if(enemy->GetHp() > 0)
-        enemy->attack(player);
+        if(!enemy->attack(player)) EnemyRenderTextMissed = 1;
 
       if(enemy->GetHp() < 0) {
         enemy->PlayAudio(0);
@@ -176,20 +186,23 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, int &RenderTextMissed,
   const Minotaur* m = dynamic_cast<Minotaur*>(enemy);
     if (m != nullptr) { // Minotaur combat
       // the player shoots 6 times
-      if(player.GetAccuracy() - (RNG() % 100)> 0 && player.GetBullets() > 0 && Shots > 0) {
-        enemy->HurtEnemy(30);
-        enemy->PlayAudio(2);
-
+      if(player.GetBullets() > 0 && Shots > 0) {
+        txl::TextureLoader::Instance().GetSound("Pistol.mp3");
+        if(player.GetAccuracy() - (RNG() % 100)> 0) {
+          enemy->HurtEnemy(30);
+          enemy->PlayAudio(2);
+        }
+        else {
+          RenderTextMissed = 1;
+        }
         player.SetBullets(player.GetBullets() - 1);
+        Shots--;
       }
-      else {
-        RenderTextMissed = 1;
-      }
-      if(Shots < 0 || player.GetBullets() < 0)      // then the enemy has a chance to hit back
+      if(Shots <= 0 || player.GetBullets() <= 0)      // then the enemy has a chance to hit back
         if(enemy->GetHp() > 0) {
-          enemy->attack(player);
-          enemy->PlayAudio(0);
+          if(!enemy->attack(player)) EnemyRenderTextMissed = 1;
           Shots = 6;
+          return 1;
         }
       if(enemy->GetHp() < 0) {
         enemy->PlayAudio(3);
@@ -203,9 +216,8 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, int &RenderTextMissed,
 }
 std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &window, const Player &player) {
     int i = RNG() % 6;
-    // int i = 1;
+    // int i = 5;
     switch(i) {
-      case 0:
       case 1: // blob
       case 2:
         if (player.GetBullets() > 2) {
@@ -213,6 +225,7 @@ std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &windo
         }
         break;
 
+      case 0:
       case 3:
       case 4: //shade
         if (player.GetAccuracy() > 10) {
