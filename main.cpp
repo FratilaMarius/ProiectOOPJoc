@@ -113,7 +113,7 @@ int main()
       // handling the input for fighting
         const auto *buttonPressed = event->getIf<sf::Event::MouseButtonPressed>();
         if(isFighting && hasGeneratedEnemy) {
-          if(buttonPressed->button == sf::Mouse::Button::Left && hasGeneratedEnemy) {
+          if(buttonPressed->button == sf::Mouse::Button::Left) {
             selectedOffer = 3;
             int status = EncounterManager::Instance().Fight(_enemy.get() , player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
             if(status == 1) { // the player won
@@ -171,12 +171,12 @@ int main()
         // handling the input for moving
         if (keyPressed->scancode == sf::Keyboard::Scancode::Up && !isFighting) {
           try {
-            int a = map.Move("up");
-            if(a == 3) {
+            int x = map.Move("up");
+            if(x == 3) {
               shouldExit = true;
               continue;
             }
-            if(a == 2) isFighting = 1;
+            if(x == 2) isFighting = 1;
 
             int alive = player.PlayerStatus();
             if (alive < 0) {
@@ -192,12 +192,12 @@ int main()
 
         if (keyPressed->scancode == sf::Keyboard::Scancode::Down && !isFighting) {
           try {
-            int a = map.Move("down");
-            if(a == 3) {
+            int x = map.Move("down");
+            if(x == 3) {
               shouldExit = true;
               continue;
             }
-            if(a == 2) isFighting = 1;
+            if(x == 2) isFighting = 1;
 
             int alive = player.PlayerStatus();
             if (alive < 0) {
@@ -213,12 +213,12 @@ int main()
 
         if (keyPressed->scancode == sf::Keyboard::Scancode::Left && !isFighting) {
           try{
-            int a = map.Move("left");
-            if(a == 3) {
+            int x = map.Move("left");
+            if(x == 3) {
               shouldExit = true;
               continue;
             }
-            if(a == 2) isFighting = 1;
+            if(x == 2) isFighting = 1;
 
             int alive = player.PlayerStatus();
             if (alive < 0) {
@@ -234,12 +234,12 @@ int main()
 
         if (keyPressed->scancode == sf::Keyboard::Scancode::Right && !isFighting) {
           try{
-            int a = map.Move("right");
-            if(a == 3) {
+            int x = map.Move("right");
+            if(x == 3) {
               shouldExit = true;
               continue;
             }
-            if(a == 2) isFighting = 1;
+            if(x == 2) isFighting = 1;
 
             int alive = player.PlayerStatus();
             if (alive < 0) {

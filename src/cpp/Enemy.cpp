@@ -138,21 +138,21 @@ void Trader::PositionSprite() {
 int Trader::attack(Player& player) {
   a = RNG() % 3;
   if(a == 0) {
-    b = RNG() % 10, c = RNG() % 8 + 8;
+    b = RNG() % 10 + 3, c = RNG() % 8 + 8;
     offer1 = "Trade " +std::to_string(b)+ " hp for " +std::to_string(c)+ " bullets? (Q)";
-    d = RNG() % 20 + 5, e = RNG() % 30 + 15;
+    d = RNG() % 20 + 5, e = RNG() % 45 + 25;
     offer2 = "Trade " +std::to_string(d)+ " food for " +std::to_string(e)+ " hp? (E)";
  }
   if(a == 1) {
-    b = RNG() % 20, c = RNG() % 20 + 10; // c will be the amount to get closer
+    b = RNG() % 20 + 20, c = RNG() % 20 + 10; // c will be the amount to get closer
     offer1 = "Trade " +std::to_string(b)+ " hp to get closer to the exit? (Q)";
-    d = player.GetWater() - 1, e = RNG() % 90 + 30;
+    d = player.GetWater() - 10, e = RNG() % 45 +25;
     offer2 = "Trade " +std::to_string(d)+ " water for " +std::to_string(e)+ " hp? (E)";
   }
   if(a == 2) {
     b = RNG() % 15 + 4, c = RNG() % 50 + 35;
     offer1 = "Trade " +std::to_string(b)+ " hp for " +std::to_string(c)+ " accuracy? (Q)";
-    d = player.GetFood() - 1, e = RNG() % 30 + 30;
+    d = player.GetFood() - 10, e = RNG() % 30 + 30;
     offer2 = "Trade " +std::to_string(d)+ " food for " +std::to_string(e)+ " bullets? (E)";
   }
   offer1T->setString(offer1);
@@ -321,7 +321,7 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, Labyrinth& lab, int &R
   return 1;
 }
 std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &window, const Player &player) {
-    int i = RNG() % 8;
+    int i = RNG() % 7;
     // int i = 7;
     switch(i) {
       case 1: // blob
@@ -343,7 +343,7 @@ std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &windo
           return std::make_unique<Minotaur>(txl::TextureLoader::Instance().GetEnemyTexture("Minotaur.png"), window);  
         break;
       case 6:
-      case 7: // trader
+      // case 7: // trader
           return std::make_unique<Trader>(txl::TextureLoader::Instance().GetEnemyTexture("Trader.png"), window);
         break;
 

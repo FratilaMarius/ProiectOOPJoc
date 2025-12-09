@@ -115,7 +115,7 @@ class Trader : public Enemy {
   public:
     Trader(sf::Texture& _texture, sf::RenderWindow &_window);
     ~Trader() override = default;
-    Trader(const Trader& other) : Enemy(other), window(other.window) {};
+    Trader(const Trader& other) : Enemy(other), window(other.window), a(other.a), b(other.b), c(other.c), d(other.d), e(other.e) {};
     Trader& operator=(const Trader &other) = delete; 
 
     void PositionSprite() override;
@@ -134,7 +134,7 @@ class Trader : public Enemy {
     sf::RenderWindow &window;
     void PlaySounds(int which) override;
 
-    int a, b, c, d, e; // used to decide offers, see definition of Trader::Attack
+    int a = -1, b = 0, c = 0, d = 0, e = 0; // used to decide offers, see definition of Trader::Attack
     std::string offer1;
     std::string offer2;
   };
