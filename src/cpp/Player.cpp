@@ -52,9 +52,9 @@ int Player::PlayerStatus() {
   return 1;
 }
 // prints out the contents of the backpack
-void Player::BackPack() const {
-  std::cout<<"Food: "<<food<<", Water: "<<water;
-}
+// void Player::BackPack() const {
+//   std::cout<<"Food: "<<food<<", Water: "<<water;
+// }
 
 // void Player::TakeDmg(int dmg) {
 //   hp -= dmg;

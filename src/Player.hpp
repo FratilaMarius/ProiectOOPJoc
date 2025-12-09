@@ -36,7 +36,7 @@ public:
   void RefillFood();
   void AddFood(int n) { food += n; }
   int PlayerStatus();
-  void BackPack() const;
+  // void BackPack() const;
   // void TakeDmg(int dmg);
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
