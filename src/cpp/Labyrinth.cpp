@@ -296,10 +296,10 @@ int Labyrinth::Move(const std::string& where) {
   if (moves > 20 && chanceForExit > 10) { // after 10 moves we start to get close to the exit
     chanceForExit -= 2;
   }
-  if(chanceForExit <= 10 && RNG() % chanceForExit == 0) finish = 1;
+  if(chanceForExit <= 10 && RNG() % 5 == 0) finish = 1;
   if (finish) {
     std::cout << "Congrats! You have escaped!";
-    return 2;
+    return 3;
   }
   if(layout [playerCords[0]][playerCords[1]].GetHasEnemy() == 1) return 2;
 

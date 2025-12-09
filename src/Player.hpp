@@ -42,7 +42,7 @@ public:
 
 private:
   int hp;
-  int accuracy = 0;
+  int accuracy = 100;
   int bullets = 8;   // unused
   int lights = 8;    // unused
   int tent = 0;      // unuesd

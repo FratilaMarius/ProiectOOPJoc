@@ -69,8 +69,8 @@ int main()
   int isFighting = 0;
   int hasGeneratedEnemy = 0;
 
-  int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0;
-  int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0, RenderOffers = 0;
+  int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0, timerCheat = 0;
+  int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0, RenderOffers = 0, RenderCheat = 0;
   static std::unique_ptr<Enemy> _enemy = NULL;
   int shots = 6; // this is used when we fight a mminotaur
   int selectedOffer = 0; // this is used for the trader interactions
@@ -86,12 +86,12 @@ int main()
         _enemy->PositionSprite();
         _enemy->PlayAudio(1);
 
-        const Trader* m = dynamic_cast<Trader*>(_enemy.get());
-        if( m != nullptr) {
+        const Trader* t = dynamic_cast<Trader*>(_enemy.get());
+        if( t != nullptr) {
           _enemy->attack(player);
           RenderOffers = 1;
-          m->GetOffer1();
-          m->GetOffer2();
+          t->GetOffer1();
+          t->GetOffer2();
         }
       }
     }
@@ -171,7 +171,12 @@ int main()
         // handling the input for moving
         if (keyPressed->scancode == sf::Keyboard::Scancode::Up && !isFighting) {
           try {
-            if(map.Move("up") == 2) isFighting = 1;
+            int a = map.Move("up");
+            if(a == 3) {
+              shouldExit = true;
+              continue;
+            }
+            if(a == 2) isFighting = 1;
 
             int alive = player.PlayerStatus();
             if (alive < 0) {
@@ -187,7 +192,12 @@ int main()
 
         if (keyPressed->scancode == sf::Keyboard::Scancode::Down && !isFighting) {
           try {
-            if(map.Move("down") == 2) isFighting = 1;
+            int a = map.Move("down");
+            if(a == 3) {
+              shouldExit = true;
+              continue;
+            }
+            if(a == 2) isFighting = 1;
 
             int alive = player.PlayerStatus();
             if (alive < 0) {
@@ -203,8 +213,13 @@ int main()
 
         if (keyPressed->scancode == sf::Keyboard::Scancode::Left && !isFighting) {
           try{
-           if(map.Move("left") == 2) isFighting = 1;;
-          
+            int a = map.Move("left");
+            if(a == 3) {
+              shouldExit = true;
+              continue;
+            }
+            if(a == 2) isFighting = 1;
+
             int alive = player.PlayerStatus();
             if (alive < 0) {
               std::cout << "\nYou died\n\n";
@@ -219,7 +234,12 @@ int main()
 
         if (keyPressed->scancode == sf::Keyboard::Scancode::Right && !isFighting) {
           try{
-            if(map.Move("right") == 2) isFighting = 1;;
+            int a = map.Move("right");
+            if(a == 3) {
+              shouldExit = true;
+              continue;
+            }
+            if(a == 2) isFighting = 1;
 
             int alive = player.PlayerStatus();
             if (alive < 0) {
@@ -253,6 +273,11 @@ int main()
             RenderPickupText = 4;// bullets
             player.SetBullets(8);
           }
+          continue;
+        }
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Equal && !isFighting) {
+          map.GetCloserToExit(10);
+          RenderCheat = 1;
           continue;
         }
         // if (keyPressed->scancode == sf::Keyboard::Scancode::Num2 && !isFighting) { // we display the inventory
@@ -299,6 +324,11 @@ int main()
       window.draw(_enemy->GetSprite());
     }
 
+    UI::Instance().UpdateTheHp(player);
+    UI::Instance().UpdateTheAcc(player);
+    window.draw(UI::Instance().GetText(9));
+    window.draw(UI::Instance().GetText(10));
+
     UI::Instance().UpdateTheBullets(player);
     window.draw(UI::Instance().GetText(3));
 
@@ -333,6 +363,15 @@ int main()
       if(timerPickupText >= 120) {
         RenderPickupText = 0;
         timerPickupText = 0;
+      }
+    }
+    if(RenderCheat) {
+      timerCheat++;
+      window.draw(UI::Instance().GetText(11));
+      
+      if(timerCheat >= 120) {
+        RenderCheat = 0;
+        timerCheat = 0;
       }
     }
     if(RenderOffers) {

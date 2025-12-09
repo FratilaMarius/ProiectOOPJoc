@@ -9,12 +9,18 @@ UI &UI::Instance() {
 void UI::UpdateTheHp(const Player &player) {
   int hp = player.GetHp();
   if(hp < 0) hp = 0;
-  miscUIsprites["hpBar"]->setScale({2 * (static_cast<float>(hp)/100), 2});
+  float multiplier = static_cast<float>(hp)/100;
+  if(multiplier > 2) multiplier = 2;
+  miscUIsprites["hpBar"]->setScale({2 * multiplier, 2});
+  Texts["hp"]->setString("Hp: " + std::to_string(hp));
 }
 void UI::UpdateTheAcc(const Player &player) {
   int acc = player.GetAccuracy();
   if(acc < 0) acc = 0;
-  miscUIsprites["accBar"]->setScale({2 * (static_cast<float>(acc)/100), 2});
+  float multiplier = static_cast<float>(acc)/100;
+  if(multiplier > 2) multiplier = 2;
+  miscUIsprites["accBar"]->setScale({2 * multiplier, 2});
+  Texts["acc"]->setString("Acc: " + std::to_string(acc));
 }
 void UI::UpdateTheBullets(const Player &player) {
   int b = player.GetBullets();
@@ -35,6 +41,7 @@ void UI::PositionUI(sf::RenderWindow &window) {
   Texts["Enemy Missed"]->setPosition({250, 310});
   Texts["Bullets: "]->setPosition({10, 80});
   Texts["RescInv"]->setPosition({winX - 210, winY - 25});
+  Texts["Cheat"]->setPosition({winX / 2 - 50, winY -35});
 
   Texts["AlrCheck: "]->setPosition({10, winY - 25});
   Texts["Resources"]->setPosition({10, winY - 25});
@@ -45,6 +52,9 @@ void UI::PositionUI(sf::RenderWindow &window) {
   miscUIsprites["hpBar_empty"]->setPosition({10, 10});
   miscUIsprites["accBar"]->setPosition({10, 45});
   miscUIsprites["accBar_empty"]->setPosition({10, 45});
+  Texts["hp"]->setPosition({15, 15});
+  Texts["acc"]->setPosition({15, 50});
+
 
   DirectionActive[0]->setPosition({posX_ctrls, posY_ctrls - 30});
   DirectionActive[1]->setPosition({posX_ctrls, posY_ctrls + 30});
@@ -87,8 +97,16 @@ const sf::Text &UI::GetText(int which) {
     case 8:
       return *(Texts["RescInv"]);
       break;
-
-    default:
+    case 9:
+      return *(Texts["hp"]);
+      break;
+    case 10:
+      return *(Texts["acc"]);
+      break;
+    case 11:
+      return *(Texts["Cheat"]);
+      break;
+      default:
       break;
   }
   return *(Texts["deadEnd"]);
@@ -103,6 +121,9 @@ UI::UI() {
     }
   
     try {
+      Texts["hp"].emplace(txl::TextureLoader::Instance().GetFont(), "Hp: ", 15);
+      Texts["acc"].emplace(txl::TextureLoader::Instance().GetFont(), "Acc: ", 15);
+
 
       Texts["deadEnd"].emplace(txl::TextureLoader::Instance().GetFont(), ">Dead end", 15);
       Texts["Missed"].emplace(txl::TextureLoader::Instance().GetFont(), "Missed", 18);
@@ -115,6 +136,7 @@ UI::UI() {
       Texts["Nothing"].emplace(txl::TextureLoader::Instance().GetFont(), "There's nothing here.", 15);    
     
       Texts["RescInv"].emplace(txl::TextureLoader::Instance().GetFont(), "Food: Water:", 15);  
+      Texts["Cheat"].emplace(txl::TextureLoader::Instance().GetFont(), "Cheater!", 25);  
 
 
       miscUIsprites["hpBar"].emplace(txl::TextureLoader::Instance().GetUITexture("HP.png"));

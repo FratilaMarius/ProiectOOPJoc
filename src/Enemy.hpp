@@ -28,7 +28,7 @@ class Enemy {
 ///////////////////////////////////////////////////////////////////////////////////
 // Gameplay:
   virtual int attack(Player& player) = 0;
-  virtual void applyOffer(Player& player, Labyrinth& lab, int selectedOffer) {} // we'll use this one in the trader interaction
+  virtual void applyOffer(Player& /*player*/, Labyrinth& /*lab*/, int /*selectedOffer*/) {} // we'll use this one in the trader interaction
   virtual std::unique_ptr<Enemy> Clone() const = 0;
 
   void PlayAudio(int which) { PlaySounds(which); }

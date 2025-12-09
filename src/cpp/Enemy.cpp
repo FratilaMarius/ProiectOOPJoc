@@ -28,8 +28,6 @@ int Shade::attack(Player& player) {
   if(chanceToHit > 45) {
     player.DealDamage(GetDamage());
     player.HurtAccuracy(psichDmg);
-    UI::Instance().UpdateTheHp(player);
-    UI::Instance().UpdateTheAcc(player);
     PlayAudio(0);
     return 1;
   }
@@ -66,7 +64,6 @@ int Minotaur::attack(Player& player) {
 
   if(chanceToHit > 35) {
     player.DealDamage(GetDamage());
-    UI::Instance().UpdateTheHp(player);
     PlayAudio(0);
     return 1;
   }
@@ -125,6 +122,7 @@ void Blob::PlaySounds(int which) {
 // Trader:
 Trader::Trader(sf::Texture& _texture, sf::RenderWindow &_window) : Enemy( 1, _texture) , window(_window) {
   SetDamge(0);
+  GetSpriteAddr()->setScale({3, 3});
   GetSpriteAddr()->setOrigin({ 100, 100});
 
   offer1T.emplace(txl::TextureLoader::Instance().GetFont(), "Offer1", 20);
@@ -133,9 +131,9 @@ Trader::Trader(sf::Texture& _texture, sf::RenderWindow &_window) : Enemy( 1, _te
 
 void Trader::PositionSprite() {
   GetSpriteAddr()->setPosition({static_cast<float>(window.getSize().x/ 2), static_cast<float>(window.getSize().y/ 2)});
-  offer1T->setPosition({window.getSize().x / 2, window.getSize().y / 2});
-  offer2T->setPosition({window.getSize().x / 2, window.getSize().y / 2 + 40}); 
-}
+  offer1T->setPosition({static_cast<float>(window.getSize().x / 2) - 200, static_cast<float>(window.getSize().y / 2)});
+  offer2T->setPosition({static_cast<float>(window.getSize().x / 2) - 200, static_cast<float>(window.getSize().y / 2 + 40)}); 
+} 
 
 int Trader::attack(Player& player) {
   a = RNG() % 3;
@@ -323,8 +321,8 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, Labyrinth& lab, int &R
   return 1;
 }
 std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &window, const Player &player) {
-    // int i = RNG() % 8;
-    int i = 7;
+    int i = RNG() % 8;
+    // int i = 7;
     switch(i) {
       case 1: // blob
       case 2:
@@ -332,7 +330,7 @@ std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &windo
           return std::make_unique<Blob>(txl::TextureLoader::Instance().GetEnemyTexture("Blob.png"), window); 
         }
         break;
-
+ 
       case 0:
       case 3:
       case 4: //shade
