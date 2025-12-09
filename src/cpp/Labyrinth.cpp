@@ -269,7 +269,6 @@ int Labyrinth::Move(const std::string& where) {
   // and playercoords[0] and [1] still stores the coords of where we came from
 
   moves++;
-  chanceForExit -=10;
 
   layout[playerCords[0]][playerCords[1]].SetHasPlayer(0);
   
@@ -294,9 +293,10 @@ int Labyrinth::Move(const std::string& where) {
 
 
 
-  if (moves > 10 && chanceForExit > 10) { // after 10 moves we start to get close to the exit
-    chanceForExit -= 10;
+  if (moves > 20 && chanceForExit > 10) { // after 10 moves we start to get close to the exit
+    chanceForExit -= 2;
   }
+  if(chanceForExit <= 10 && RNG() % chanceForExit == 0) finish = 1;
   if (finish) {
     std::cout << "Congrats! You have escaped!";
     return 2;

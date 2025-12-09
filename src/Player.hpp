@@ -22,14 +22,19 @@ public:
   void HurtAccuracy(int howMuch) { accuracy-= howMuch; }
   int GetAccuracy() const { return accuracy; }
   int GetHp() const { return hp; }
+  void AddHp(int amnt) { hp += amnt; }
   int GetBullets() const { return bullets; }
   int GetFood() const { return food; }  
   int GetWater() const { return water; }
   void SetBullets(int n) { bullets = n; }
+  void AddBullets(int n) { bullets += n; }
+  void AddToAcc(int n) {accuracy += n; }
   void StealResources(int _water, int _food, int _bullets) { water -= _water; food -= _food; bullets -= _bullets; }
 
   void RefillWater();
+  void AddWater(int n) { water += n; }
   void RefillFood();
+  void AddFood(int n) { food += n; }
   int PlayerStatus();
   void BackPack() const;
   // void TakeDmg(int dmg);

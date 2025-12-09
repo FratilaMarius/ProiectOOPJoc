@@ -70,9 +70,10 @@ int main()
   int hasGeneratedEnemy = 0;
 
   int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0;
-  int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0;
+  int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0, RenderOffers = 0;
   static std::unique_ptr<Enemy> _enemy = NULL;
   int shots = 6; // this is used when we fight a mminotaur
+  int selectedOffer = 0; // this is used for the trader interactions
 
   std::cout << map;
   while (window.isOpen()) {
@@ -84,6 +85,14 @@ int main()
         hasGeneratedEnemy = 1;
         _enemy->PositionSprite();
         _enemy->PlayAudio(1);
+
+        const Trader* m = dynamic_cast<Trader*>(_enemy.get());
+        if( m != nullptr) {
+          _enemy->attack(player);
+          RenderOffers = 1;
+          m->GetOffer1();
+          m->GetOffer2();
+        }
       }
     }
 
@@ -103,25 +112,61 @@ int main()
       //////////////////////////////////////////////////////////////////////////////////
       // handling the input for fighting
         const auto *buttonPressed = event->getIf<sf::Event::MouseButtonPressed>();
-
-        if(buttonPressed->button == sf::Mouse::Button::Left && isFighting && hasGeneratedEnemy) {
-          int status = EncounterManager::Instance().Fight(_enemy.get() , player, RenderTextMissed, EnemyRenderTextMissed, shots);
-          if(status == 1) { // the player won
-            shots = 6;
-            isFighting = 0;
-            hasGeneratedEnemy = 0;
+        if(isFighting && hasGeneratedEnemy) {
+          if(buttonPressed->button == sf::Mouse::Button::Left && hasGeneratedEnemy) {
+            selectedOffer = 3;
+            int status = EncounterManager::Instance().Fight(_enemy.get() , player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
+            if(status == 1) { // the player won
+              shots = 6;
+              selectedOffer = 0;
+              RenderOffers = 0;
+              isFighting = 0;
+              hasGeneratedEnemy = 0;
+            }
+            if(status == -1) { // the player lost
+              shots = 6;
+              selectedOffer = 0;
+              RenderOffers = 0;
+              isFighting = 0;
+              hasGeneratedEnemy = 0;
+            }
+            // else the fight continues
           }
-          if(status == -1) { // the player lost
-            shots = 6;
-            isFighting = 0;
-            hasGeneratedEnemy = 0;
-          }
-          // else the fight continues
         }
       }
       else if (event->is<sf::Event::KeyPressed>()) {
         const auto *keyPressed = event->getIf<sf::Event::KeyPressed>();
-    
+      //////////////////////////////////////////////////////////////////////////////////
+      // Input for handling the trader interaction:
+        if(isFighting && hasGeneratedEnemy) {
+          const Trader* m = dynamic_cast<Trader*>(_enemy.get());
+          if(m != nullptr) { // the trader interaction:
+            if (keyPressed->scancode == sf::Keyboard::Scancode::Q) {
+              selectedOffer = 1;
+              int status = EncounterManager::Instance().Fight(_enemy.get() , player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
+              if (status == 1) {
+                shots = 6;
+                selectedOffer = 0;
+                RenderOffers = 0;
+                isFighting = 0;
+                hasGeneratedEnemy = 0;
+              }
+              continue;
+            }
+          if (keyPressed->scancode == sf::Keyboard::Scancode::E) {
+              selectedOffer = 2;
+              int status = EncounterManager::Instance().Fight(_enemy.get() , player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
+              if (status == 1) {
+                shots = 6;
+                selectedOffer = 0;
+                RenderOffers = 0;
+                isFighting = 0;
+                hasGeneratedEnemy = 0; 
+              }
+              continue;
+            }
+          }
+        }
         //////////////////////////////////////////////////////////////////////////////////
         // handling the input for moving
         if (keyPressed->scancode == sf::Keyboard::Scancode::Up && !isFighting) {
@@ -188,6 +233,7 @@ int main()
           continue;
         }
 //////////////////////////////////////////////////////////////////////////////////
+// Misc. input:
         if (keyPressed->scancode == sf::Keyboard::Scancode::Num0) {
           shouldExit = true;
           break;
@@ -203,7 +249,10 @@ int main()
             player.RefillWater();
             player.RefillFood();
           }
-          if(c == 2) RenderPickupText = 4;// bullets
+          if(c == 2) {
+            RenderPickupText = 4;// bullets
+            player.SetBullets(8);
+          }
           continue;
         }
         // if (keyPressed->scancode == sf::Keyboard::Scancode::Num2 && !isFighting) { // we display the inventory
@@ -286,6 +335,14 @@ int main()
         timerPickupText = 0;
       }
     }
+    if(RenderOffers) {
+      const Trader* m = dynamic_cast<Trader*>(_enemy.get());
+      if( m != nullptr) {
+        window.draw(m->GetOffer1());
+        window.draw(m->GetOffer2());
+      }
+    }
+
     window.display();
   }
 

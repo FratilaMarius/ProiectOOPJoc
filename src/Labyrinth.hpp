@@ -42,6 +42,7 @@ public:
   void Spawn(int x, int y); // the equivalent of GenerateRoom but only called on start
 
   int Move(const std::string &where); // moves the player from one room to another, f(string) : up/down/left/right
+  void GetCloserToExit(int n) { moves += n/10; chanceForExit -= n; }
 
   int CheckForItems() { return layout[playerCords[0]][playerCords[1]].FindPickup(RNG() % NR_UNIQUE_PICKUPS); }
 
@@ -68,7 +69,7 @@ private:
   std::vector<std::vector<Room>> layout;
   
   int moves = 0; // how many moves we have done
-  int chanceForExit = 101; // is used as rand() % cFE == 0?, so cFE = 100 --> 1% chance to exit, cFE = 1 --> 100% chance
+  int chanceForExit = 100; // is used as rand() % cFE == 0?, so cFE = 100 --> 1% chance to exit, cFE = 1 --> 100% chance
                            // it is decremented by 10 each time we make a move to a new room
   int finish = 0; // if this is 1 we end (win)
 };

@@ -13,7 +13,7 @@
 #include "TextureLoader.hpp"
 #include "UI.hpp"
 
-
+class Labyrinth; 
 ///////////////////////////////////////////////////////////////////////////////////
 //
 //
@@ -28,10 +28,11 @@ class Enemy {
 ///////////////////////////////////////////////////////////////////////////////////
 // Gameplay:
   virtual int attack(Player& player) = 0;
-
+  virtual void applyOffer(Player& player, Labyrinth& lab, int selectedOffer) {} // we'll use this one in the trader interaction
   virtual std::unique_ptr<Enemy> Clone() const = 0;
 
   void PlayAudio(int which) { PlaySounds(which); }
+
 
   void SetDamge(int amount) { damage = amount; }
   int GetDamage() { return damage; }
@@ -66,7 +67,6 @@ class Shade : public Enemy {
 
     // if the chance hits right, the shade deals dmg to the hp and accuracy of the player
     int attack(Player& player) override;
-
   private:
     sf::RenderWindow &window;
     int psichDmg;
@@ -113,14 +113,38 @@ class Blob : public Enemy {  public:
 
 class Trader : public Enemy {
   public:
-};
+    Trader(sf::Texture& _texture, sf::RenderWindow &_window);
+    ~Trader() override = default;
+    Trader(const Trader& other) : Enemy(other), window(other.window) {};
+    Trader& operator=(const Trader &other) = delete; 
+
+    void PositionSprite() override;
+
+    std::unique_ptr<Enemy> Clone() const override { return std::make_unique<Trader>(*this); }
+
+    int attack(Player& player) override;
+    void applyOffer(Player& player, Labyrinth& lab, int selectedOffer) override;
+
+    const sf::Text& GetOffer1() const { return offer1T.value(); }
+    const sf::Text& GetOffer2() const { return offer2T.value(); }
+    std::optional<sf::Text> offer1T, offer2T;
+
+
+  private:
+    sf::RenderWindow &window;
+    void PlaySounds(int which) override;
+
+    int a, b, c, d, e; // used to decide offers, see definition of Trader::Attack
+    std::string offer1;
+    std::string offer2;
+  };
 
 class EncounterManager {
   public:
     static EncounterManager &Instance();
 
     // we call this when a bool in main is true and we press leftClck
-    int Fight(Enemy* enemy, Player& player, int &RenderTextMissed, int &EnemyRenderTextMissed, int &Shots);
+    int Fight(Enemy* enemy, Player& player, Labyrinth& lab, int &RenderTextMissed, int &EnemyRenderTextMissed, int &Shots, int selectedOffer);
 
     std::unique_ptr<Enemy> GenerateAnEnemy(sf::RenderWindow &window, const Player &player);
   private:
