@@ -218,7 +218,7 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, Labyrinth& lab, int &R
       // the player shoots
       if(player.GetBullets() > 0) {
         txl::TextureLoader::Instance().GetSound("Pistol.mp3");
-        if(player.GetAccuracy() - (RNG() % 100) > 0) {
+        if(player.GetAccuracy() - (RNG() % 100) > 7) {
           enemy->HurtEnemy(30);
           enemy->PlayAudio(2);
         }
@@ -245,7 +245,7 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, Labyrinth& lab, int &R
       // the player shoots
       if(player.GetBullets() > 0) {
         txl::TextureLoader::Instance().GetSound("Pistol.mp3");
-        if(player.GetAccuracy() - (RNG() % 100)> 0) {
+        if(player.GetAccuracy() - (RNG() % 100) > 7) {
           enemy->HurtEnemy(30);
           enemy->PlayAudio(0);
         }
@@ -273,7 +273,7 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, Labyrinth& lab, int &R
       // the player shoots 6 times
       if(player.GetBullets() > 0 && Shots > 0) {
         txl::TextureLoader::Instance().GetSound("Pistol.mp3");
-        if(player.GetAccuracy() - (RNG() % 100)> 0) {
+        if(player.GetAccuracy() - (RNG() % 100) > 7) {
           enemy->HurtEnemy(30);
           enemy->PlayAudio(2);
         }

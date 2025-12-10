@@ -69,7 +69,7 @@ int main()
   int isFighting = 0;
   int hasGeneratedEnemy = 0;
 
-  int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0, timerCheat = 0;
+  int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0, timerCheat = 0, timerShiftingRooms = 0;
   int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0, RenderOffers = 0, RenderCheat = 0;
   static std::unique_ptr<Enemy> _enemy = NULL;
   int shots = 6; // this is used when we fight a mminotaur
@@ -381,7 +381,15 @@ int main()
         window.draw(m->GetOffer2());
       }
     }
-
+    if(UI::Instance().GetShiftingRooms()) {
+      timerShiftingRooms++;
+      window.draw(UI::Instance().GetText(12));
+      
+      if(timerShiftingRooms >= 120) {
+        UI::Instance().SetShiftingRooms(0);
+        timerShiftingRooms = 0;
+      }
+    }
     window.display();
   }
 

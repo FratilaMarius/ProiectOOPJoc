@@ -285,7 +285,9 @@ int Labyrinth::Move(const std::string& where) {
   
   // if we've already been to this room >3 times we reset the layout, minus the room we're moving to
   if (layout[newX][newY].GetTimesVisited() > 3) { 
-    ResetLayout(newY, newX);
+    ResetLayout(newX, newY);
+    txl::TextureLoader::Instance().GetSound("ShiftingRooms.mp3");
+    UI::Instance().SetShiftingRooms(1);
   }
 
   playerCords[0] = newX;

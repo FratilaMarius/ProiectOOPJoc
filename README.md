@@ -19,7 +19,7 @@ Try to escape a randomly generated labyrinth while balancing your resources and 
 
 #### Resources:
   - [ ] "Blob" texture, all sounds and all background images taken from a DOOM II 1994 community mod, font is "CourierPrime-Regular.ttf"(open font license)
-  - [ ]SFML C++ library for sound and graphics 
+  - [ ] SFML C++ library for sound and graphics 
 - [ ] anything else(textures, code) made by me
 
 

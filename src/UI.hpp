@@ -41,7 +41,9 @@ class UI {
     return *(miscUIsprites[which]);
   }
   /////////////////////////////////////////////////////////////////////////////
-  
+  int GetShiftingRooms() { return DisplayShiftingRooms; }
+  void SetShiftingRooms(int n) { DisplayShiftingRooms = n; }
+
   private:
 
   UI();
@@ -54,6 +56,6 @@ class UI {
   std::unordered_map<std::string,std::optional<sf::Sprite>> miscUIsprites;
   
   std::unordered_map<std::string, std::optional<sf::Text>> Texts;
-  
+  int DisplayShiftingRooms = 0;
 
 };

@@ -31,11 +31,11 @@ Player& Player::operator=(const Player& other) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Gameplay:  
 void Player::RefillWater() {
-  water = 15;
+  water = 25;
   if(food > 0) movesUntilDemise = 5;
 }      
 void Player::RefillFood() {
-  food = 12;
+  food = 20;
   if(water > 0) movesUntilDemise = 5;
 }
 // Checks the status of the player: decrements his resources, and checks if he still has any left. if not, decrements movesUntilDemise and kills him if <0 (ret -1)

@@ -47,6 +47,8 @@ void UI::PositionUI(sf::RenderWindow &window) {
   Texts["Resources"]->setPosition({10, winY - 25});
   Texts["FoundBull"]->setPosition({10, winY - 25});
   Texts["Nothing"]->setPosition({10, winY - 25});
+  
+  Texts["Shifting"]->setPosition({winX / 2 - 225, winY - 60});
 
   miscUIsprites["hpBar"]->setPosition({10, 10});
   miscUIsprites["hpBar_empty"]->setPosition({10, 10});
@@ -106,6 +108,9 @@ const sf::Text &UI::GetText(int which) {
     case 11:
       return *(Texts["Cheat"]);
       break;
+    case 12:
+      return *(Texts["Shifting"]);
+      break;
       default:
       break;
   }
@@ -134,6 +139,8 @@ UI::UI() {
       Texts["Resources"].emplace(txl::TextureLoader::Instance().GetFont(), "Found some resources.", 15);  
       Texts["FoundBull"].emplace(txl::TextureLoader::Instance().GetFont(), "Found some bullets.", 15);    
       Texts["Nothing"].emplace(txl::TextureLoader::Instance().GetFont(), "There's nothing here.", 15);    
+      
+      Texts["Shifting"].emplace(txl::TextureLoader::Instance().GetFont(), "Your surroundings no longer seem familiar...", 15);    
     
       Texts["RescInv"].emplace(txl::TextureLoader::Instance().GetFont(), "Food: Water:", 15);  
       Texts["Cheat"].emplace(txl::TextureLoader::Instance().GetFont(), "Cheater!", 25);  
