@@ -6,7 +6,7 @@ Miscellaneous &Miscellaneous::Instance() {
   return instance;
 }
 
-int Miscellaneous::EffectsOfMoving(Player &player, std::string where, Labyrinth &map, bool &shouldExit, int& isFighting) {
+int Miscellaneous::EffectsOfMoving(Player &player, const std::string &where, Labyrinth &map, bool &shouldExit, int& isFighting) {
     try {
       int x = map.Move(where);
       if(x == 3) {
@@ -27,7 +27,7 @@ int Miscellaneous::EffectsOfMoving(Player &player, std::string where, Labyrinth 
     return 1;
 }
 
-void Miscellaneous::Trade(FightContext context, Enemy *enemy, int &RenderOffers, int &isFighting, int &hasGeneratedEnemy, int &MadeATrader) {
+void Miscellaneous::Trade(FightContext &context, Enemy *enemy, int &RenderOffers, int &isFighting, int &hasGeneratedEnemy, int &MadeATrader) {
     int status = EncounterManager::Instance().Fight(context, enemy);
     if (status == 1) {
       context.shots = 6;
@@ -39,7 +39,7 @@ void Miscellaneous::Trade(FightContext context, Enemy *enemy, int &RenderOffers,
     }
 }
 
-void Miscellaneous::Renders_WithOut_timers(sf::RenderWindow &window, Labyrinth &map, int &isFighting, Player &player) {
+void Miscellaneous::Renders_WithOut_timers(sf::RenderWindow &window, Labyrinth &map, int &isFighting, const Player &player) {
     map.SetCurrentRoomSprScale(window);
     window.draw(map.GetCurrentRoomSprite());
 
