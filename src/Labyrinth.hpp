@@ -41,7 +41,12 @@ public:
   void GenerateRoom(int x, int y, int originX, int originY); // generates a new room (gives it a texture and exits)
   void Spawn(int x, int y); // the equivalent of GenerateRoom but only called on start
 
-  int Move(const std::string &where); // moves the player from one room to another, f(string) : up/down/left/right
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Return values for this function are as follows: 1 - default, nothing happened, we just moved
+  //                                                 2 - there's an enemy where we jsut moved
+  //                                                 3 - we have escaped
+  int Move(const std::string &where);
   void GetCloserToExit(int n) { moves += n/10; chanceForExit -= n; }
 
   int CheckForItems() { return layout[playerCords[0]][playerCords[1]].FindPickup(RNG() % NR_UNIQUE_PICKUPS); }

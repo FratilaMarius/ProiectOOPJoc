@@ -321,7 +321,7 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, Labyrinth& lab, int &R
   return 1;
 }
 
-std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &window, const Player &player) {
+std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &window, const Player &player, int &madeATrader) {
     int i = RNG() % 7;
     // int i = 7;
     switch(i) {
@@ -349,6 +349,7 @@ std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &windo
       case 6:
       // case 7: // trader
           enemyP = std::make_unique<Trader>(txl::TextureLoader::Instance().GetEnemyTexture("Trader.png"), window);
+          madeATrader = 1;
           return std::move(enemyP);
         break;
 

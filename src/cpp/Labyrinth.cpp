@@ -159,6 +159,10 @@ void Labyrinth::Spawn(int x, int y) { // we only call this one in the constructo
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Gameplay/ movement:
+// 
+// Return values for this function are as follows: 1 - default, nothing happened, we just moved
+//                                                 2 - there's an enemy where we jsut moved
+//                                                 3 - we have escaped
 //
 int Labyrinth::Move(const std::string& where) {
 

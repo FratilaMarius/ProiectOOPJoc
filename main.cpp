@@ -13,6 +13,7 @@
 #include "src/TextureLoader.hpp"
 #include "src/Exceptions.hpp"
 #include "src/UI.hpp"
+#include "src/Miscellaneous.hpp"
 
 
 int main()
@@ -66,8 +67,9 @@ int main()
 
 ///////////////////////////////////////////////////////////////////////////
 // Gameplay:
+
   int isFighting = 0;
-  int hasGeneratedEnemy = 0;
+  int hasGeneratedEnemy = 0, madeATrader = 0;
 
   int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0, timerCheat = 0, timerShiftingRooms = 0;
   int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0, RenderOffers = 0, RenderCheat = 0;
@@ -75,23 +77,22 @@ int main()
   int shots = 6; // this is used when we fight a mminotaur
   int selectedOffer = 0; // this is used for the trader interactions
 
-  std::cout << map;
+
+
   while (window.isOpen()) {
     bool shouldExit = false;
     if(isFighting && !hasGeneratedEnemy) {
-      _enemy = EncounterManager::Instance().GenerateAnEnemy(window, player);
+      _enemy = EncounterManager::Instance().GenerateAnEnemy(window, player, madeATrader);
       if(_enemy == NULL) isFighting = 0;
       else {
         hasGeneratedEnemy = 1;
         _enemy->PositionSprite();
         _enemy->PlayAudio(1);
 
-        const Trader* t = dynamic_cast<Trader*>(_enemy.get());
-        if( t != nullptr) {
+        if(madeATrader) { // since the interaction with the trader differs, we cehck for it
+          madeATrader = 1;
           _enemy->attack(player);
           RenderOffers = 1;
-          t->GetOffer1();
-          t->GetOffer2();
         }
       }
     }
@@ -109,8 +110,8 @@ int main()
         window.setView(sf::View(visibleArea));
       }
       else if (event->is<sf::Event::MouseButtonPressed>()) {
-      //////////////////////////////////////////////////////////////////////////////////
-      // handling the input for fighting
+        //////////////////////////////////////////////////////////////////////////////////
+        // handling the input for fighting
         const auto *buttonPressed = event->getIf<sf::Event::MouseButtonPressed>();
         if(isFighting && hasGeneratedEnemy) {
           if(buttonPressed->button == sf::Mouse::Button::Left) {
@@ -119,14 +120,12 @@ int main()
             if(status == 1) { // the player won
               shots = 6;
               selectedOffer = 0;
-              RenderOffers = 0;
               isFighting = 0;
               hasGeneratedEnemy = 0;
             }
             if(status == -1) { // the player lost
               shots = 6;
               selectedOffer = 0;
-              RenderOffers = 0;
               isFighting = 0;
               hasGeneratedEnemy = 0;
             }
@@ -136,128 +135,50 @@ int main()
       }
       else if (event->is<sf::Event::KeyPressed>()) {
         const auto *keyPressed = event->getIf<sf::Event::KeyPressed>();
-      //////////////////////////////////////////////////////////////////////////////////
-      // Input for handling the trader interaction:
-        if(isFighting && hasGeneratedEnemy) {
-          const Trader* m = dynamic_cast<Trader*>(_enemy.get());
-          if(m != nullptr) { // the trader interaction:
+
+        //////////////////////////////////////////////////////////////////////////////////
+        // Input for handling the trader interaction:
+        if(isFighting && hasGeneratedEnemy && madeATrader) {
             if (keyPressed->scancode == sf::Keyboard::Scancode::Q) {
-              selectedOffer = 1;
-              int status = EncounterManager::Instance().Fight(_enemy.get() , player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
-              if (status == 1) {
-                shots = 6;
-                selectedOffer = 0;
-                RenderOffers = 0;
-                isFighting = 0;
-                hasGeneratedEnemy = 0;
-              }
+              Miscellaneous::Instance().Trade(1, _enemy.get(), player, map, RenderTextMissed, 
+                                        EnemyRenderTextMissed, shots, RenderOffers, isFighting, hasGeneratedEnemy, madeATrader);
               continue;
             }
           if (keyPressed->scancode == sf::Keyboard::Scancode::E) {
-              selectedOffer = 2;
-              int status = EncounterManager::Instance().Fight(_enemy.get() , player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
-              if (status == 1) {
-                shots = 6;
-                selectedOffer = 0;
-                RenderOffers = 0;
-                isFighting = 0;
-                hasGeneratedEnemy = 0; 
-              }
+              Miscellaneous::Instance().Trade(2, _enemy.get(), player, map, RenderTextMissed, 
+                                        EnemyRenderTextMissed, shots, RenderOffers, isFighting, hasGeneratedEnemy, madeATrader);
               continue;
             }
-          }
         }
+
         //////////////////////////////////////////////////////////////////////////////////
         // handling the input for moving
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Up && !isFighting) {
-          try {
-            int x = map.Move("up");
-            if(x == 3) {
-              shouldExit = true;
-              continue;
-            }
-            if(x == 2) isFighting = 1;
+        if(!isFighting) {
 
-            int alive = player.PlayerStatus();
-            if (alive < 0) {
-              std::cout << "\nYou died\n\n";
-              shouldExit = true;
-            }
-          } catch(LabExceptionCouldntMove &exp) {
-              std::cout<< exp.what();
-            }
-          std::cout << map;
-          continue;
+          if (keyPressed->scancode == sf::Keyboard::Scancode::Up)
+            if(Miscellaneous::Instance().EffectsOfMoving(player, "up", map, shouldExit, isFighting) == 1) continue;
+
+
+          if (keyPressed->scancode == sf::Keyboard::Scancode::Down) 
+            if(Miscellaneous::Instance().EffectsOfMoving(player, "down", map, shouldExit, isFighting) == 1) continue;
+
+
+          if (keyPressed->scancode == sf::Keyboard::Scancode::Left) 
+            if(Miscellaneous::Instance().EffectsOfMoving(player, "left", map, shouldExit, isFighting) == 1) continue;
+
+
+          if (keyPressed->scancode == sf::Keyboard::Scancode::Right) 
+            if(Miscellaneous::Instance().EffectsOfMoving(player, "right", map, shouldExit, isFighting) == 1) continue;
         }
 
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Down && !isFighting) {
-          try {
-            int x = map.Move("down");
-            if(x == 3) {
-              shouldExit = true;
-              continue;
-            }
-            if(x == 2) isFighting = 1;
-
-            int alive = player.PlayerStatus();
-            if (alive < 0) {
-              std::cout << "\nYou died\n\n";
-              shouldExit = true;
-            }
-          } catch(LabExceptionCouldntMove &exp) {
-              std::cout<< exp.what(); 
-            }
-          std::cout << map;
-          continue;
-        }
-
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Left && !isFighting) {
-          try{
-            int x = map.Move("left");
-            if(x == 3) {
-              shouldExit = true;
-              continue;
-            }
-            if(x == 2) isFighting = 1;
-
-            int alive = player.PlayerStatus();
-            if (alive < 0) {
-              std::cout << "\nYou died\n\n";
-              shouldExit = true;
-            }
-          } catch(LabExceptionCouldntMove &exp) {
-              std::cout<< exp.what(); 
-            }
-          std::cout << map;
-          continue;
-        }
-
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Right && !isFighting) {
-          try{
-            int x = map.Move("right");
-            if(x == 3) {
-              shouldExit = true;
-              continue;
-            }
-            if(x == 2) isFighting = 1;
-
-            int alive = player.PlayerStatus();
-            if (alive < 0) {
-              std::cout << "\nYou died\n\n";
-              shouldExit = true;
-            }
-          } catch (LabExceptionCouldntMove &exp) {
-              std::cout<< exp.what(); 
-            }
-          std::cout << map;
-          continue;
-        }
-//////////////////////////////////////////////////////////////////////////////////
-// Misc. input:
+        //////////////////////////////////////////////////////////////////////////////////
+        // Misc. input:
         if (keyPressed->scancode == sf::Keyboard::Scancode::Num0) {
           shouldExit = true;
           break;
         }
+
+
         if (keyPressed->scancode == sf::Keyboard::Scancode::Num1 && !isFighting) {
           int c = map.CheckForItems();
 
@@ -275,16 +196,19 @@ int main()
           }
           continue;
         }
+
+
         if (keyPressed->scancode == sf::Keyboard::Scancode::Equal && !isFighting) {
           map.GetCloserToExit(10);
           RenderCheat = 1;
           continue;
         }
+
+
         // if (keyPressed->scancode == sf::Keyboard::Scancode::Num2 && !isFighting) { // we display the inventory
         //   player.BackPack();
         //   continue;
         // }
-        std::cout << "\nUnrecognised input\n";
       }
     }
     if (shouldExit) {
@@ -295,46 +219,15 @@ int main()
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(10ms);
 
+    //////////////////////////////////////////////////////////////////////////////////
+    // Rendering / timers: 
     window.clear();
+    Miscellaneous::Instance().Renders_WithOut_timers(window, map, isFighting, player);
 
-    map.SetCurrentRoomSprScale(window);
-    window.draw(map.GetCurrentRoomSprite());
-
-    UI::Instance().PositionUI(window);
-
-    window.draw(UI::Instance().GetMiscUIsprite("hpBar"));
-    window.draw(UI::Instance().GetMiscUIsprite("hpBar_empty"));
-    window.draw(UI::Instance().GetMiscUIsprite("accBar"));
-    window.draw(UI::Instance().GetMiscUIsprite("accBar_empty"));
-
-    if(!isFighting)  
-      for(int i = 0; i < 4; i++) {
-        const int *tempExitArray = map.FigureWhatUItoRender();
-        if(tempExitArray[0] == 1) window.draw(UI::Instance().GetUI_Sprites(0));
-          else window.draw(UI::Instance().GetEmptyUI_Sprites(0));
-        if(tempExitArray[1] == 1) window.draw(UI::Instance().GetUI_Sprites(1));
-          else window.draw(UI::Instance().GetEmptyUI_Sprites(1));
-        if(tempExitArray[2] == 1) window.draw(UI::Instance().GetUI_Sprites(2));
-          else window.draw(UI::Instance().GetEmptyUI_Sprites(2));
-        if(tempExitArray[3] == 1) window.draw(UI::Instance().GetUI_Sprites(3));
-          else window.draw(UI::Instance().GetEmptyUI_Sprites(3));
-      }
     if(isFighting && hasGeneratedEnemy) {
       _enemy->PositionSprite();
       window.draw(_enemy->GetSprite());
     }
-
-    UI::Instance().UpdateTheHp(player);
-    UI::Instance().UpdateTheAcc(player);
-    window.draw(UI::Instance().GetText(9));
-    window.draw(UI::Instance().GetText(10));
-
-    UI::Instance().UpdateTheBullets(player);
-    window.draw(UI::Instance().GetText(3));
-
-    UI::Instance().UpdateTheInv(player);
-    window.draw(UI::Instance().GetText(8));
-
     if(map.GetShouldDisplayDeadEndText()) window.draw(UI::Instance().GetText(0));
     if(RenderTextMissed) {
       window.draw(UI::Instance().GetText(1));

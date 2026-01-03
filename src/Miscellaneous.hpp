@@ -1,0 +1,38 @@
+#include <iostream>
+#include <fstream>
+#include <array>
+#include <chrono>
+#include <thread>
+#include <SFML/Graphics.hpp>
+
+#include "Player.hpp"
+#include "Enemy.hpp"
+#include "Utility.hpp"
+#include "Room.hpp"
+#include "Labyrinth.hpp"
+#include "TextureLoader.hpp"
+#include "Exceptions.hpp"
+#include "UI.hpp"
+
+class Miscellaneous
+{
+
+public:
+  static Miscellaneous &Instance();
+
+  // return 1 = continue
+  int EffectsOfMoving(Player &player, std::string where, Labyrinth &map, bool &shouldExit, int& isFighting);
+
+  void Trade(int selectedOffer, Enemy *enemy, Player &player, Labyrinth &map, 
+             int &RenderTextMissed, int &EnemyRenderTextMissed, int &shots,
+             int &RenderOffers, int &isFighting, int &hasGeneratedEnemy, int &MadeATrader);
+
+  void Renders_WithOut_timers(sf::RenderWindow &window, Labyrinth &map, int &isFighting, Player &player);
+
+
+private:
+  Miscellaneous() = default;
+  ~Miscellaneous() = default;
+  
+
+};

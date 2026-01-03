@@ -38,7 +38,10 @@ void Player::RefillFood() {
   food = 20;
   if(water > 0) movesUntilDemise = 5;
 }
+
 // Checks the status of the player: decrements his resources, and checks if he still has any left. if not, decrements movesUntilDemise and kills him if <0 (ret -1)
+// if we return -1 we have died
+//
 int Player::PlayerStatus() {
   if(hp <= 0) return -1;
   water--;
