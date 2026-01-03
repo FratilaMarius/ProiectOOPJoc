@@ -27,13 +27,11 @@ int Miscellaneous::EffectsOfMoving(Player &player, std::string where, Labyrinth 
     return 1;
 }
 
-void Miscellaneous::Trade(int selectedOffer, Enemy *enemy, Player &player, Labyrinth &map, 
-             int &RenderTextMissed, int &EnemyRenderTextMissed, int &shots,
-             int &RenderOffers, int &isFighting, int &hasGeneratedEnemy, int &MadeATrader) {
-    int status = EncounterManager::Instance().Fight(enemy, player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
+void Miscellaneous::Trade(FightContext context, Enemy *enemy, int &RenderOffers, int &isFighting, int &hasGeneratedEnemy, int &MadeATrader) {
+    int status = EncounterManager::Instance().Fight(context, enemy);
     if (status == 1) {
-      shots = 6;
-      selectedOffer = 0;
+      context.shots = 6;
+      context.selectedOffer = 0;
       RenderOffers = 0;
       isFighting = 0;
       hasGeneratedEnemy = 0; 

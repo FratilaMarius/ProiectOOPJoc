@@ -14,6 +14,19 @@
 #include "UI.hpp"
 
 class Labyrinth; 
+
+struct FightContext {
+    Player& player;
+    Labyrinth& lab;
+    int& renderTextMissed;
+    int& enemyRenderTextMissed;
+    int& shots;
+    int selectedOffer;
+    
+    FightContext(Player& player, Labyrinth& lab, int& renderTextMissed, int& enemyRenderTextMissed, int& shots, int selectedOffer)
+        : player(player), lab(lab), renderTextMissed(renderTextMissed), 
+          enemyRenderTextMissed(enemyRenderTextMissed), shots(shots), selectedOffer(selectedOffer) {}
+};
 ///////////////////////////////////////////////////////////////////////////////////
 //
 //
@@ -30,6 +43,8 @@ class Enemy {
   virtual int attack(Player& player) = 0;
   virtual void applyOffer(Player& /*player*/, Labyrinth& /*lab*/, int /*selectedOffer*/) {} // we'll use this one in the trader interaction
   virtual std::unique_ptr<Enemy> Clone() const = 0;
+
+  virtual int FightRound(FightContext& context) = 0;
 
   void PlayAudio(int which) { PlaySounds(which); }
 
@@ -64,6 +79,7 @@ class Shade : public Enemy {
     void PositionSprite() override;
 
     std::unique_ptr<Enemy> Clone() const override { return std::make_unique<Shade>(*this); }
+    int FightRound(FightContext& context) override;
 
     // if the chance hits right, the shade deals dmg to the hp and accuracy of the player
     int attack(Player& player) override;
@@ -84,6 +100,7 @@ class Minotaur : public Enemy {
     void PositionSprite() override;
 
     std::unique_ptr<Enemy> Clone() const override { return std::make_unique<Minotaur>(*this); }
+    int FightRound(FightContext& context) override;
 
     // if the chance hits right, the Minotaur deals dmg to the hp of the player
     int attack(Player& player) override;
@@ -102,6 +119,7 @@ class Blob : public Enemy {  public:
     void PositionSprite() override;
 
     std::unique_ptr<Enemy> Clone() const override { return std::make_unique<Blob>(*this); }
+    int FightRound(FightContext& context) override;
 
     // if the chance hits right, the blob will steal some of the players resources
     int attack(Player& player) override;
@@ -121,6 +139,7 @@ class Trader : public Enemy {
     void PositionSprite() override;
 
     std::unique_ptr<Enemy> Clone() const override { return std::make_unique<Trader>(*this); }
+    int FightRound(FightContext& context) override;
 
     int attack(Player& player) override;
     void applyOffer(Player& player, Labyrinth& lab, int selectedOffer) override;
@@ -144,7 +163,7 @@ class EncounterManager {
     static EncounterManager &Instance();
 
     // we call this when a bool in main is true and we press leftClck
-    int Fight(Enemy* enemy, Player& player, Labyrinth& lab, int &RenderTextMissed, int &EnemyRenderTextMissed, int &Shots, int selectedOffer);
+    int Fight(FightContext &context, Enemy* enemy);
 
     std::unique_ptr<Enemy> GenerateAnEnemy(sf::RenderWindow &window, const Player &player, int &madeATrader);
   private:
@@ -152,3 +171,4 @@ class EncounterManager {
     ~EncounterManager() = default;
     std::unique_ptr<Enemy> enemyP;
 };
+

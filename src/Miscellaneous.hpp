@@ -23,9 +23,8 @@ public:
   // return 1 = continue
   int EffectsOfMoving(Player &player, std::string where, Labyrinth &map, bool &shouldExit, int& isFighting);
 
-  void Trade(int selectedOffer, Enemy *enemy, Player &player, Labyrinth &map, 
-             int &RenderTextMissed, int &EnemyRenderTextMissed, int &shots,
-             int &RenderOffers, int &isFighting, int &hasGeneratedEnemy, int &MadeATrader);
+  void Trade(FightContext context,  Enemy *enemy, int &RenderOffers, int &isFighting, int &hasGeneratedEnemy, int &MadeATrader);
+
 
   void Renders_WithOut_timers(sf::RenderWindow &window, Labyrinth &map, int &isFighting, Player &player);
 

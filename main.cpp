@@ -76,6 +76,7 @@ int main()
   static std::unique_ptr<Enemy> _enemy = NULL;
   int shots = 6; // this is used when we fight a mminotaur
   int selectedOffer = 0; // this is used for the trader interactions
+  FightContext context(player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
 
 
 
@@ -116,7 +117,7 @@ int main()
         if(isFighting && hasGeneratedEnemy) {
           if(buttonPressed->button == sf::Mouse::Button::Left) {
             selectedOffer = 3;
-            int status = EncounterManager::Instance().Fight(_enemy.get() , player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
+            int status = EncounterManager::Instance().Fight(context, _enemy.get());
             if(status == 1) { // the player won
               shots = 6;
               selectedOffer = 0;
@@ -140,13 +141,11 @@ int main()
         // Input for handling the trader interaction:
         if(isFighting && hasGeneratedEnemy && madeATrader) {
             if (keyPressed->scancode == sf::Keyboard::Scancode::Q) {
-              Miscellaneous::Instance().Trade(1, _enemy.get(), player, map, RenderTextMissed, 
-                                        EnemyRenderTextMissed, shots, RenderOffers, isFighting, hasGeneratedEnemy, madeATrader);
+              Miscellaneous::Instance().Trade(context, _enemy.get(), RenderOffers, isFighting, hasGeneratedEnemy, madeATrader);
               continue;
             }
           if (keyPressed->scancode == sf::Keyboard::Scancode::E) {
-              Miscellaneous::Instance().Trade(2, _enemy.get(), player, map, RenderTextMissed, 
-                                        EnemyRenderTextMissed, shots, RenderOffers, isFighting, hasGeneratedEnemy, madeATrader);
+              Miscellaneous::Instance().Trade(context, _enemy.get(), RenderOffers, isFighting, hasGeneratedEnemy, madeATrader);
               continue;
             }
         }

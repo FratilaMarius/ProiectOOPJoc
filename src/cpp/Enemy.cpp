@@ -22,6 +22,34 @@ void Shade::PositionSprite() {
   GetSpriteAddr()->setScale({3.f, 3.f});  
   GetSpriteAddr()->setPosition({static_cast<float>(window.getSize().x/ randomizerPosX), static_cast<float>(window.getSize().y/randomizerPosY)});
 }
+
+int Shade::FightRound(FightContext& context) {
+// the player shoots
+  if(context.player.GetBullets() > 0) {
+    txl::TextureLoader::Instance().GetSound("Pistol.mp3");
+    if(context.player.GetAccuracy() - (RNG() % 100) > 7) {
+      HurtEnemy(30);
+      PlayAudio(2);
+    }
+    else {
+      context.renderTextMissed = 1;
+    }
+    context.player.SetBullets(context.player.GetBullets() - 1);
+  }
+
+  // then the enemy has a chance to hit back
+  if(GetHp() > 0)
+    if(!attack(context.player)) context.enemyRenderTextMissed = 1;
+  if(context.player.GetAccuracy() < 10) return 1;
+  if(GetHp() < 0) {
+    PlayAudio(3);
+    return 1;
+  }
+  if(context.player.GetHp() < 0) return -1;
+  return 0;
+}
+
+
 int Shade::attack(Player& player) {
   int chanceToHit = RNG() % 100;
 
@@ -58,6 +86,36 @@ void Minotaur::PositionSprite() {
   GetSpriteAddr()->setScale({2.3f, 2.3f});  
   GetSpriteAddr()->setPosition({static_cast<float>(window.getSize().x/ 2), static_cast<float>(window.getSize().y/ 2)});
 };
+
+int Minotaur::FightRound(FightContext& context) {
+  // the player shoots 6 times
+  if(context.player.GetBullets() > 0 && context.shots > 0) {
+    txl::TextureLoader::Instance().GetSound("Pistol.mp3");
+    if(context.player.GetAccuracy() - (RNG() % 100) > 7) {
+      HurtEnemy(30);
+      PlayAudio(2);
+    }
+    else {
+      context.renderTextMissed = 1;
+    }
+    context.player.SetBullets(context.player.GetBullets() - 1);
+    context.shots--;
+  }
+
+  if(context.shots <= 0 || context.player.GetBullets() <= 0)      // then the enemy has a chance to hit back
+    if(GetHp() > 0) {
+      if(!attack(context.player)) context.enemyRenderTextMissed = 1;
+      return 1;
+    }
+  if(GetHp() < 0) {
+    PlayAudio(3);
+    return 1;
+  }
+  if(context.player.GetHp() < 0) return -1;
+  return 0;
+}
+
+
 
 int Minotaur::attack(Player& player) {
   int chanceToHit = RNG() % 100;
@@ -99,6 +157,33 @@ void Blob::PositionSprite() {
   GetSpriteAddr()->setPosition({static_cast<float>(window.getSize().x/ randomizerPosX), static_cast<float>(window.getSize().y/ randomizerPosY)});
 }
 
+int Blob::FightRound(FightContext& context) {
+  // the player shoots
+  if(context.player.GetBullets() > 0) {
+    txl::TextureLoader::Instance().GetSound("Pistol.mp3");
+    if(context.player.GetAccuracy() - (RNG() % 100) > 7) {
+      HurtEnemy(30);
+      PlayAudio(0);
+    }
+    else {
+      context.renderTextMissed = 1;
+    }
+    context.player.SetBullets(context.player.GetBullets() - 1);
+  }
+  
+  // then the enemy has a chance to hit back
+  if(GetHp() > 0)
+    if(!attack(context.player)) context.enemyRenderTextMissed = 1;
+  if(GetHp() < 0) {
+    PlayAudio(0);
+    return 1;
+  }
+  if(context.player.GetHp() < 0) return -1;
+  if(context.player.GetBullets() < 2) return -1;
+  return 0;
+}
+
+
 int Blob::attack(Player& player) {
   int chanceToHit = RNG() % 100;
 
@@ -134,6 +219,28 @@ void Trader::PositionSprite() {
   offer1T->setPosition({static_cast<float>(window.getSize().x / 2) - 200, static_cast<float>(window.getSize().y / 2)});
   offer2T->setPosition({static_cast<float>(window.getSize().x / 2) - 200, static_cast<float>(window.getSize().y / 2 + 40)}); 
 } 
+
+
+int Trader::FightRound(FightContext& context) {
+  if(context.selectedOffer == 0) return 10; // the player did nothing, we ll call again
+  if(context.selectedOffer == 3) {
+    context.player.AddHp(RNG() % 10 + 8);
+    PlayAudio(3); // death audio
+    return 1; // the player shot the trader
+  }
+  if(context.selectedOffer == 1) {
+    applyOffer(context.player, context.lab, context.selectedOffer);
+    PlayAudio(0); // done deal audio
+    return 1; // offer1
+  }
+  if(context.selectedOffer == 2) {
+    applyOffer(context.player, context.lab, context.selectedOffer);
+    PlayAudio(0); // done deal audio
+    return 1; // offer2
+  }
+  return 0;
+}
+
 
 int Trader::attack(Player& player) {
   a = RNG() % 3;
@@ -212,118 +319,14 @@ EncounterManager &EncounterManager::Instance() {
   static EncounterManager instance;
   return instance;
 }
-int EncounterManager::Fight(Enemy* enemy, Player& player, Labyrinth& lab, int &RenderTextMissed, int &EnemyRenderTextMissed, int &Shots, int selectedOffer) {
-  const Shade* s = dynamic_cast<Shade*>(enemy);
-    if (s != nullptr) { // shade combat
-      // the player shoots
-      if(player.GetBullets() > 0) {
-        txl::TextureLoader::Instance().GetSound("Pistol.mp3");
-        if(player.GetAccuracy() - (RNG() % 100) > 7) {
-          enemy->HurtEnemy(30);
-          enemy->PlayAudio(2);
-        }
-        else {
-          RenderTextMissed = 1;
-        }
-        player.SetBullets(player.GetBullets() - 1);
-      }
-      // then the enemy has a chance to hit back
-      if(enemy->GetHp() > 0)
-        if(!enemy->attack(player)) EnemyRenderTextMissed = 1;
+int EncounterManager::Fight(FightContext &context, Enemy* enemy) {
 
-      if(player.GetAccuracy() < 10) return 1;
-      if(enemy->GetHp() < 0) {
-        enemy->PlayAudio(3);
-        return 1;
-      }
-      if(player.GetHp() < 0) return -1;
-      return 0;
-    }
-
-  const Blob* b = dynamic_cast<Blob*>(enemy);
-    if (b != nullptr) { // Blob combat
-      // the player shoots
-      if(player.GetBullets() > 0) {
-        txl::TextureLoader::Instance().GetSound("Pistol.mp3");
-        if(player.GetAccuracy() - (RNG() % 100) > 7) {
-          enemy->HurtEnemy(30);
-          enemy->PlayAudio(0);
-        }
-        else {
-          RenderTextMissed = 1;
-        }
-        player.SetBullets(player.GetBullets() - 1);
-      }
-      // then the enemy has a chance to hit back
-      if(enemy->GetHp() > 0)
-        if(!enemy->attack(player)) EnemyRenderTextMissed = 1;
-
-      if(enemy->GetHp() < 0) {
-        enemy->PlayAudio(0);
-        return 1;
-      }
-      if(player.GetHp() < 0) return -1;
-      if(player.GetBullets() < 2) return -1;
-
-      return 0;
-    }
-
-  const Minotaur* m = dynamic_cast<Minotaur*>(enemy);
-    if (m != nullptr) { // Minotaur combat
-      // the player shoots 6 times
-      if(player.GetBullets() > 0 && Shots > 0) {
-        txl::TextureLoader::Instance().GetSound("Pistol.mp3");
-        if(player.GetAccuracy() - (RNG() % 100) > 7) {
-          enemy->HurtEnemy(30);
-          enemy->PlayAudio(2);
-        }
-        else {
-          RenderTextMissed = 1;
-        }
-        player.SetBullets(player.GetBullets() - 1);
-        Shots--;
-      }
-      if(Shots <= 0 || player.GetBullets() <= 0)      // then the enemy has a chance to hit back
-        if(enemy->GetHp() > 0) {
-          if(!enemy->attack(player)) EnemyRenderTextMissed = 1;
-          Shots = 6;
-          return 1;
-        }
-      if(enemy->GetHp() < 0) {
-        enemy->PlayAudio(3);
-        return 1;
-      }
-      if(player.GetHp() < 0) return -1;
-
-      return 0;
-    }
-
-  const Trader* t = dynamic_cast<Trader*>(enemy);
-    if (t != nullptr) { // Trader combat
-
-      if(selectedOffer == 0) return 10; // the player did nothing, we ll call again
-      if(selectedOffer == 3) {
-        player.AddHp(RNG() % 10 + 8);
-        enemy->PlayAudio(3); // death audio
-        return 1; // the player shot the trader
-      }
-      if(selectedOffer == 1) {
-        enemy->applyOffer(player, lab, selectedOffer);
-        enemy->PlayAudio(0); // done deal audio
-        return 1; // offer1
-      }
-      if(selectedOffer == 2) {
-        enemy->applyOffer(player, lab, selectedOffer);
-        enemy->PlayAudio(0); // done deal audio
-        return 1; // offer2
-      }
-    }
-  return 1;
+  return enemy->FightRound(context);
 }
 
 std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &window, const Player &player, int &madeATrader) {
     int i = RNG() % 7;
-    // int i = 7;
+    // int i = 5;
     switch(i) {
       case 1: // blob
       case 2:
