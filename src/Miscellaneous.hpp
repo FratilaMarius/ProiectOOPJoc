@@ -26,7 +26,7 @@ public:
   void Trade(FightContext &context,  Enemy *enemy, int &RenderOffers, int &isFighting, int &hasGeneratedEnemy, int &MadeATrader);
 
 
-  void Renders_WithOut_timers(sf::RenderWindow &window, Labyrinth &map, int &isFighting, const Player &player);
+  void Renders_WithOut_timers(sf::RenderWindow &window, Labyrinth &map, const int &isFighting, const Player &player);
 
 
 private:

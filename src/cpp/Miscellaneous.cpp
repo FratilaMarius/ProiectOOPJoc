@@ -39,7 +39,7 @@ void Miscellaneous::Trade(FightContext &context, Enemy *enemy, int &RenderOffers
     }
 }
 
-void Miscellaneous::Renders_WithOut_timers(sf::RenderWindow &window, Labyrinth &map, int &isFighting, const Player &player) {
+void Miscellaneous::Renders_WithOut_timers(sf::RenderWindow &window, Labyrinth &map, const int &isFighting, const Player &player) {
     map.SetCurrentRoomSprScale(window);
     window.draw(map.GetCurrentRoomSprite());
 
