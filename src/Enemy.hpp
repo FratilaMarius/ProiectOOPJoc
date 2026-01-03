@@ -150,4 +150,5 @@ class EncounterManager {
   private:
     EncounterManager() = default;
     ~EncounterManager() = default;
+    std::unique_ptr<Enemy> enemyP;
 };

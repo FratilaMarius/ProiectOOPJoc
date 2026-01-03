@@ -25,7 +25,7 @@ void Shade::PositionSprite() {
 int Shade::attack(Player& player) {
   int chanceToHit = RNG() % 100;
 
-  if(chanceToHit > 45) {
+  if(chanceToHit > 30) {
     player.DealDamage(GetDamage());
     player.HurtAccuracy(psichDmg);
     PlayAudio(0);
@@ -320,6 +320,7 @@ int EncounterManager::Fight(Enemy* enemy, Player& player, Labyrinth& lab, int &R
     }
   return 1;
 }
+
 std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &window, const Player &player) {
     int i = RNG() % 7;
     // int i = 7;
@@ -327,7 +328,8 @@ std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &windo
       case 1: // blob
       case 2:
         if (player.GetBullets() > 2) {
-          return std::make_unique<Blob>(txl::TextureLoader::Instance().GetEnemyTexture("Blob.png"), window); 
+          enemyP = std::make_unique<Blob>(txl::TextureLoader::Instance().GetEnemyTexture("Blob.png"), window); 
+          return std::move(enemyP);
         }
         break;
  
@@ -335,16 +337,19 @@ std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &windo
       case 3:
       case 4: //shade
         if (player.GetAccuracy() > 10) {
-          return std::make_unique<Shade>(txl::TextureLoader::Instance().GetEnemyTexture("Shade.png"), window); 
+          enemyP = std::make_unique<Shade>(txl::TextureLoader::Instance().GetEnemyTexture("Shade.png"), window); 
+          return std::move(enemyP);
         }        
         break;
 
       case 5: // minotaur
-          return std::make_unique<Minotaur>(txl::TextureLoader::Instance().GetEnemyTexture("Minotaur.png"), window);  
+          enemyP = std::make_unique<Minotaur>(txl::TextureLoader::Instance().GetEnemyTexture("Minotaur.png"), window);  
+          return std::move(enemyP);
         break;
       case 6:
       // case 7: // trader
-          return std::make_unique<Trader>(txl::TextureLoader::Instance().GetEnemyTexture("Trader.png"), window);
+          enemyP = std::make_unique<Trader>(txl::TextureLoader::Instance().GetEnemyTexture("Trader.png"), window);
+          return std::move(enemyP);
         break;
 
       default:
