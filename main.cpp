@@ -68,17 +68,17 @@ int main()
 ///////////////////////////////////////////////////////////////////////////
 // Gameplay:
 
-  int isFighting = 0;
-  int hasGeneratedEnemy = 0, madeATrader = 0;
-
-  int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0, timerCheat = 0, timerShiftingRooms = 0;
-  int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0, RenderOffers = 0, RenderCheat = 0;
-  static std::unique_ptr<Enemy> _enemy = NULL;
-  int shots = 6; // this is used when we fight a mminotaur
-  int selectedOffer = 0; // this is used for the trader interactions
-  FightContext context(player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
-
   try {
+    int isFighting = 0;
+    int hasGeneratedEnemy = 0, madeATrader = 0;
+
+    int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0, timerCheat = 0, timerShiftingRooms = 0;
+    int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0, RenderOffers = 0, RenderCheat = 0;
+    static std::unique_ptr<Enemy> _enemy = NULL;
+    int shots = 6; // this is used when we fight a mminotaur
+    int selectedOffer = 0; // this is used for the trader interactions
+    FightContext context(player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
+
     while (window.isOpen()) {
       bool shouldExit = false;
       if(isFighting && !hasGeneratedEnemy) {
