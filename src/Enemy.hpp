@@ -21,9 +21,9 @@ struct FightContext {
     int& renderTextMissed;
     int& enemyRenderTextMissed;
     int& shots;
-    int selectedOffer;
+    int& selectedOffer;
     
-    FightContext(Player& player, Labyrinth& lab, int& renderTextMissed, int& enemyRenderTextMissed, int& shots, int selectedOffer)
+    FightContext(Player& player, Labyrinth& lab, int& renderTextMissed, int& enemyRenderTextMissed, int& shots, int& selectedOffer)
         : player(player), lab(lab), renderTextMissed(renderTextMissed), 
           enemyRenderTextMissed(enemyRenderTextMissed), shots(shots), selectedOffer(selectedOffer) {}
 };

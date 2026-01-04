@@ -78,213 +78,219 @@ int main()
   int selectedOffer = 0; // this is used for the trader interactions
   FightContext context(player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
 
+  try {
+    while (window.isOpen()) {
+      bool shouldExit = false;
+      if(isFighting && !hasGeneratedEnemy) {
+        _enemy = EncounterManager::Instance().GenerateAnEnemy(window, player, madeATrader);
+        if(_enemy == NULL) isFighting = 0;
+        else {
+          hasGeneratedEnemy = 1;
+          _enemy->PositionSprite();
+          _enemy->PlayAudio(1);
 
-
-  while (window.isOpen()) {
-    bool shouldExit = false;
-    if(isFighting && !hasGeneratedEnemy) {
-      _enemy = EncounterManager::Instance().GenerateAnEnemy(window, player, madeATrader);
-      if(_enemy == NULL) isFighting = 0;
-      else {
-        hasGeneratedEnemy = 1;
-        _enemy->PositionSprite();
-        _enemy->PlayAudio(1);
-
-        if(madeATrader) { // since the interaction with the trader differs, we cehck for it
-          madeATrader = 1;
-          _enemy->attack(player);
-          RenderOffers = 1;
-        }
-      }
-    }
-
-    while (const std::optional event = window.pollEvent()) {
-      if (map.CheckIfFinished()) {
-        shouldExit = true;
-        break;
-      }
-      if (event->is<sf::Event::Closed>()) {
-        window.close();
-      }
-      else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
-        sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
-        window.setView(sf::View(visibleArea));
-      }
-      else if (event->is<sf::Event::MouseButtonPressed>()) {
-        //////////////////////////////////////////////////////////////////////////////////
-        // handling the input for fighting
-        const auto *buttonPressed = event->getIf<sf::Event::MouseButtonPressed>();
-        if(isFighting && hasGeneratedEnemy) {
-          if(buttonPressed->button == sf::Mouse::Button::Left) {
-            selectedOffer = 3;
-            int status = EncounterManager::Instance().Fight(context, _enemy.get());
-            if(status == 1) { // the player won
-              shots = 6;
-              selectedOffer = 0;
-              isFighting = 0;
-              hasGeneratedEnemy = 0;
-            }
-            if(status == -1) { // the player lost
-              shots = 6;
-              selectedOffer = 0;
-              isFighting = 0;
-              hasGeneratedEnemy = 0;
-            }
-            // else the fight continues
+          if(madeATrader) { // since the interaction with the trader differs, we cehck for it
+            madeATrader = 1;
+            _enemy->attack(player);
+            RenderOffers = 1;
           }
         }
       }
-      else if (event->is<sf::Event::KeyPressed>()) {
-        const auto *keyPressed = event->getIf<sf::Event::KeyPressed>();
 
-        //////////////////////////////////////////////////////////////////////////////////
-        // Input for handling the trader interaction:
-        if(isFighting && hasGeneratedEnemy && madeATrader) {
-            if (keyPressed->scancode == sf::Keyboard::Scancode::Q) {
-              Miscellaneous::Instance().Trade(context, _enemy.get(), RenderOffers, isFighting, hasGeneratedEnemy, madeATrader);
-              continue;
-            }
-          if (keyPressed->scancode == sf::Keyboard::Scancode::E) {
-              Miscellaneous::Instance().Trade(context, _enemy.get(), RenderOffers, isFighting, hasGeneratedEnemy, madeATrader);
-              continue;
-            }
-        }
-
-        //////////////////////////////////////////////////////////////////////////////////
-        // handling the input for moving
-        if(!isFighting) {
-
-          if (keyPressed->scancode == sf::Keyboard::Scancode::Up)
-            if(Miscellaneous::Instance().EffectsOfMoving(player, "up", map, shouldExit, isFighting) == 1) continue;
-
-
-          if (keyPressed->scancode == sf::Keyboard::Scancode::Down) 
-            if(Miscellaneous::Instance().EffectsOfMoving(player, "down", map, shouldExit, isFighting) == 1) continue;
-
-
-          if (keyPressed->scancode == sf::Keyboard::Scancode::Left) 
-            if(Miscellaneous::Instance().EffectsOfMoving(player, "left", map, shouldExit, isFighting) == 1) continue;
-
-
-          if (keyPressed->scancode == sf::Keyboard::Scancode::Right) 
-            if(Miscellaneous::Instance().EffectsOfMoving(player, "right", map, shouldExit, isFighting) == 1) continue;
-        }
-
-        //////////////////////////////////////////////////////////////////////////////////
-        // Misc. input:
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Num0) {
+      while (const std::optional event = window.pollEvent()) {
+        if (map.CheckIfFinished()) {
           shouldExit = true;
           break;
         }
+        if (event->is<sf::Event::Closed>()) {
+          window.close();
+        }
+        else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
+          sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
+          window.setView(sf::View(visibleArea));
+        }
+        else if (event->is<sf::Event::MouseButtonPressed>()) {
+          //////////////////////////////////////////////////////////////////////////////////
+          // handling the input for fighting
+          const auto *buttonPressed = event->getIf<sf::Event::MouseButtonPressed>();
+          if(isFighting && hasGeneratedEnemy) {
+            if(buttonPressed->button == sf::Mouse::Button::Left) {
+              context.selectedOffer = 3;
+              int status = EncounterManager::Instance().Fight(context, _enemy.get());
+              if(status == 1) { // the player won
+                shots = 6;
+                context.selectedOffer = 0;
+                isFighting = 0;
+                hasGeneratedEnemy = 0;
+              }
+              if(status == -1) { // the player lost
+                shots = 6;
+                context.selectedOffer = 0;
+                isFighting = 0;
+                hasGeneratedEnemy = 0;
+              }
+              continue;
+              // else the fight continues
+            }
+          }
+        }
+        else if (event->is<sf::Event::KeyPressed>()) {
+          const auto *keyPressed = event->getIf<sf::Event::KeyPressed>();
+
+          //////////////////////////////////////////////////////////////////////////////////
+          // Input for handling the trader interaction:
+          if(isFighting && hasGeneratedEnemy && madeATrader) {
+              if (keyPressed->scancode == sf::Keyboard::Scancode::Q) {
+                context.selectedOffer = 1;
+                Miscellaneous::Instance().Trade(context, _enemy.get(), RenderOffers, isFighting, hasGeneratedEnemy, madeATrader);
+                continue;
+              }
+            if (keyPressed->scancode == sf::Keyboard::Scancode::E) {
+                context.selectedOffer = 2;
+                Miscellaneous::Instance().Trade(context, _enemy.get(), RenderOffers, isFighting, hasGeneratedEnemy, madeATrader);
+                continue;
+              }
+          }
+
+          //////////////////////////////////////////////////////////////////////////////////
+          // handling the input for moving
+          if(!isFighting) {
+
+            if (keyPressed->scancode == sf::Keyboard::Scancode::Up)
+              if(Miscellaneous::Instance().EffectsOfMoving(player, "up", map, shouldExit, isFighting) == 1) continue;
 
 
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Num1 && !isFighting) {
-          int c = map.CheckForItems();
+            if (keyPressed->scancode == sf::Keyboard::Scancode::Down) 
+              if(Miscellaneous::Instance().EffectsOfMoving(player, "down", map, shouldExit, isFighting) == 1) continue;
 
+
+            if (keyPressed->scancode == sf::Keyboard::Scancode::Left) 
+              if(Miscellaneous::Instance().EffectsOfMoving(player, "left", map, shouldExit, isFighting) == 1) continue;
+
+
+            if (keyPressed->scancode == sf::Keyboard::Scancode::Right) 
+              if(Miscellaneous::Instance().EffectsOfMoving(player, "right", map, shouldExit, isFighting) == 1) continue;
+          }
+
+          //////////////////////////////////////////////////////////////////////////////////
+          // Misc. input:
+          if (keyPressed->scancode == sf::Keyboard::Scancode::Num0) {
+            shouldExit = true;
+            break;
+          }
+
+
+          if (keyPressed->scancode == sf::Keyboard::Scancode::Num1 && !isFighting) {
+            int c = map.CheckForItems();
+
+            timerPickupText = 0;
+            if(c == -1) RenderPickupText = 1; // we alr checked
+            if(c == 0) RenderPickupText = 2;// nothing
+            if (c == 1) { 
+              RenderPickupText = 3;// resources
+              player.RefillWater();
+              player.RefillFood();
+            }
+            if(c == 2) {
+              RenderPickupText = 4;// bullets
+              player.SetBullets(8);
+            }
+            continue;
+          }
+
+
+          if (keyPressed->scancode == sf::Keyboard::Scancode::Equal && !isFighting) {
+            map.GetCloserToExit(10);
+            RenderCheat = 1;
+            continue;
+          }
+
+
+          // if (keyPressed->scancode == sf::Keyboard::Scancode::Num2 && !isFighting) { // we display the inventory
+          //   player.BackPack();
+          //   continue;
+          // }
+        }
+      }
+      if (shouldExit) {
+        window.close();
+        break;
+      }
+
+      using namespace std::chrono_literals;
+      std::this_thread::sleep_for(10ms);
+
+      //////////////////////////////////////////////////////////////////////////////////
+      // Rendering / timers: 
+      window.clear();
+      Miscellaneous::Instance().Renders_WithOut_timers(window, map, isFighting, player);
+
+      if(isFighting && hasGeneratedEnemy) {
+        _enemy->PositionSprite();
+        window.draw(_enemy->GetSprite());
+      }
+      if(map.GetShouldDisplayDeadEndText()) window.draw(UI::Instance().GetText(0));
+      if(RenderTextMissed) {
+        window.draw(UI::Instance().GetText(1));
+        timerPlayer++;
+        if(timerPlayer >= 120) {
+          RenderTextMissed = 0;
+          timerPlayer = 0;
+        }
+      }
+      if(EnemyRenderTextMissed) {
+        window.draw(UI::Instance().GetText(2));
+        timerEnemy++;
+        if(timerEnemy >= 120) {
+          EnemyRenderTextMissed = 0;
+          timerEnemy = 0;
+        }
+      }
+      if(RenderPickupText) {
+        timerPickupText++;
+
+        if(RenderPickupText == 1) window.draw(UI::Instance().GetText(4));
+        if(RenderPickupText == 2) window.draw(UI::Instance().GetText(7));
+        if(RenderPickupText == 3) window.draw(UI::Instance().GetText(5));
+        if(RenderPickupText == 4) window.draw(UI::Instance().GetText(6));
+        
+        if(timerPickupText >= 120) {
+          RenderPickupText = 0;
           timerPickupText = 0;
-          if(c == -1) RenderPickupText = 1; // we alr checked
-          if(c == 0) RenderPickupText = 2;// nothing
-          if (c == 1) { 
-            RenderPickupText = 3;// resources
-            player.RefillWater();
-            player.RefillFood();
-          }
-          if(c == 2) {
-            RenderPickupText = 4;// bullets
-            player.SetBullets(8);
-          }
-          continue;
         }
-
-
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Equal && !isFighting) {
-          map.GetCloserToExit(10);
-          RenderCheat = 1;
-          continue;
+      }
+      if(RenderCheat) {
+        timerCheat++;
+        window.draw(UI::Instance().GetText(11));
+        
+        if(timerCheat >= 120) {
+          RenderCheat = 0;
+          timerCheat = 0;
         }
-
-
-        // if (keyPressed->scancode == sf::Keyboard::Scancode::Num2 && !isFighting) { // we display the inventory
-        //   player.BackPack();
-        //   continue;
-        // }
       }
-    }
-    if (shouldExit) {
-      window.close();
-      break;
-    }
-
-    using namespace std::chrono_literals;
-    std::this_thread::sleep_for(10ms);
-
-    //////////////////////////////////////////////////////////////////////////////////
-    // Rendering / timers: 
-    window.clear();
-    Miscellaneous::Instance().Renders_WithOut_timers(window, map, isFighting, player);
-
-    if(isFighting && hasGeneratedEnemy) {
-      _enemy->PositionSprite();
-      window.draw(_enemy->GetSprite());
-    }
-    if(map.GetShouldDisplayDeadEndText()) window.draw(UI::Instance().GetText(0));
-    if(RenderTextMissed) {
-      window.draw(UI::Instance().GetText(1));
-      timerPlayer++;
-      if(timerPlayer >= 120) {
-        RenderTextMissed = 0;
-        timerPlayer = 0;
+      if(RenderOffers) {
+        const Trader* m = dynamic_cast<Trader*>(_enemy.get());
+        if( m != nullptr) {
+          window.draw(m->GetOffer1());
+          window.draw(m->GetOffer2());
+        }
       }
-    }
-    if(EnemyRenderTextMissed) {
-      window.draw(UI::Instance().GetText(2));
-      timerEnemy++;
-      if(timerEnemy >= 120) {
-        EnemyRenderTextMissed = 0;
-        timerEnemy = 0;
+      if(UI::Instance().GetShiftingRooms()) {
+        timerShiftingRooms++;
+        window.draw(UI::Instance().GetText(12));
+        
+        if(timerShiftingRooms >= 120) {
+          UI::Instance().SetShiftingRooms(0);
+          timerShiftingRooms = 0;
+        }
       }
+      window.display();
     }
-    if(RenderPickupText) {
-      timerPickupText++;
-
-      if(RenderPickupText == 1) window.draw(UI::Instance().GetText(4));
-      if(RenderPickupText == 2) window.draw(UI::Instance().GetText(7));
-      if(RenderPickupText == 3) window.draw(UI::Instance().GetText(5));
-      if(RenderPickupText == 4) window.draw(UI::Instance().GetText(6));
-      
-      if(timerPickupText >= 120) {
-        RenderPickupText = 0;
-        timerPickupText = 0;
-      }
-    }
-    if(RenderCheat) {
-      timerCheat++;
-      window.draw(UI::Instance().GetText(11));
-      
-      if(timerCheat >= 120) {
-        RenderCheat = 0;
-        timerCheat = 0;
-      }
-    }
-    if(RenderOffers) {
-      const Trader* m = dynamic_cast<Trader*>(_enemy.get());
-      if( m != nullptr) {
-        window.draw(m->GetOffer1());
-        window.draw(m->GetOffer2());
-      }
-    }
-    if(UI::Instance().GetShiftingRooms()) {
-      timerShiftingRooms++;
-      window.draw(UI::Instance().GetText(12));
-      
-      if(timerShiftingRooms >= 120) {
-        UI::Instance().SetShiftingRooms(0);
-        timerShiftingRooms = 0;
-      }
-    }
-    window.display();
   }
-
+  catch(AppException &exp) {
+    std::cout<< exp.what() <<'\n';
+    return -1;
+  }
 
   window.close();
   intrare.close();

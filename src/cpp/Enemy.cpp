@@ -41,11 +41,11 @@ int Shade::FightRound(FightContext& context) {
   if(GetHp() > 0)
     if(!attack(context.player)) context.enemyRenderTextMissed = 1;
   if(context.player.GetAccuracy() < 10) return 1;
-  if(GetHp() < 0) {
+  if(GetHp() <= 0) {
     PlayAudio(3);
     return 1;
   }
-  if(context.player.GetHp() < 0) return -1;
+  if(context.player.GetHp() <= 0) return -1;
   return 0;
 }
 
@@ -107,11 +107,11 @@ int Minotaur::FightRound(FightContext& context) {
       if(!attack(context.player)) context.enemyRenderTextMissed = 1;
       return 1;
     }
-  if(GetHp() < 0) {
+  if(GetHp() <= 0) {
     PlayAudio(3);
     return 1;
   }
-  if(context.player.GetHp() < 0) return -1;
+  if(context.player.GetHp() <= 0) return -1;
   return 0;
 }
 
@@ -174,11 +174,11 @@ int Blob::FightRound(FightContext& context) {
   // then the enemy has a chance to hit back
   if(GetHp() > 0)
     if(!attack(context.player)) context.enemyRenderTextMissed = 1;
-  if(GetHp() < 0) {
+  if(GetHp() <= 0) {
     PlayAudio(0);
     return 1;
   }
-  if(context.player.GetHp() < 0) return -1;
+  if(context.player.GetHp() <= 0) return -1;
   if(context.player.GetBullets() < 2) return -1;
   return 0;
 }
