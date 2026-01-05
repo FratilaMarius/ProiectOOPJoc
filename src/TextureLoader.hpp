@@ -62,11 +62,11 @@ namespace txl {
 
     sf::Texture defaultTexture;
     void LoadTextures(const std::string &path, int nrOfExits);
-    void LoadUI();
+    // void LoadUI();
 
-    void LoadEnemyTex();
+    // void LoadEnemyTex();
 
     void LoadSounds();
-    void LoadMusic();
+    // void LoadMusic();
   };
 }
