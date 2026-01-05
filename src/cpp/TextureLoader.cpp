@@ -14,8 +14,11 @@ namespace txl
       LoadTextures(path2, 2);
       LoadTextures(path3, 3);
 
-      LoadUI();
-      LoadEnemyTex();
+      LoadTextures(pathUI, 3);
+      LoadTextures(pathEnemy, 3);
+
+      // LoadUI();
+      // LoadEnemyTex();
       if(!font.openFromFile("Textures/CourierPrime-Regular.ttf")) throw(FileException("Textures/CourierPrime-Regular.ttf"));
         else std::cout << "\nLoaded: CourierPrime-Regular.ttf as font";
 
@@ -29,7 +32,7 @@ namespace txl
     return instance;
   }
 
-  // Loads all the room textures from the numbered folders 0,1,2,3
+  // Loads all textures
   void TextureLoader::LoadTextures(const std::string &path, int nrOfExits) {
     if (nrOfExits > 3 || nrOfExits < 0) {
       throw(TextureFileExceptionOutOfBounds(nrOfExits));
@@ -48,48 +51,14 @@ namespace txl
         throw(FileException(fis.path().filename().string()));
       }
 
-      map_textures[nrOfExits][fis.path().filename().string()] = temp;
+      if(path == path0 || path == path1 || path == path2 || path == path3)
+        map_textures[nrOfExits][fis.path().filename().string()] = temp;
+      if(path == pathUI)
+        map_UI[fis.path().filename().string()] = temp;
+      if(path == pathEnemy)
+        map_Enemy[fis.path().filename().string()] = temp;
+
       std::cout << "\nLoaded: " << fis.path().filename();
-    }
-  }
-
-  // Loads all UI related textures
-  void TextureLoader::LoadUI() {
-    for (fsys::directory_iterator file(pathUI); file != fsys::directory_iterator(); file++) {
-      sf::Texture temp;
-      const auto &fis = *file;
-      if (!fis.is_regular_file()) {
-        throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
-      }
-      if (!(fis.path().extension().string() == ".png")) {
-        throw(TextureFileExceptionExtension(fis.path().filename().string()));
-      }
-      if (!temp.loadFromFile(fis.path().string())) {
-        throw(FileException(fis.path().filename().string()));
-      }
-
-      map_UI[fis.path().filename().string()] = temp;
-      std::cout << "\nLoaded: " << fis.path().filename().string();
-    }
-  }
-
-  // Loads all enemy related textures
-  void TextureLoader::LoadEnemyTex() {
-    for (fsys::directory_iterator file(pathEnemy); file != fsys::directory_iterator(); file++) {
-      sf::Texture temp;
-      const auto &fis = *file;
-      if (!fis.is_regular_file()) {
-        throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
-      }
-      if (!(fis.path().extension().string() == ".png")) {
-        throw(TextureFileExceptionExtension(fis.path().filename().string()));
-      }
-      if (!temp.loadFromFile(fis.path().string())) {
-        throw(FileException(fis.path().filename().string()));
-      }
-
-      map_Enemy[fis.path().filename().string()] = temp;
-      std::cout << "\nLoaded: " << fis.path().filename().string();
     }
   }
 
@@ -112,24 +81,6 @@ namespace txl
     }
   }
 
-  // void TextureLoader::LoadMusic() {
-  //   for (fsys::directory_iterator file(pathMusic); file != fsys::directory_iterator(); file++) {
-  //     const auto &fis = *file;
-  //     if (!fis.is_regular_file()) {
-  //       throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
-  //     }
-  //     if (!(fis.path().extension().string() == ".mp3")) {
-  //       throw(TextureFileExceptionExtension(fis.path().filename().string()));
-  //     }
-  //     if (!ambientMusic[fis.path().filename().string()].openFromFile(fis.path().string())) {
-  //       throw(FileException(fis.path().filename().string()));
-  //     }
-
-  //     std::cout << "\nLoaded: " << fis.path().filename().string();
-  //   }
-  // }
-  // ret a random texture depending on nrOfExits
-  // possible Exceptions: OutOfBounds, EmptyArray, NoSuchFile
   sf::Texture &TextureLoader::GetTexture(int nrOfExits) {
     nrOfExits--;
     std::string name = "txtr";
