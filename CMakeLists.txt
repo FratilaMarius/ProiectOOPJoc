@@ -67,6 +67,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
     src/cpp/Exceptions.cpp
     src/cpp/UI.cpp
     src/cpp/Miscellaneous.cpp
+    src/cpp/Game.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
