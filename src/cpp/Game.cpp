@@ -255,7 +255,7 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &window) {
       if(renderConclusion > 0 && renderConclusion < 180) {
         window.draw(_event->GetConclusion());
         renderConclusion++;
-        if(renderConclusion > 180) renderConclusion = 0;
+        if(renderConclusion > 178) renderConclusion = 0;
       }
 
 
