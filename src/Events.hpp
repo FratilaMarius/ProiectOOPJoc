@@ -21,7 +21,7 @@
 class Event{
   public:
     Event(Player &_player, sf::Texture &texture, sf::RenderWindow &_window, sf::Sprite &spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
-    ~Event() = default;
+    virtual ~Event() = default;
 
     virtual void ApplyEvent() = 0;
     virtual void PlayAnimation() = 0; // game runs at 60 fps i need to remember that for making the animations
@@ -48,7 +48,7 @@ class Event{
     std::optional<sf::Text> conclusion;
 };
 
-class EventTent : public Event {
+class EventTent final : public Event {
   public:
     EventTent(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
     ~EventTent() = default;
@@ -65,7 +65,7 @@ class EventTent : public Event {
     int fadeSpeed = 3;
 };
 
-class EventHole : public Event {
+class EventHole final : public Event {
   public:
     EventHole(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
     ~EventHole() = default;
@@ -76,13 +76,12 @@ class EventHole : public Event {
   private:
     int hpLoss = 10;
     int accLoss = 2;    
-    int fadeTimer = 0;
     int fadeSpeed = 5;
 
     std::vector<std::string> windowNames = {"Window1.png", "Window2.png", "Window3.png", "Window4.png", "Window5.png", "Window6.png", "Window7.png"};
 };
 
-class EventPage : public Event {
+class EventPage final : public Event {
   public:
     EventPage(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
     ~EventPage() = default;
