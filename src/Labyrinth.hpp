@@ -46,6 +46,7 @@ public:
   // Return values for this function are as follows: 1 - default, nothing happened, we just moved
   //                                                 2 - there's an enemy where we jsut moved
   //                                                 3 - we have escaped
+  //                                                 4 - Event
   int Move(const std::string &where);
   void GetCloserToExit(int n) { moves += n/10; chanceForExit -= n; }
 
@@ -54,7 +55,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GFX:
 //
-  const sf::Sprite& GetCurrentRoomSprite() const {  return layout[playerCords[0]][playerCords[1]].GetSprite();}
+  sf::Sprite& GetCurrentRoomSprite() { return layout[playerCords[0]][playerCords[1]].GetSprite();}
   void SetCurrentRoomSprScale(const sf::RenderWindow& window) {layout[playerCords[0]][playerCords[1]].FitSpriteToFrmae(window);}
 
   const int* FigureWhatUItoRender() const { return layout[playerCords[0]][playerCords[1]].GetExitsArray(); }

@@ -52,6 +52,9 @@ class Enemy {
   void SetDamge(int amount) { damage = amount; }
   int GetDamage() { return damage; }
 
+  void SetHp(int n) { hp = n;}
+  void SetDamage(int n) { damage = n;}
+
   sf::Sprite& GetSprite() { return sprite.value();}
   sf::Sprite* GetSpriteAddr() { return &sprite.value(); }
   virtual void PositionSprite() = 0;

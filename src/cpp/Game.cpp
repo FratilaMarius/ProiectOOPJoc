@@ -21,17 +21,25 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &window) {
 
 
     int isFighting = 0;
-    int hasGeneratedEnemy = 0, madeATrader = 0;
+    int hasGeneratedEnemy = 0, madeATrader = 0, GeneratedEvent = -1, affectNextEnemy = 0, renderRequest = 0, renderConclusion = 0;
 
     int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0, timerCheat = 0, timerShiftingRooms = 0;
     int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0, RenderOffers = 0, RenderCheat = 0;
     static std::unique_ptr<Enemy> _enemy = NULL;
+    static std::unique_ptr<Event> _event = NULL;
     int shots = 6; // this is used when we fight a mminotaur
     int selectedOffer = 0; // this is used for the trader interactions
     FightContext context(player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
 
     while (window.isOpen()) {
       bool shouldExit = false;
+      if(GeneratedEvent == 0) { // we need to deal with an event
+        _event = EventGenerator::Instance().GenerateEvent(GeneratedEvent, player, window, map.GetCurrentRoomSprite(), map, affectNextEnemy);
+        renderRequest = 1;
+        // event->ApplyEvent();
+
+        // GeneratedEvent = -1;
+      }
       if(isFighting && !hasGeneratedEnemy) {
         _enemy = EncounterManager::Instance().GenerateAnEnemy(window, player, madeATrader);
         if(_enemy == NULL) isFighting = 0;
@@ -39,6 +47,14 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &window) {
           hasGeneratedEnemy = 1;
           _enemy->PositionSprite();
           _enemy->PlayAudio(1);
+
+          if(affectNextEnemy) {
+
+            _enemy->SetDamage(_enemy->GetDamage() / 3);
+            _enemy->SetHp(30 + RNG() % 2);
+
+            affectNextEnemy = 0;
+          }
 
           if(madeATrader) { // since the interaction with the trader differs, we cehck for it
             madeATrader = 1;
@@ -104,23 +120,60 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &window) {
           }
 
           //////////////////////////////////////////////////////////////////////////////////
+          // Input for handling the events:
+          if(!isFighting && GeneratedEvent > 0) {
+              if (keyPressed->scancode == sf::Keyboard::Scancode::Q) {
+                if(GeneratedEvent == 1) { // tent event
+                  renderRequest = 0;
+                  renderConclusion = 1;
+                  _event->ApplyEvent();      
+                  GeneratedEvent = -1;       
+                  continue;
+                }
+                if(GeneratedEvent == 2) { // hole event
+                  renderRequest = 0;
+                  renderConclusion = 1;
+                  _event->ApplyEvent();
+                  GeneratedEvent = -1;       
+                  continue;
+                }
+                if(GeneratedEvent == 3) { // page event
+                  renderRequest = 0;
+                  renderConclusion = 1;
+                  _event->ApplyEvent();
+                  GeneratedEvent = -1;       
+                  continue;
+                }
+              }
+            if (keyPressed->scancode == sf::Keyboard::Scancode::E) {
+                GeneratedEvent = -1;
+                renderRequest = 0;
+                continue;
+              }
+          }
+          //////////////////////////////////////////////////////////////////////////////////
           // handling the input for moving
-          if(!isFighting) {
+          if(!isFighting && GeneratedEvent == -1) {
 
             if (keyPressed->scancode == sf::Keyboard::Scancode::Up)
-              if(Miscellaneous::Instance().EffectsOfMoving(player, "up", map, shouldExit, isFighting) == 1) continue;
-
+              if(Miscellaneous::Instance().EffectsOfMoving(player, "up", map, shouldExit, isFighting, GeneratedEvent) == 1) {
+                continue;
+              }
 
             if (keyPressed->scancode == sf::Keyboard::Scancode::Down) 
-              if(Miscellaneous::Instance().EffectsOfMoving(player, "down", map, shouldExit, isFighting) == 1) continue;
-
+              if(Miscellaneous::Instance().EffectsOfMoving(player, "down", map, shouldExit, isFighting, GeneratedEvent) == 1) {
+                continue;
+              }
 
             if (keyPressed->scancode == sf::Keyboard::Scancode::Left) 
-              if(Miscellaneous::Instance().EffectsOfMoving(player, "left", map, shouldExit, isFighting) == 1) continue;
-
+              if(Miscellaneous::Instance().EffectsOfMoving(player, "left", map, shouldExit, isFighting, GeneratedEvent) == 1) {
+                continue;
+              }
 
             if (keyPressed->scancode == sf::Keyboard::Scancode::Right) 
-              if(Miscellaneous::Instance().EffectsOfMoving(player, "right", map, shouldExit, isFighting) == 1) continue;
+              if(Miscellaneous::Instance().EffectsOfMoving(player, "right", map, shouldExit, isFighting, GeneratedEvent) == 1) {
+                continue;
+              }
           }
 
           //////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +184,7 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &window) {
           }
 
 
-          if (keyPressed->scancode == sf::Keyboard::Scancode::Num1 && !isFighting) {
+          if (keyPressed->scancode == sf::Keyboard::Scancode::Num1 && !isFighting && GeneratedEvent == -1) {
             int c = map.CheckForItems();
 
             timerPickupText = 0;
@@ -150,7 +203,7 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &window) {
           }
 
 
-          if (keyPressed->scancode == sf::Keyboard::Scancode::Equal && !isFighting) {
+          if (keyPressed->scancode == sf::Keyboard::Scancode::Equal && !isFighting && GeneratedEvent == -1) {
             map.GetCloserToExit(10);
             RenderCheat = 1;
             continue;
@@ -169,12 +222,19 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &window) {
       }
 
       using namespace std::chrono_literals;
-      std::this_thread::sleep_for(10ms);
+      std::this_thread::sleep_for(10ms);  
 
       //////////////////////////////////////////////////////////////////////////////////
       // Rendering / timers: 
       window.clear();
-      Miscellaneous::Instance().Renders_WithOut_timers(window, map, isFighting, player);
+      Miscellaneous::Instance().Renders_WithOut_timers(window, map, isFighting, player, GeneratedEvent);
+
+      if (GeneratedEvent == 1) {
+        _event->GetSpriteEvent().setPosition({static_cast<float>(window.getSize().x / 2 - 200), static_cast<float>(window.getSize().y / 2 - 150)});
+        _event->GetSpriteEvent().setScale({3, 3});
+        window.draw(_event->GetSpriteEvent());
+      }
+      
 
       if(isFighting && hasGeneratedEnemy) {
         _enemy->PositionSprite();
@@ -189,6 +249,16 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &window) {
           timerPlayer = 0;
         }
       }
+
+
+      if(renderRequest) window.draw(_event->GetRequest());
+      if(renderConclusion > 0 && renderConclusion < 180) {
+        window.draw(_event->GetConclusion());
+        renderConclusion++;
+        if(renderConclusion > 180) renderConclusion = 0;
+      }
+
+
       if(EnemyRenderTextMissed) {
         window.draw(UI::Instance().GetText(2));
         timerEnemy++;

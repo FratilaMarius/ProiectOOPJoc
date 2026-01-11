@@ -303,14 +303,13 @@ int Labyrinth::Move(const std::string& where) {
     chanceForExit -= 2;
   }
   if(chanceForExit <= 10 && RNG() % 5 == 0) finish = 1;
+
   if (finish) {
     std::cout << "Congrats! You have escaped!";
     return 3;
   }
   if(layout [playerCords[0]][playerCords[1]].GetHasEnemy() == 1) return 2;
-
-  std::cout << "\n"
-            << layout[playerCords[0]][playerCords[1]];
+  if(RNG() % 100 < 8) return 4;
   return 1;
 }
 

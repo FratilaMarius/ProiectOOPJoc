@@ -49,7 +49,7 @@ public:
   // GFX:
   void SetSprite();                                      // chooses a random txtr f(number of exits)
   void FitSpriteToFrmae(const sf::RenderWindow &window); // centers and scales the sprite
-  const sf::Sprite& GetSprite() const {return sprite;}
+  sf::Sprite& GetSprite() {return sprite;}
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 private:

@@ -6,7 +6,7 @@ Miscellaneous &Miscellaneous::Instance() {
   return instance;
 }
 
-int Miscellaneous::EffectsOfMoving(Player &player, const std::string &where, Labyrinth &map, bool &shouldExit, int& isFighting) {
+int Miscellaneous::EffectsOfMoving(Player &player, const std::string &where, Labyrinth &map, bool &shouldExit, int& isFighting, int &GeneratedEvent) {
     try {
       int x = map.Move(where);
       if(x == 3) {
@@ -14,6 +14,10 @@ int Miscellaneous::EffectsOfMoving(Player &player, const std::string &where, Lab
         return 1;
       }
       if(x == 2) isFighting = 1;
+      if(x == 4) {
+        GeneratedEvent = 0; // we'll grab an event
+      }
+      else GeneratedEvent = -1;
 
       int alive = player.PlayerStatus();
       if (alive < 0) {
@@ -39,18 +43,18 @@ void Miscellaneous::Trade(FightContext &context, Enemy *enemy, int &RenderOffers
     }
 }
 
-void Miscellaneous::Renders_WithOut_timers(sf::RenderWindow &window, Labyrinth &map, const int &isFighting, const Player &player) {
+void Miscellaneous::Renders_WithOut_timers(sf::RenderWindow &window, Labyrinth &map, const int &isFighting, const Player &player, int &GeneratedEvent) {
     map.SetCurrentRoomSprScale(window);
     window.draw(map.GetCurrentRoomSprite());
 
     UI::Instance().PositionUI(window);
-
+  
     window.draw(UI::Instance().GetMiscUIsprite("hpBar"));
     window.draw(UI::Instance().GetMiscUIsprite("hpBar_empty"));
     window.draw(UI::Instance().GetMiscUIsprite("accBar"));
     window.draw(UI::Instance().GetMiscUIsprite("accBar_empty"));
 
-    if(!isFighting)  
+    if(!isFighting && GeneratedEvent == -1)  
       for(int i = 0; i < 4; i++) {
         const int *tempExitArray = map.FigureWhatUItoRender();
         if(tempExitArray[0] == 1) window.draw(UI::Instance().GetUI_Sprites(0));
