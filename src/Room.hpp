@@ -16,7 +16,8 @@
 //////////////////////////////////////////////////////////////////////
 //  Class Room stores info about a specific room from the labyrinth
 //
-class Room {
+class Room
+{
 public:
   Room() : hasEnemy(0), hasPlayer(0), timesVisited(0), checkedForPickups(0) {}
   Room(const Room &other) = default;
@@ -25,7 +26,7 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const Room &room);
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // printing and setting:
-  
+
   int GetHasEnemy() const { return hasEnemy; }
   void SetHasEnemy(int num) { hasEnemy = num; }
   // int GetHasPlayer() const { return hasPlayer; }
@@ -34,22 +35,22 @@ public:
   int GetNrRoutes() const { return exits[0] + exits[1] + exits[2] + exits[3]; }
   int GetTimesVisited() const { return timesVisited; }
 
-  int SeeIfExitHere(const std::string &where);    // for setting to 1 via string | up, down, left, right
-  int Exits(int where);                           // for setting to 1 via index  | 0-up,1-down,2-left,3-right
-  void Exits(const std::string &where, int val);  // for setting to specific value via string
-  void Exits(int where, int val);                 // for setting to specific value via index
+  int SeeIfExitHere(const std::string &where);   // for setting to 1 via string | up, down, left, right
+  int Exits(int where);                          // for setting to 1 via index  | 0-up,1-down,2-left,3-right
+  void Exits(const std::string &where, int val); // for setting to specific value via string
+  void Exits(int where, int val);                // for setting to specific value via index
   const int *GetExitsArray() const { return exits; }
 
   void IncrTimesVisited(int x) { timesVisited += x; } // increments the number of visits
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // Gameplay:
-  void ResetRoom();                       // resets a room
-  int FindPickup(int what);               // looks for a pickup-able item
+  void ResetRoom();         // resets a room
+  int FindPickup(int what); // looks for a pickup-able item
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // GFX:
   void SetSprite();                                      // chooses a random txtr f(number of exits)
   void FitSpriteToFrmae(const sf::RenderWindow &window); // centers and scales the sprite
-  sf::Sprite& GetSprite() {return sprite;}
+  sf::Sprite &GetSprite() { return sprite; }
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 private:

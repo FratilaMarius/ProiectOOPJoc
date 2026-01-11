@@ -20,8 +20,10 @@ namespace fsys = std::filesystem;
 //////////////////////////////////////////////////////////////////////
 //  Class TextureLoader stores all the used textures/fonts
 //
-namespace txl {
-  class TextureLoader {
+namespace txl
+{
+  class TextureLoader
+  {
   public:
     TextureLoader(const TextureLoader &other) = delete;
     TextureLoader &operator=(const TextureLoader &other) = delete;
@@ -29,10 +31,10 @@ namespace txl {
     static TextureLoader &Instance();
 
     sf::Texture &GetTexture(int nrOfExits);
-    sf::Texture &GetUITexture(const std::string& which);
-    sf::Texture &GetEnemyTexture(const std::string& which);
+    sf::Texture &GetUITexture(const std::string &which);
+    sf::Texture &GetEnemyTexture(const std::string &which);
     sf::Font &GetFont() { return font; }
-    sf::Texture &GetDefaultTexture() { return defaultTexture;}
+    sf::Texture &GetDefaultTexture() { return defaultTexture; }
 
     void GetSound(const std::string &which);
     // sf::Music &GetMusic(const std::string &which);

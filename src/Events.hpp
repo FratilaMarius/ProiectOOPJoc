@@ -17,88 +17,94 @@
 #include "UI.hpp"
 #include "Miscellaneous.hpp"
 
+class Event
+{
+public:
+  Event(Player &_player, sf::Texture &texture, sf::RenderWindow &_window, sf::Sprite &spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
+  virtual ~Event() = default;
 
-class Event{
-  public:
-    Event(Player &_player, sf::Texture &texture, sf::RenderWindow &_window, sf::Sprite &spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
-    virtual ~Event() = default;
+  virtual void ApplyEvent() = 0;
+  virtual void PlayAnimation() = 0; // game runs at 60 fps i need to remember that for making the animations
 
-    virtual void ApplyEvent() = 0;
-    virtual void PlayAnimation() = 0; // game runs at 60 fps i need to remember that for making the animations
+  Player &GetPlayer() { return player; }
+  Labyrinth &GetLab() { return map; }
+  sf::RenderWindow &GetWindow() { return window; };
+  void SetAffectTheNextEnemy() { affectTheNextEnemy = 1; }
+  sf::Sprite &GetSpriteEvent() { return spriteEvent.value(); }
+  sf::Sprite &GetSpriteBackground() { return spriteBackground; }
 
-    Player& GetPlayer() {return player;}
-    Labyrinth& GetLab() {return map;}
-    sf::RenderWindow& GetWindow() { return window;};
-    void SetAffectTheNextEnemy() { affectTheNextEnemy = 1;}
-    sf::Sprite& GetSpriteEvent() {return spriteEvent.value();}
-    sf::Sprite& GetSpriteBackground() {return spriteBackground;}
+  sf::Text &GetRequest() { return request.value(); }
+  sf::Text &GetConclusion() { return conclusion.value(); }
 
-    sf::Text &GetRequest() {return request.value();}
-    sf::Text &GetConclusion() {return conclusion.value();}
+private:
+  Player &player;
+  sf::RenderWindow &window;
+  std::optional<sf::Sprite> spriteEvent;
+  sf::Sprite &spriteBackground;
+  Labyrinth &map;
+  int &affectTheNextEnemy;
 
-  private:
-    Player &player;
-    sf::RenderWindow &window;
-    std::optional<sf::Sprite> spriteEvent;
-    sf::Sprite &spriteBackground;
-    Labyrinth &map;
-    int &affectTheNextEnemy;
-
-    std::optional<sf::Text> request;
-    std::optional<sf::Text> conclusion;
+  std::optional<sf::Text> request;
+  std::optional<sf::Text> conclusion;
 };
 
-class EventTent final : public Event {
-  public:
-    EventTent(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
-    ~EventTent() override = default;
+class EventTent final : public Event
+{
+public:
+  EventTent(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
+  ~EventTent() override = default;
 
-    void ApplyEvent() override;
+  void ApplyEvent() override;
 
-    void PlayAnimation() override;
+  void PlayAnimation() override;
 
-  private:
-    int hpBonus = 100;
-    int accBonus = 50;
+private:
+  int hpBonus = 100;
+  int accBonus = 50;
 
-    int animationTimerFade = 0;
-    int fadeSpeed = 3;
+  int animationTimerFade = 0;
+  int fadeSpeed = 3;
 };
 
-class EventHole final : public Event {
-  public:
-    EventHole(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
-    ~EventHole() override = default;
+class EventHole final : public Event
+{
+public:
+  EventHole(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
+  ~EventHole() override = default;
 
-    void ApplyEvent() override;
+  void ApplyEvent() override;
 
-    void PlayAnimation() override;
-  private:
-    int hpLoss = 10;
-    int accLoss = 2;    
-    int fadeSpeed = 5;
+  void PlayAnimation() override;
 
-    std::vector<std::string> windowNames = {"Window1.png", "Window2.png", "Window3.png", "Window4.png", "Window5.png", "Window6.png", "Window7.png"};
+private:
+  int hpLoss = 10;
+  int accLoss = 2;
+  int fadeSpeed = 5;
+
+  std::vector<std::string> windowNames = {"Window1.png", "Window2.png", "Window3.png", "Window4.png", "Window5.png", "Window6.png", "Window7.png"};
 };
 
-class EventPage final : public Event {
-  public:
-    EventPage(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
-    ~EventPage() override = default;
+class EventPage final : public Event
+{
+public:
+  EventPage(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
+  ~EventPage() override = default;
 
-    void ApplyEvent() override;
-    void PlayAnimation() override;
-  private:
-    int accBonus = 10;
+  void ApplyEvent() override;
+  void PlayAnimation() override;
+
+private:
+  int accBonus = 10;
 };
 
+class EventGenerator
+{
+public:
+  static EventGenerator &Instance();
+  std::unique_ptr<Event> GenerateEvent(int &GeneratedEvent, Player &_player, sf::RenderWindow &_window, sf::Sprite &spriteBackground,
+                                       Labyrinth &_map, int &_affectTheNextEnemy);
 
-class EventGenerator {
-  public:
-    static EventGenerator& Instance();
-    std::unique_ptr<Event> GenerateEvent(int &GeneratedEvent, Player &_player, sf::RenderWindow &_window, sf::Sprite &spriteBackground, 
-                                         Labyrinth &_map, int &_affectTheNextEnemy); 
-  private:
-    EventGenerator() = default;
-    ~EventGenerator() = default;
+private:
+  EventGenerator() = default;
+  ~EventGenerator() = default;
 };

@@ -18,8 +18,10 @@
 #include "Miscellaneous.hpp"
 #include "Events.hpp"
 
-class Game{
-  public:
-    Game(int W, int h, int a, int b, sf::RenderWindow &window);
-    private:
+class Game
+{
+public:
+  Game(int W, int h, int a, int b, sf::RenderWindow &window);
+
+private:
 };

@@ -4,7 +4,8 @@
 // printing and setting the exits:
 
 // where = up, down, left, right
-int Room::SeeIfExitHere(const std::string &where) {
+int Room::SeeIfExitHere(const std::string &where)
+{
   if (where == "up")
     return exits[0];
   if (where == "down")
@@ -16,7 +17,8 @@ int Room::SeeIfExitHere(const std::string &where) {
   return -1;
 }
 // where = 0-up,1-down,2-left,3-right
-int Room::Exits(int where) {
+int Room::Exits(int where)
+{
   if (where == 0)
     return exits[0];
   if (where == 1)
@@ -28,7 +30,8 @@ int Room::Exits(int where) {
   return -1;
 }
 // setting via string
-void Room::Exits(const std::string &where, int val) {
+void Room::Exits(const std::string &where, int val)
+{
   if (where == "up")
     exits[0] = val;
   if (where == "down")
@@ -39,7 +42,8 @@ void Room::Exits(const std::string &where, int val) {
     exits[3] = val;
 }
 // setting via index
-void Room::Exits(int where, int val) {
+void Room::Exits(int where, int val)
+{
   if (where == 0)
     exits[0] = val;
   if (where == 1)
@@ -53,7 +57,8 @@ void Room::Exits(int where, int val) {
 // Gameplay:
 
 // resets a room back to the default | SPRITE IS LEFT UNCHANGED UNTIL SetSprite() IS CALLED
-void Room::ResetRoom() {
+void Room::ResetRoom()
+{
   exits[0] = 1;
   exits[1] = 1;
   exits[2] = 1;
@@ -65,12 +70,15 @@ void Room::ResetRoom() {
 }
 
 // looks for a pickup, takes the type of item as param, max 4
-int Room::FindPickup(int what) {
-  if (checkedForPickups) {
+int Room::FindPickup(int what)
+{
+  if (checkedForPickups)
+  {
     return -1; // already checked
   }
   checkedForPickups = 1;
-  switch (what) {
+  switch (what)
+  {
   case 0:
   case 1:
   case 2:
@@ -91,31 +99,33 @@ int Room::FindPickup(int what) {
 // GFX:
 
 // Gets a random texture for the sprite depending on GetNrRoutes()
-void Room::SetSprite() {
+void Room::SetSprite()
+{
   sprite.setTexture(txl::TextureLoader::Instance().GetTexture(GetNrRoutes()));
 }
 // Centers/aligns/scales the sprite
-void Room::FitSpriteToFrmae(const sf::RenderWindow &window) {
+void Room::FitSpriteToFrmae(const sf::RenderWindow &window)
+{
   float WinScaleX = window.getSize().x;
   float WinScaleY = window.getSize().y;
   float TextureScaleX = sprite.getTexture().getSize().x;
   float TextureScaleY = sprite.getTexture().getSize().y;
 
-  float scale = std::min(WinScaleX/TextureScaleX, WinScaleY/TextureScaleY);
+  float scale = std::min(WinScaleX / TextureScaleX, WinScaleY / TextureScaleY);
   sprite.setScale({scale, scale});
 
   sprite.setOrigin({sprite.getLocalBounds().getCenter().x, sprite.getLocalBounds().getCenter().y}); // center
-  sprite.setPosition({WinScaleX/2, WinScaleY/2});
-}  
+  sprite.setPosition({WinScaleX / 2, WinScaleY / 2});
+}
 
-
-std::ostream &operator<<(std::ostream &os, const Room &room) {
+std::ostream &operator<<(std::ostream &os, const Room &room)
+{
   os << "\nRoom("
-     << " exits=" 
-      << room.exits[0] << "(up) " 
-      << room.exits[1] << "(down) "
-      << room.exits[2] << "(left) "
-      << room.exits[3]<< "(right) "
+     << " exits="
+     << room.exits[0] << "(up) "
+     << room.exits[1] << "(down) "
+     << room.exits[2] << "(left) "
+     << room.exits[3] << "(right) "
      << ", hasEnemy=" << room.hasEnemy
      << ")";
   return os;

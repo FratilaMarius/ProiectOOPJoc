@@ -24,17 +24,13 @@ public:
   static Miscellaneous &Instance();
 
   // return 1 = continue
-  int EffectsOfMoving(Player &player, const std::string &where, Labyrinth &map, bool &shouldExit, int& isFighting, int& GeneratedEvent);
+  int EffectsOfMoving(Player &player, const std::string &where, Labyrinth &map, bool &shouldExit, int &isFighting, int &GeneratedEvent);
 
-  void Trade(FightContext &context,  Enemy *enemy, int &RenderOffers, int &isFighting, int &hasGeneratedEnemy, int &MadeATrader);
-
+  void Trade(FightContext &context, Enemy *enemy, int &RenderOffers, int &isFighting, int &hasGeneratedEnemy, int &MadeATrader);
 
   void Renders_WithOut_timers(sf::RenderWindow &window, Labyrinth &map, const int &isFighting, const Player &player, const int &GeneratedEvent);
-
 
 private:
   Miscellaneous() = default;
   ~Miscellaneous() = default;
-  
-
 };

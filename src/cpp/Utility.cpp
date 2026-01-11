@@ -1,5 +1,6 @@
 #include "../Utility.hpp"
 
-int RNG() {
+int RNG()
+{
   return rand();
 }
