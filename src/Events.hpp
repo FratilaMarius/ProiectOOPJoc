@@ -51,7 +51,7 @@ class Event{
 class EventTent final : public Event {
   public:
     EventTent(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
-    ~EventTent() = default;
+    ~EventTent() override = default;
 
     void ApplyEvent() override;
 
@@ -68,7 +68,7 @@ class EventTent final : public Event {
 class EventHole final : public Event {
   public:
     EventHole(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
-    ~EventHole() = default;
+    ~EventHole() override = default;
 
     void ApplyEvent() override;
 
@@ -84,7 +84,7 @@ class EventHole final : public Event {
 class EventPage final : public Event {
   public:
     EventPage(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
-    ~EventPage() = default;
+    ~EventPage() override = default;
 
     void ApplyEvent() override;
     void PlayAnimation() override;
