@@ -110,12 +110,12 @@ void EventHole::PlayAnimation() {
 
   // display a wall with a hole looking into another room:
   // sf::Sprite wall(txl::TextureLoader::Instance().GetUITexture("Wall.png"));
-  sf::Sprite window(txl::TextureLoader::Instance().GetUITexture(windowNames[RNG() % 7]));
+  sf::Sprite hole(txl::TextureLoader::Instance().GetUITexture(windowNames[RNG() % 7]));
 
-  window.setTextureRect(sf::IntRect({0, 0}, {static_cast<int>(scale.x), static_cast<int>(scale.y)}));
-  window.setScale({.2, .2});
-  window.setOrigin({GetSpriteEvent().getLocalBounds().getCenter().x, GetSpriteEvent().getLocalBounds().getCenter().y}); // center
-  window.setPosition({static_cast<float>(GetWindow().getSize().x/2), static_cast<float>(GetWindow().getSize().y/2)});
+  hole.setTextureRect(sf::IntRect({0, 0}, {static_cast<int>(scale.x), static_cast<int>(scale.y)}));
+  hole.setScale({.2, .2});
+  hole.setOrigin({GetSpriteEvent().getLocalBounds().getCenter().x, GetSpriteEvent().getLocalBounds().getCenter().y}); // center
+  hole.setPosition({static_cast<float>(GetWindow().getSize().x/2), static_cast<float>(GetWindow().getSize().y/2)});
 
 
   // we fade out the background:
@@ -138,7 +138,7 @@ void EventHole::PlayAnimation() {
 
   GetWindow().clear();
   GetWindow().draw(GetSpriteEvent());
-  GetWindow().draw(window);
+  GetWindow().draw(hole);
   GetWindow().display();
   using namespace std::chrono_literals;
   std::this_thread::sleep_for(2200ms);
@@ -164,7 +164,7 @@ void EventHole::PlayAnimation() {
     GetWindow().clear();
           
     GetWindow().draw(GetSpriteEvent());
-    GetWindow().draw(window);
+    GetWindow().draw(hole);
     GetWindow().draw(blackCurtain);
     GetWindow().display();
   }
