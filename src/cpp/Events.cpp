@@ -113,7 +113,7 @@ void EventHole::PlayAnimation() {
   sf::Sprite hole(txl::TextureLoader::Instance().GetUITexture(windowNames[RNG() % 7]));
 
   hole.setTextureRect(sf::IntRect({0, 0}, {static_cast<int>(scale.x), static_cast<int>(scale.y)}));
-  hole.setScale({.2, .2});
+  hole.setScale({.2f, .2f});
   hole.setOrigin({GetSpriteEvent().getLocalBounds().getCenter().x, GetSpriteEvent().getLocalBounds().getCenter().y}); // center
   hole.setPosition({static_cast<float>(GetWindow().getSize().x/2), static_cast<float>(GetWindow().getSize().y/2)});
 
