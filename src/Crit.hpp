@@ -26,14 +26,14 @@ public:
       subject.SetAccuracy(subject.GetAccuracy() - penaltyApplied);
       subject.SetHp(subject.GetHp() - damage * (critDmg - 1));
 
-      critOnPlayer.emplace(txl::TextureLoader().Instance().GetUITexture("CritHitOnPlayer.png"));
-      critOnEnemy.emplace(txl::TextureLoader().Instance().GetUITexture("CritHitOnEnemy.png"));
+      critOnPlayer.emplace(txl::TextureLoader.Instance().GetUITexture("CritHitOnPlayer.png"));
+      critOnEnemy.emplace(txl::TextureLoader.Instance().GetUITexture("CritHitOnEnemy.png"));
     }
     ~CritHit() = default;
     
 
 private:
-    PlayAnimationOnPlayer() {
+    void PlayAnimationOnPlayer() {
       while(1) {
         timerFadeIn++;
       }
