@@ -22,7 +22,8 @@
 class Game
 {
 public:
-  Game(int W, int h, int a, int b, sf::RenderWindow &window);
+  Game(int W, int h, int a, int b, sf::RenderWindow &_window);
 
 private:
+  sf::RenderWindow &window;
 };

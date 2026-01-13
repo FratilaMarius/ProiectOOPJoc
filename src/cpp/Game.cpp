@@ -1,6 +1,6 @@
 #include "../Game.hpp"
 
-Game::Game(int w, int h, int a, int b, sf::RenderWindow &window)
+Game::Game(int w, int h, int a, int b, sf::RenderWindow &_window) : window(_window)
 {
   //////////////////////////////////////////////////////////////////////////
   // Graphics:

@@ -26,7 +26,7 @@ class CritHit
 public:
   CritHit(Subject &_subject, int penaltyPerCent, int damage, sf::RenderWindow &_window) : subject(_subject), penaltyApplied(penaltyPerCent), window(_window)
   {
-    CritEffects();
+    CritEffects(damage);
   }
   ~CritHit() = default;
 
@@ -102,7 +102,7 @@ public:
   }
 
 private:
-  void CritEffects()
+  void CritEffects(int damage)
   {
     subject.SetAccuracy(subject.GetAccuracy() - penaltyApplied);
     subject.SetHp(subject.GetHp() - damage * (critDmg - 1));
