@@ -33,8 +33,13 @@ int Shade::FightRound(FightContext &context)
     txl::TextureLoader::Instance().GetSound("Pistol.mp3");
     if (context.player.GetAccuracy() - (RNG() % 100) > 7)
     {
-      HurtEnemy(30);
+      HurtEnemy(context.player.GetDamage());
       PlayAudio(2);
+      if (RNG() % 100 <= context.player.GetCritChance())
+      {
+        context.player.SetBullets(context.player.GetBullets() - 1);
+        return 2;
+      }
     }
     else
     {
@@ -45,8 +50,15 @@ int Shade::FightRound(FightContext &context)
 
   // then the enemy has a chance to hit back
   if (GetHp() > 0)
-    if (!attack(context.player))
+  {
+    int i = attack(context.player);
+    if (i == 0)
       context.enemyRenderTextMissed = 1;
+    if (context.player.GetHp() <= 0)
+      return -1;
+    if (i == 2)
+      return 3;
+  }
   if (context.player.GetAccuracy() < 10)
     return 1;
   if (GetHp() <= 0)
@@ -54,20 +66,21 @@ int Shade::FightRound(FightContext &context)
     PlayAudio(3);
     return 1;
   }
-  if (context.player.GetHp() <= 0)
-    return -1;
+
   return 0;
 }
 
 int Shade::attack(Player &player)
 {
-  int chanceToHit = RNG() % 100;
+  int chanceToHit = RNG() % 100 * GetAccuracy() / 100;
 
   if (chanceToHit > 30)
   {
     player.DealDamage(GetDamage());
     player.HurtAccuracy(psichDmg);
     PlayAudio(0);
+    if (RNG() % 100 < GetCritChance())
+      return 2;
     return 1;
   }
   return 0;
@@ -113,8 +126,14 @@ int Minotaur::FightRound(FightContext &context)
     txl::TextureLoader::Instance().GetSound("Pistol.mp3");
     if (context.player.GetAccuracy() - (RNG() % 100) > 7)
     {
-      HurtEnemy(30);
+      HurtEnemy(context.player.GetDamage());
       PlayAudio(2);
+      if (RNG() % 100 <= context.player.GetCritChance())
+      {
+        context.player.SetBullets(context.player.GetBullets() - 1);
+        context.shots--;
+        return 2;
+      }
     }
     else
     {
@@ -127,8 +146,13 @@ int Minotaur::FightRound(FightContext &context)
   if (context.shots <= 0 || context.player.GetBullets() <= 0) // then the enemy has a chance to hit back
     if (GetHp() > 0)
     {
-      if (!attack(context.player))
+      int i = attack(context.player);
+      if (i == 0)
         context.enemyRenderTextMissed = 1;
+      if (context.player.GetHp() <= 0)
+        return -1;
+      if (i == 2)
+        return 3;
       return 1;
     }
   if (GetHp() <= 0)
@@ -136,19 +160,20 @@ int Minotaur::FightRound(FightContext &context)
     PlayAudio(3);
     return 1;
   }
-  if (context.player.GetHp() <= 0)
-    return -1;
+
   return 0;
 }
 
 int Minotaur::attack(Player &player)
 {
-  int chanceToHit = RNG() % 100;
+  int chanceToHit = RNG() % 100 * GetAccuracy() / 100;
 
   if (chanceToHit > 35)
   {
     player.DealDamage(GetDamage());
     PlayAudio(0);
+    if (RNG() % 100 < GetCritChance())
+      return 2;
     return 1;
   }
   return 0;
@@ -198,8 +223,13 @@ int Blob::FightRound(FightContext &context)
     txl::TextureLoader::Instance().GetSound("Pistol.mp3");
     if (context.player.GetAccuracy() - (RNG() % 100) > 7)
     {
-      HurtEnemy(30);
+      HurtEnemy(context.player.GetDamage());
       PlayAudio(0);
+      if (RNG() % 100 <= context.player.GetCritChance())
+      {
+        context.player.SetBullets(context.player.GetBullets() - 1);
+        return 2; // player crit, the enmy is stunned for a round
+      }
     }
     else
     {
@@ -210,28 +240,36 @@ int Blob::FightRound(FightContext &context)
 
   // then the enemy has a chance to hit back
   if (GetHp() > 0)
-    if (!attack(context.player))
+  {
+    int i = attack(context.player);
+    if (i == 0)
       context.enemyRenderTextMissed = 1;
+    if (context.player.GetHp() <= 0)
+      return -1;
+    if (context.player.GetBullets() < 2)
+      return -1;
+    if (i == 2)
+      return 3; // the enemy crit
+  }
   if (GetHp() <= 0)
   {
     PlayAudio(0);
     return 1;
   }
-  if (context.player.GetHp() <= 0)
-    return -1;
-  if (context.player.GetBullets() < 2)
-    return -1;
+
   return 0;
 }
 
 int Blob::attack(Player &player)
 {
-  int chanceToHit = RNG() % 100;
+  int chanceToHit = RNG() % 100 * GetAccuracy() / 100;
 
   if (chanceToHit > 70)
   {
     player.StealResources(RNG() % 3, RNG() % 3, RNG() % 2);
     PlayAudio(0);
+    if (RNG() % 100 <= GetCritChance())
+      return 2;
     return 1;
   }
   return 0;
@@ -391,13 +429,13 @@ EncounterManager &EncounterManager::Instance()
 int EncounterManager::Fight(FightContext &context, Enemy *enemy)
 {
 
-  return enemy->FightRound(context);
+  return enemy->FightRound(context); // 3 enemy crit, 2 player crit
 }
 
 std::unique_ptr<Enemy> EncounterManager::GenerateAnEnemy(sf::RenderWindow &window, const Player &player, int &madeATrader)
 {
   int i = RNG() % 7;
-  // int i = 5;
+  // int i = 1;
   switch (i)
   {
   case 1: // blob

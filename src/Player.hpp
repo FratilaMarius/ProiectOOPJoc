@@ -22,7 +22,9 @@ public:
   void DealDamage(int dmg) { hp -= dmg; }
   void HurtAccuracy(int howMuch) { accuracy -= howMuch; }
   int GetAccuracy() const { return accuracy; }
+  void SetAccuracy(int n) { accuracy = n; }
   int GetHp() const { return hp; }
+  void SetHp(int n) { hp = n; }
   void AddHp(int amnt) { hp += amnt; }
   int GetBullets() const { return bullets; }
   int GetFood() const { return food; }
@@ -30,6 +32,10 @@ public:
   void SetBullets(int n) { bullets = n; }
   void AddBullets(int n) { bullets += n; }
   void AddToAcc(int n) { accuracy += n; }
+  int GetCritChance() { return critChance;}
+  void SetDamage(int n) { damage = n;}
+  int GetDamage() { return damage;}
+  void SetCritChance(int n) { critChance = n;}
   void StealResources(int _water, int _food, int _bullets)
   {
     water -= _water;
@@ -48,13 +54,15 @@ public:
 
 private:
   int hp;
-  int accuracy = 99;
+  int accuracy = 200;
   int bullets = 8; // unused
   int lights = 8;  // unused
   int tent = 0;    // unuesd
   int meds = 25;   // unused
   int water = 105;
   int food = 102;
+  int critChance = 100;
+  int damage = 30;
 
   int movesUntilDemise = 5;
 

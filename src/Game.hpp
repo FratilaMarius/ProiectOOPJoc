@@ -17,6 +17,7 @@
 #include "UI.hpp"
 #include "Miscellaneous.hpp"
 #include "Events.hpp"
+#include "Crit.hpp"
 
 class Game
 {

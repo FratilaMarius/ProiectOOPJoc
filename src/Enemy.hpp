@@ -55,18 +55,24 @@ public:
 
   void SetHp(int n) { hp = n; }
   void SetDamage(int n) { damage = n; }
+  void SetAccuracy(int n) { accuracy = n;}
+  int GetAccuracy() { return accuracy;}
 
   sf::Sprite &GetSprite() { return sprite.value(); }
   sf::Sprite *GetSpriteAddr() { return &sprite.value(); }
   virtual void PositionSprite() = 0;
 
   int GetHp() { return hp; }
+  int GetCritChance() { return critChance; }
+  void SetCritChance(int n) { critChance = n; }
   void HurtEnemy(int dmg) { hp -= dmg; }
   ///////////////////////////////////////////////////////////////////////////////////
 private:
   int hp = 1;
   int damage = 1;
+  int accuracy = 100; 
   std::optional<sf::Sprite> sprite;
+  int critChance = 7;
 
   virtual void PlaySounds(int which) = 0;
 };

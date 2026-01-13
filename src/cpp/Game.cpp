@@ -104,6 +104,7 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &window)
               context.selectedOffer = 0;
               isFighting = 0;
               hasGeneratedEnemy = 0;
+              RenderOffers = 0;
             }
             if (status == -1)
             { // the player lost
@@ -111,6 +112,15 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &window)
               context.selectedOffer = 0;
               isFighting = 0;
               hasGeneratedEnemy = 0;
+              RenderOffers = 0;
+            }
+            if(status == 2) { // player crits
+              CritHit crit = CritHit(*_enemy, 20, player.GetDamage(), window);
+              crit.PlayAnimationOnEnemy(_enemy->GetSprite(), map.GetCurrentRoomSprite());
+            }
+            if(status == 3) { // enemy crits
+              CritHit crit = CritHit(player, 20, _enemy->GetDamage(), window);
+              crit.PlayAnimationOnPlayer(_enemy->GetSprite(), map.GetCurrentRoomSprite());
             }
             continue;
             // else the fight continues
