@@ -36,6 +36,7 @@ public:
   void SetDamage(int n) { damage = n;}
   int GetDamage() { return damage;}
   void SetCritChance(int n) { critChance = n;}
+  void Restart();
   void StealResources(int _water, int _food, int _bullets)
   {
     water -= _water;

@@ -78,6 +78,26 @@ int Player::PlayerStatus()
 //   hp -= dmg;
 // }
 
+void Player::Restart() {
+  hp = 100; 
+
+  // Reset Stats
+  accuracy = 99;
+  bullets = 8;
+  critChance = 10;
+  damage = 30;
+
+  // Reset Resources
+  water = 105;
+  food = 102;
+  movesUntilDemise = 5;
+
+  // Reset unused stats (i might use them later, dont want to forget)
+  lights = 8;
+  tent = 0;
+  meds = 25;
+}
+
 std::ostream &operator<<(std::ostream &os, const Player &player)
 {
   os << "\n"

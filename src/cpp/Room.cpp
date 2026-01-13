@@ -67,6 +67,8 @@ void Room::ResetRoom()
   hasEnemy = 0;
   hasPlayer = 0;
   timesVisited = 0;
+
+  checkedForPickups = 0;
 }
 
 // looks for a pickup, takes the type of item as param, max 4

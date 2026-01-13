@@ -1,6 +1,7 @@
 #include "../Game.hpp"
 
-Game::Game(int w, int h, int a, int b, sf::RenderWindow &_window) : window(_window)
+
+Game::Game(int _w, int _h, int _a, int _b, sf::RenderWindow &_window) : window(_window), w(_w), h(_h), a(_a), b(_b)
 {
   //////////////////////////////////////////////////////////////////////////
   // Graphics:
@@ -19,21 +20,13 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &_window) : window(_wind
 
   ///////////////////////////////////////////////////////////////////////////
   // Gameplay:
-
-  int isFighting = 0;
-  int hasGeneratedEnemy = 0, madeATrader = 0, GeneratedEvent = -1, affectNextEnemy = 0, renderRequest = 0, renderConclusion = 0;
-
-  int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0, timerCheat = 0, timerShiftingRooms = 0;
-  int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0, RenderOffers = 0, RenderCheat = 0;
   static std::unique_ptr<Enemy> _enemy = NULL;
   static std::unique_ptr<Event> _event = NULL;
-  int shots = 6;         // this is used when we fight a mminotaur
-  int selectedOffer = 0; // this is used for the trader interactions
   FightContext context(player, map, RenderTextMissed, EnemyRenderTextMissed, shots, selectedOffer);
 
   while (window.isOpen())
   {
-    bool shouldExit = false;
+    bool shouldExit = false, isDead = false, isWinner = false;
     if (GeneratedEvent == 0)
     { // we need to deal with an event
       _event = EventGenerator::Instance().GenerateEvent(GeneratedEvent, player, window, map.GetCurrentRoomSprite(), map, affectNextEnemy);
@@ -75,7 +68,7 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &_window) : window(_wind
     {
       if (map.CheckIfFinished())
       {
-        shouldExit = true;
+        isWinner = true;
         break;
       }
       if (event->is<sf::Event::Closed>())
@@ -193,25 +186,25 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &_window) : window(_wind
         {
 
           if (keyPressed->scancode == sf::Keyboard::Scancode::Up)
-            if (Miscellaneous::Instance().EffectsOfMoving(player, "up", map, shouldExit, isFighting, GeneratedEvent) == 1)
+            if (Miscellaneous::Instance().EffectsOfMoving(player, "up", map, isWinner, isDead, isFighting, GeneratedEvent) == 1)
             {
               continue;
             }
 
           if (keyPressed->scancode == sf::Keyboard::Scancode::Down)
-            if (Miscellaneous::Instance().EffectsOfMoving(player, "down", map, shouldExit, isFighting, GeneratedEvent) == 1)
+            if (Miscellaneous::Instance().EffectsOfMoving(player, "down", map, isWinner, isDead, isFighting, GeneratedEvent) == 1)
             {
               continue;
             }
 
           if (keyPressed->scancode == sf::Keyboard::Scancode::Left)
-            if (Miscellaneous::Instance().EffectsOfMoving(player, "left", map, shouldExit, isFighting, GeneratedEvent) == 1)
+            if (Miscellaneous::Instance().EffectsOfMoving(player, "left", map, isWinner, isDead, isFighting, GeneratedEvent) == 1)
             {
               continue;
             }
 
           if (keyPressed->scancode == sf::Keyboard::Scancode::Right)
-            if (Miscellaneous::Instance().EffectsOfMoving(player, "right", map, shouldExit, isFighting, GeneratedEvent) == 1)
+            if (Miscellaneous::Instance().EffectsOfMoving(player, "right", map, isWinner, isDead, isFighting, GeneratedEvent) == 1)
             {
               continue;
             }
@@ -260,11 +253,6 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &_window) : window(_wind
         //   continue;
         // }
       }
-    }
-    if (shouldExit)
-    {
-      window.close();
-      break;
     }
 
     using namespace std::chrono_literals;
@@ -371,5 +359,60 @@ Game::Game(int w, int h, int a, int b, sf::RenderWindow &_window) : window(_wind
       }
     }
     window.display();
+
+
+
+    // we pass the window and the should exit bool
+    // if he restarts we just get the player back here
+    // if he quits we just quit and we re done
+    if (isWinner) {
+      ResetVar(map, player, _enemy, _event);
+      // winScreen
+
+      // for now:
+      shouldExit = 1;
+    }
+    if (isDead) {
+      ResetVar(map, player, _enemy, _event);
+      // deadScreen
+
+      // for now:
+      shouldExit = 1;
+    }
+    if (shouldExit)
+    {
+      window.close();
+      break;
+    }
   }
+}
+
+void Game::ResetVar(Labyrinth& map, Player& player, std::unique_ptr<Enemy>& enemyPtr, std::unique_ptr<Event>& eventPtr) {
+
+  isFighting = 0;
+  hasGeneratedEnemy = 0; 
+  madeATrader = 0;
+  GeneratedEvent = -1;
+  affectNextEnemy = 0;
+  renderRequest = 0;
+  renderConclusion = 0;
+  timerPlayer = 0;
+  timerEnemy = 0;
+  timerPickupText = 0;
+  timerCheat = 0;
+  timerShiftingRooms = 0;
+  RenderTextMissed = 0;
+  EnemyRenderTextMissed = 0;
+  RenderPickupText = 0;
+  RenderOffers = 0;
+  RenderCheat = 0;
+
+  shots = 6;         // this is used when we fight a mminotaur
+  selectedOffer = 0; // this is used for the trader interactions  
+
+  enemyPtr = NULL;
+  eventPtr = NULL;
+
+  map.Restart();
+  player.Restart();
 }

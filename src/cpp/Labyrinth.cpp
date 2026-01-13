@@ -337,7 +337,7 @@ int Labyrinth::Move(const std::string &where)
 
   if (finish)
   {
-    std::cout << "Congrats! You have escaped!";
+    // std::cout << "Congrats! You have escaped!";
     return 3;
   }
   if (layout[playerCords[0]][playerCords[1]].GetHasEnemy() == 1)
@@ -345,6 +345,31 @@ int Labyrinth::Move(const std::string &where)
   if (RNG() % 100 < 8)
     return 4;
   return 1;
+}
+
+void Labyrinth::Restart() {
+  int startX = width / 2;
+  int startY = height / 2;
+
+  // We manually loop here because the ResetLayout function skips the target room
+  for (int i = 0; i < width; i++) {
+    for (int j = 0; j < height; j++) {
+       layout[i][j].ResetRoom(); 
+       layout[i][j].SetHasPlayer(0);
+    }
+  }
+
+  // Reset Counters
+  chanceForExit = 100;
+  moves = 0;
+  shouldDisplayDeadEndText = 0;
+  finish = 0;
+
+  // this will:
+  //    Update 'playerCords' to be startX, startY
+  //    Generate the room safely (guaranteeing exits)
+  //    Set the 'HasPlayer' flag to 1
+  Spawn(startX, startY); 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

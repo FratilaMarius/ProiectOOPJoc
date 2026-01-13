@@ -6,14 +6,14 @@ Miscellaneous &Miscellaneous::Instance()
   return instance;
 }
 
-int Miscellaneous::EffectsOfMoving(Player &player, const std::string &where, Labyrinth &map, bool &shouldExit, int &isFighting, int &GeneratedEvent)
+int Miscellaneous::EffectsOfMoving(Player &player, const std::string &where, Labyrinth &map, bool &isWinner, bool &isDead, int &isFighting, int &GeneratedEvent)
 {
   try
   {
     int x = map.Move(where);
-    if (x == 3)
+    if (x == 3) // escape
     {
-      shouldExit = true;
+      isWinner = true;
       return 1;
     }
     if (x == 2)
@@ -28,8 +28,9 @@ int Miscellaneous::EffectsOfMoving(Player &player, const std::string &where, Lab
     int alive = player.PlayerStatus();
     if (alive < 0)
     {
-      std::cout << "\nYou died\n\n";
-      shouldExit = true;
+      // std::cout << "\nYou died\n\n";
+      isDead = true;
+      return 1;
     }
   }
   catch (LabExceptionCouldntMove &exp)

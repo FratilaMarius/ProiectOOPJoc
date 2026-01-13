@@ -70,6 +70,7 @@ public:
   int CheckIfFinished() const { return finish; }
   int GetShouldDisplayDeadEndText() const { return shouldDisplayDeadEndText; }
 
+  void Restart();
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 private:
   int playerCords[2] = {0, 0}; // used to store the current player coords
