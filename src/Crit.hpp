@@ -24,7 +24,8 @@ class CritHit
 {
 
 public:
-  CritHit(Subject &_subject, int penaltyPerCent, int damage, sf::RenderWindow &_window) : subject(_subject), penaltyApplied(penaltyPerCent), window(_window) {
+  CritHit(Subject &_subject, int penaltyPerCent, int damage, sf::RenderWindow &_window) : subject(_subject), penaltyApplied(penaltyPerCent), window(_window)
+  {
     CritEffects();
   }
   ~CritHit() = default;
@@ -101,16 +102,14 @@ public:
   }
 
 private:
-
-  void CritEffects() {
+  void CritEffects()
+  {
     subject.SetAccuracy(subject.GetAccuracy() - penaltyApplied);
     subject.SetHp(subject.GetHp() - damage * (critDmg - 1));
-  
-  
+
     // critOnPlayer.emplace(txl::TextureLoader::Instance().GetUITexture("CritHitOnPlayer.png"));
     // critOnEnemy.emplace(txl::TextureLoader::Instance().GetUITexture("CritHitOnEnemy.png"));
   }
-
 
   int timerFadeIn = 0;
   int fadespeed = 5; // 255 / 5 =  51 steps
