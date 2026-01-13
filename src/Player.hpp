@@ -54,14 +54,14 @@ public:
 
 private:
   int hp;
-  int accuracy = 200;
-  int bullets = 8; // unused
+  int accuracy = 99;
+  int bullets = 8; 
   int lights = 8;  // unused
   int tent = 0;    // unuesd
   int meds = 25;   // unused
   int water = 105;
   int food = 102;
-  int critChance = 100;
+  int critChance = 10;
   int damage = 30;
 
   int movesUntilDemise = 5;

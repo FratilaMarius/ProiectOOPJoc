@@ -27,6 +27,12 @@ void Shade::PositionSprite()
 
 int Shade::FightRound(FightContext &context)
 {
+  if (GetHp() <= 0)
+  {
+    PlayAudio(3);
+    return 1;
+  }
+
   // the player shoots
   if (context.player.GetBullets() > 0)
   {
@@ -120,6 +126,12 @@ void Minotaur::PositionSprite()
 
 int Minotaur::FightRound(FightContext &context)
 {
+  if (GetHp() <= 0)
+  {
+    PlayAudio(3);
+    return 1;
+  }
+
   // the player shoots 6 times
   if (context.player.GetBullets() > 0 && context.shots > 0)
   {
@@ -217,6 +229,12 @@ void Blob::PositionSprite()
 
 int Blob::FightRound(FightContext &context)
 {
+  if (GetHp() <= 0)
+  {
+    PlayAudio(3);
+    return 1;
+  }
+
   // the player shoots
   if (context.player.GetBullets() > 0)
   {

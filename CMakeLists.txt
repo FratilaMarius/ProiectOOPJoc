@@ -69,7 +69,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
     src/cpp/Miscellaneous.cpp
     src/cpp/Game.cpp
     src/cpp/Events.cpp
-    src/cpp/Crit.cpp
+    # src/cpp/Crit.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
