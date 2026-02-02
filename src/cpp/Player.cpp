@@ -29,6 +29,8 @@ Player &Player::operator=(const Player &other)
   this->meds = other.meds;
   this->water = other.water;
   this->food = other.food;
+  this->critChance = other.critChance;
+  this->damage = other.damage;
   return *this;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
