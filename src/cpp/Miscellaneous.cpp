@@ -35,7 +35,7 @@ int Miscellaneous::EffectsOfMoving(Player &player, const std::string &where, Lab
   }
   catch (LabExceptionCouldntMove &exp)
   {
-    // std::cout << exp.what();
+    std::cout << exp.what();
   }
 
   return 1;
