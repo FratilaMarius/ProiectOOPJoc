@@ -64,7 +64,7 @@ public:
 
   int GetHp() { return hp; }
   int GetCritChance() { return critChance; }
-  void SetCritChance(int n) { critChance = n; }
+  // void SetCritChance(int n) { critChance = n; }
   void HurtEnemy(int dmg) { hp -= dmg; }
   ///////////////////////////////////////////////////////////////////////////////////
 private:
