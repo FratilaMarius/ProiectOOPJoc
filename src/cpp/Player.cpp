@@ -59,12 +59,12 @@ int Player::PlayerStatus()
     movesUntilDemise--;
   if (food < 0)
     movesUntilDemise--;
-  if (food < 0)
-    std::cout << OutOfFood;
-  if (water < 0)
-    std::cout << OutOfWater;
-  if (food < 0 || water < 0)
-    std::cout << outOfSupplies << movesUntilDemise;
+  // if (food < 0)
+    // std::cout << OutOfFood;
+  // if (water < 0)
+    // std::cout << OutOfWater;
+  // if (food < 0 || water < 0)
+    // std::cout << outOfSupplies << movesUntilDemise;
   if (movesUntilDemise < 0)
     return -1;
   return 1;

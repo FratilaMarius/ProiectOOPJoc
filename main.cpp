@@ -39,7 +39,7 @@ int main()
     intrare.close();
     return -1;
   }
-  std::cout << "\nDimm lab: " << w << " x " << h;
+  // std::cout << "\nDimm lab: " << w << " x " << h;
 
   int a = 2, b = 5;
   intrare >> a >> b;
@@ -49,7 +49,7 @@ int main()
     intrare.close();
     return -1;
   }
-  std::cout << "\nCoord Spawn: " << a << ", " << b;
+  // std::cout << "\nCoord Spawn: " << a << ", " << b;
 
   sf::RenderWindow window;
   try {

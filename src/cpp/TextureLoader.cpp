@@ -10,7 +10,7 @@ namespace txl
     if (!defaultTexture.loadFromFile("Textures/0/txtr01.png"))
       throw(FileException("default texture"));
     else
-      std::cout << "\nLoaded: Textures/0/txtr01.png as default";
+      // std::cout << "\nLoaded: Textures/0/txtr01.png as default";
 
     LoadTextures(path0, 0);
     LoadTextures(path1, 1);
@@ -25,7 +25,7 @@ namespace txl
     if (!font.openFromFile("Textures/CourierPrime-Regular.ttf"))
       throw(FileException("Textures/CourierPrime-Regular.ttf"));
     else
-      std::cout << "\nLoaded: CourierPrime-Regular.ttf as font";
+      // std::cout << "\nLoaded: CourierPrime-Regular.ttf as font";
 
     // LoadMusic();
     LoadSounds();
@@ -69,7 +69,7 @@ namespace txl
       if (path == pathEnemy)
         map_Enemy[fis.path().filename().string()] = temp;
 
-      std::cout << "\nLoaded: " << fis.path().filename();
+      // std::cout << "\nLoaded: " << fis.path().filename();
     }
   }
 
@@ -93,7 +93,7 @@ namespace txl
       }
 
       soundBuffers[fis.path().filename().string()] = temp;
-      std::cout << "\nLoaded: " << fis.path().filename().string();
+      // std::cout << "\nLoaded: " << fis.path().filename().string();
     }
   }
 
