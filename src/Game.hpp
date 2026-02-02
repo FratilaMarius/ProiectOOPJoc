@@ -28,7 +28,7 @@ private:
   sf::RenderWindow &window;
   int w, h, a, b;
   int isFighting = 0;
-  int hasGeneratedEnemy = 0, madeATrader = 0, GeneratedEvent = -1, affectNextEnemy = 0, renderRequest = 0, renderConclusion = 0;
+  int hasGeneratedEnemy = 0, madeATrader = 0, renderRequest = 0, renderConclusion = 0;
 
   int timerPlayer = 0, timerEnemy = 0, timerPickupText = 0, timerCheat = 0, timerShiftingRooms = 0;
   int RenderTextMissed = 0, EnemyRenderTextMissed = 0, RenderPickupText = 0, RenderOffers = 0, RenderCheat = 0;

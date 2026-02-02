@@ -1,15 +1,15 @@
 #include "../Events.hpp"
 
-Event::Event(Player &_player, sf::Texture &texture, sf::RenderWindow &_window, sf::Sprite &spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy)
-    : player(_player), window(_window), spriteBackground(spriteBackground), map(_map), affectTheNextEnemy(_affectTheNextEnemy)
+Event::Event(Player &_player, sf::Texture &texture, sf::RenderWindow &_window, Labyrinth &_map)
+    : player(_player), window(_window), spriteBackground(_map.GetCurrentRoomSprite()), map(_map)
 {
   spriteEvent.emplace(texture);
   request.emplace(txl::TextureLoader::Instance().GetFont(), "placeholder", 20);
   conclusion.emplace(txl::TextureLoader::Instance().GetFont(), "placeholder", 20);
 };
 
-EventTent::EventTent(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy)
-    : Event(_player, _texture, _window, _spriteBackground, _map, _affectTheNextEnemy)
+EventTent::EventTent(Player &_player, sf::RenderWindow &_window, Labyrinth &_map)
+    : Event(_player, txl::TextureLoader::Instance().GetUITexture("Tent.png"), _window, _map)
 {
   GetRequest().setString("Take a break to rest? (Q)\nMove along (E)");
   GetConclusion().setString("You feel reinvigorated...");
@@ -77,8 +77,8 @@ void EventTent::PlayAnimation()
   }
 }
 
-EventHole::EventHole(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy)
-    : Event(_player, _texture, _window, _spriteBackground, _map, _affectTheNextEnemy)
+EventHole::EventHole(Player &_player, sf::RenderWindow &_window, Labyrinth &_map)
+    : Event(_player, txl::TextureLoader::Instance().GetUITexture("BackGround.png"), _window, _map)
 {
   GetRequest().setString("You feel the wall is weaker here...\nTake a peak? (Q)\nMove along (E)");
   GetConclusion().setString("You understand your surroundings better...");
@@ -181,8 +181,8 @@ void EventHole::PlayAnimation()
   }
 }
 
-EventPage::EventPage(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy)
-    : Event(_player, _texture, _window, _spriteBackground, _map, _affectTheNextEnemy)
+EventPage::EventPage(Player &_player, sf::RenderWindow &_window, Labyrinth &_map)
+    : Event(_player, txl::TextureLoader::Instance().GetUITexture("Page.png"), _window, _map)
 {
   GetRequest().setString("You feel a sense of dread overwhelm you...\nBurn a page of a book to light up the room? (Q)\nMove along (E)");
   GetConclusion().setString("You feel safer...");
@@ -196,7 +196,7 @@ void EventPage::ApplyEvent()
   PlayAnimation();
 
   GetPlayer().AddToAcc(accBonus);
-  SetAffectTheNextEnemy();
+  Cnev::Instance().SetAffectTheNextEnemy(1);
 }
 
 void EventPage::PlayAnimation()
@@ -235,24 +235,24 @@ EventGenerator &EventGenerator::Instance()
   return eventGenerator;
 }
 
-std::unique_ptr<Event> EventGenerator::GenerateEvent(int &GeneratedEvent, Player &_player, sf::RenderWindow &_window, sf::Sprite &spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy)
+std::unique_ptr<Event> EventGenerator::GenerateEvent(Player &_player, sf::RenderWindow &_window, Labyrinth &_map)
 {
   int i = RNG() % 3;
   // int i = 1;
   if (i == 0)
   {
-    GeneratedEvent = 1;
-    return std::make_unique<EventTent>(_player, txl::TextureLoader::Instance().GetUITexture("Tent.png"), _window, spriteBackground, _map, _affectTheNextEnemy);
+    Cnev::Instance().SetGeneratedEvent(1);
+    return std::make_unique<EventTent>(_player, _window, _map);
   }
   if (i == 1)
   {
-    GeneratedEvent = 2;
-    return std::make_unique<EventHole>(_player, txl::TextureLoader::Instance().GetUITexture("BackGround.png"), _window, spriteBackground, _map, _affectTheNextEnemy);
+    Cnev::Instance().SetGeneratedEvent(2);
+    return std::make_unique<EventHole>(_player, _window, _map);
   }
   if (i == 2)
   {
-    GeneratedEvent = 3;
-    return std::make_unique<EventPage>(_player, txl::TextureLoader::Instance().GetUITexture("Page.png"), _window, spriteBackground, _map, _affectTheNextEnemy);
+    Cnev::Instance().SetGeneratedEvent(3);
+    return std::make_unique<EventPage>(_player, _window, _map);
   }
 
   return NULL;

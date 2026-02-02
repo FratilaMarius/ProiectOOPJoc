@@ -1,5 +1,5 @@
 #pragma once
-
+#include <filesystem>
 #include <sstream>
 #include <exception>
 #include <string>
@@ -44,20 +44,20 @@ private:
 class TextureFileExceptionCorrupted : public FileException
 {
 public:
-  explicit TextureFileExceptionCorrupted(const std::string &filename) : FileException(Format(filename)) {}
+  explicit TextureFileExceptionCorrupted(const std::filesystem::directory_entry &entr) : FileException(Format(entr)) {}
 
 private:
-  static std::string Format(const std::string &f);
+  static std::string Format(const std::filesystem::directory_entry &_entr);
 };
 
 // Texture loader exception: file is not a png
 class TextureFileExceptionExtension : public FileException
 {
 public:
-  explicit TextureFileExceptionExtension(const std::string &filename) : FileException(Format(filename)) {}
+  explicit TextureFileExceptionExtension(const std::filesystem::directory_entry &entr) : FileException(Format(entr)) {}
 
 private:
-  static std::string Format(const std::string &f);
+  static std::string Format(const std::filesystem::directory_entry &_entr);
 };
 
 // Texture loader exception: texture array is empty

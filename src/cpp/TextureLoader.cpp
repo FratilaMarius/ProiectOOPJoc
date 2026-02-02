@@ -51,11 +51,11 @@ namespace txl
       const auto &fis = *file;
       if (!fis.is_regular_file())
       {
-        throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
+        throw(TextureFileExceptionCorrupted(fis));
       }
       if (!(fis.path().extension().string() == ".png"))
       {
-        throw(TextureFileExceptionExtension(fis.path().filename().string()));
+        throw(TextureFileExceptionExtension(fis));
       }
       if (!temp.loadFromFile(fis.path().string()))
       {
@@ -81,11 +81,11 @@ namespace txl
       const auto &fis = *file;
       if (!fis.is_regular_file())
       {
-        throw(TextureFileExceptionCorrupted(fis.path().filename().string()));
+        throw(TextureFileExceptionCorrupted(fis));
       }
       if (!(fis.path().extension().string() == ".mp3"))
       {
-        throw(TextureFileExceptionExtension(fis.path().filename().string()));
+        throw(TextureFileExceptionExtension(fis));
       }
       if (!temp.loadFromFile(fis.path().string()))
       {

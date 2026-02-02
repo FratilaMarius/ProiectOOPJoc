@@ -17,10 +17,32 @@
 #include "UI.hpp"
 #include "Miscellaneous.hpp"
 
+class Cnev // = Context Event, for short
+{
+private:
+  Cnev() = default;
+  ~Cnev() = default;
+
+int GeneratedEvent = -1;
+int affectTheNextEnemy = 0;
+
+public:
+  static Cnev &Instance()
+  {
+    static Cnev instance;
+    return instance;
+  }
+  int &GetGeneratedEvent() { return GeneratedEvent; }
+  void SetGeneratedEvent(int n) { GeneratedEvent = n; }
+  int &GetAffectTheNextEnemy() { return affectTheNextEnemy; }
+  void SetAffectTheNextEnemy(int n) { affectTheNextEnemy = n; }
+
+};
+
 class Event
 {
 public:
-  Event(Player &_player, sf::Texture &texture, sf::RenderWindow &_window, sf::Sprite &spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
+  Event(Player &_player, sf::Texture &texture, sf::RenderWindow &_window, Labyrinth &_map);
   virtual ~Event() = default;
 
   virtual void ApplyEvent() = 0;
@@ -29,7 +51,6 @@ public:
   Player &GetPlayer() { return player; }
   Labyrinth &GetLab() { return map; }
   sf::RenderWindow &GetWindow() { return window; };
-  void SetAffectTheNextEnemy() { affectTheNextEnemy = 1; }
   sf::Sprite &GetSpriteEvent() { return spriteEvent.value(); }
   sf::Sprite &GetSpriteBackground() { return spriteBackground; }
 
@@ -42,7 +63,6 @@ private:
   std::optional<sf::Sprite> spriteEvent;
   sf::Sprite &spriteBackground;
   Labyrinth &map;
-  int &affectTheNextEnemy;
 
   std::optional<sf::Text> request;
   std::optional<sf::Text> conclusion;
@@ -51,7 +71,7 @@ private:
 class EventTent final : public Event
 {
 public:
-  EventTent(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
+  EventTent(Player &_player, sf::RenderWindow &_window, Labyrinth &_map);
   ~EventTent() override = default;
 
   void ApplyEvent() override;
@@ -69,7 +89,7 @@ private:
 class EventHole final : public Event
 {
 public:
-  EventHole(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
+  EventHole(Player &_player, sf::RenderWindow &_window, Labyrinth &_map);
   ~EventHole() override = default;
 
   void ApplyEvent() override;
@@ -81,13 +101,13 @@ private:
   int accLoss = 2;
   int fadeSpeed = 5;
 
-  std::vector<std::string> windowNames = {"Window1.png", "Window2.png", "Window3.png", "Window4.png", "Window5.png", "Window6.png", "Window7.png"};
+  std::vector<std::string> windowNames = {"Window1.png", "Window2.png", "Window3.png", "Window4.png", "Window5.png", "Window6.png", "Window0.png"};
 };
 
 class EventPage final : public Event
 {
 public:
-  EventPage(Player &_player, sf::Texture &_texture, sf::RenderWindow &_window, sf::Sprite &_spriteBackground, Labyrinth &_map, int &_affectTheNextEnemy);
+  EventPage(Player &_player, sf::RenderWindow &_window, Labyrinth &_map);
   ~EventPage() override = default;
 
   void ApplyEvent() override;
@@ -101,8 +121,7 @@ class EventGenerator
 {
 public:
   static EventGenerator &Instance();
-  std::unique_ptr<Event> GenerateEvent(int &GeneratedEvent, Player &_player, sf::RenderWindow &_window, sf::Sprite &spriteBackground,
-                                       Labyrinth &_map, int &_affectTheNextEnemy);
+  std::unique_ptr<Event> GenerateEvent(Player &_player, sf::RenderWindow &_window, Labyrinth &_map);
 
 private:
   EventGenerator() = default;

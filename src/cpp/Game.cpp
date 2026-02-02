@@ -27,9 +27,9 @@ Game::Game(int _w, int _h, int _a, int _b, sf::RenderWindow &_window) : window(_
   while (window.isOpen())
   {
     bool shouldExit = false, isDead = false, isWinner = false;
-    if (GeneratedEvent == 0)
+    if (Cnev::Instance().GetGeneratedEvent() == 0)
     { // we need to deal with an event
-      _event = EventGenerator::Instance().GenerateEvent(GeneratedEvent, player, window, map.GetCurrentRoomSprite(), map, affectNextEnemy);
+      _event = EventGenerator::Instance().GenerateEvent(player, window, map);
       renderRequest = 1;
       // event->ApplyEvent();
 
@@ -46,13 +46,13 @@ Game::Game(int _w, int _h, int _a, int _b, sf::RenderWindow &_window) : window(_
         _enemy->PositionSprite();
         _enemy->PlayAudio(1);
 
-        if (affectNextEnemy)
+        if (Cnev::Instance().GetAffectTheNextEnemy())
         {
 
           _enemy->SetDamage(_enemy->GetDamage() / 3);
           _enemy->SetHp(30 + RNG() % 2);
 
-          affectNextEnemy = 0;
+          Cnev::Instance().SetAffectTheNextEnemy(0);
         }
 
         if (madeATrader)
@@ -144,67 +144,67 @@ Game::Game(int _w, int _h, int _a, int _b, sf::RenderWindow &_window) : window(_
 
         //////////////////////////////////////////////////////////////////////////////////
         // Input for handling the events:
-        if (!isFighting && GeneratedEvent > 0)
+        if (!isFighting && Cnev::Instance().GetGeneratedEvent() > 0)
         {
           if (keyPressed->scancode == sf::Keyboard::Scancode::Q)
           {
-            if (GeneratedEvent == 1)
+            if (Cnev::Instance().GetGeneratedEvent() == 1)
             { // tent event
               renderRequest = 0;
               renderConclusion = 1;
               _event->ApplyEvent();
-              GeneratedEvent = -1;
+              Cnev::Instance().SetGeneratedEvent(-1);
               continue;
             }
-            if (GeneratedEvent == 2)
+            if (Cnev::Instance().GetGeneratedEvent() == 2)
             { // hole event
               renderRequest = 0;
               renderConclusion = 1;
               _event->ApplyEvent();
-              GeneratedEvent = -1;
+              Cnev::Instance().SetGeneratedEvent(-1);
               continue;
             }
-            if (GeneratedEvent == 3)
+            if (Cnev::Instance().GetGeneratedEvent() == 3)
             { // page event
               renderRequest = 0;
               renderConclusion = 1;
               _event->ApplyEvent();
-              GeneratedEvent = -1;
+              Cnev::Instance().SetGeneratedEvent(-1);
               continue;
             }
           }
           if (keyPressed->scancode == sf::Keyboard::Scancode::E)
           {
-            GeneratedEvent = -1;
+            Cnev::Instance().SetGeneratedEvent(-1);
             renderRequest = 0;
             continue;
           }
         }
         //////////////////////////////////////////////////////////////////////////////////
         // handling the input for moving
-        if (!isFighting && GeneratedEvent == -1)
+        if (!isFighting && Cnev::Instance().GetGeneratedEvent() == -1)
         {
 
           if (keyPressed->scancode == sf::Keyboard::Scancode::Up)
-            if (Miscellaneous::Instance().EffectsOfMoving(player, "up", map, isWinner, isDead, isFighting, GeneratedEvent) == 1)
+            if (Miscellaneous::Instance().EffectsOfMoving(player, "up", map, isWinner, isDead, isFighting, Cnev::Instance().GetGeneratedEvent()) == 1)
             {
               continue;
             }
 
           if (keyPressed->scancode == sf::Keyboard::Scancode::Down)
-            if (Miscellaneous::Instance().EffectsOfMoving(player, "down", map, isWinner, isDead, isFighting, GeneratedEvent) == 1)
+            if (Miscellaneous::Instance().EffectsOfMoving(player, "down", map, isWinner, isDead, isFighting, Cnev::Instance().GetGeneratedEvent()) == 1)
             {
               continue;
             }
 
           if (keyPressed->scancode == sf::Keyboard::Scancode::Left)
-            if (Miscellaneous::Instance().EffectsOfMoving(player, "left", map, isWinner, isDead, isFighting, GeneratedEvent) == 1)
+            if (Miscellaneous::Instance().EffectsOfMoving(player, "left", map, isWinner, isDead, isFighting, Cnev::Instance().GetGeneratedEvent()) == 1)
             {
               continue;
             }
 
           if (keyPressed->scancode == sf::Keyboard::Scancode::Right)
-            if (Miscellaneous::Instance().EffectsOfMoving(player, "right", map, isWinner, isDead, isFighting, GeneratedEvent) == 1)
+            if (Miscellaneous::Instance().EffectsOfMoving(player, "right", map, isWinner, isDead, isFighting, Cnev::Instance().GetGeneratedEvent()) == 1)
             {
               continue;
             }
@@ -218,7 +218,7 @@ Game::Game(int _w, int _h, int _a, int _b, sf::RenderWindow &_window) : window(_
           break;
         }
 
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Num1 && !isFighting && GeneratedEvent == -1)
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Num1 && !isFighting && Cnev::Instance().GetGeneratedEvent() == -1)
         {
           int c = map.CheckForItems();
 
@@ -241,7 +241,7 @@ Game::Game(int _w, int _h, int _a, int _b, sf::RenderWindow &_window) : window(_
           continue;
         }
 
-        if (keyPressed->scancode == sf::Keyboard::Scancode::Equal && !isFighting && GeneratedEvent == -1)
+        if (keyPressed->scancode == sf::Keyboard::Scancode::Equal && !isFighting && Cnev::Instance().GetGeneratedEvent() == -1)
         {
           map.GetCloserToExit(10);
           RenderCheat = 1;
@@ -261,9 +261,9 @@ Game::Game(int _w, int _h, int _a, int _b, sf::RenderWindow &_window) : window(_
     //////////////////////////////////////////////////////////////////////////////////
     // Rendering / timers:
     window.clear();
-    Miscellaneous::Instance().Renders_WithOut_timers(window, map, isFighting, player, GeneratedEvent);
+    Miscellaneous::Instance().Renders_WithOut_timers(window, map, isFighting, player, Cnev::Instance().GetGeneratedEvent());
 
-    if (GeneratedEvent == 1)
+    if (Cnev::Instance().GetGeneratedEvent() == 1)
     {
       _event->GetSpriteEvent().setPosition({static_cast<float>(window.getSize().x / 2 - 200), static_cast<float>(window.getSize().y / 2 - 150)});
       _event->GetSpriteEvent().setScale({3, 3});
@@ -368,14 +368,14 @@ Game::Game(int _w, int _h, int _a, int _b, sf::RenderWindow &_window) : window(_
     if (isWinner) {
       ResetVar(map, player, _enemy, _event);
       // winScreen
-
+      std::cout<<"\nCongrats! You win!\n";
       // for now:
       shouldExit = 1;
     }
     if (isDead) {
       ResetVar(map, player, _enemy, _event);
       // deadScreen
-
+      std::cout<<"\nYou died!\n";
       // for now:
       shouldExit = 1;
     }
@@ -392,8 +392,8 @@ void Game::ResetVar(Labyrinth& map, Player& player, std::unique_ptr<Enemy>& enem
   isFighting = 0;
   hasGeneratedEnemy = 0; 
   madeATrader = 0;
-  GeneratedEvent = -1;
-  affectNextEnemy = 0;
+  Cnev::Instance().SetGeneratedEvent(-1);
+  Cnev::Instance().SetAffectTheNextEnemy(0);
   renderRequest = 0;
   renderConclusion = 0;
   timerPlayer = 0;

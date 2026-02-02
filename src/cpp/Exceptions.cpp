@@ -14,17 +14,17 @@ std::string TextureFileExceptionOutOfBounds::Format(int idx)
   return os.str();
 }
 
-std::string TextureFileExceptionCorrupted::Format(const std::string &f)
+std::string TextureFileExceptionCorrupted::Format(const std::filesystem::directory_entry &_entr)
 {
   std::ostringstream os;
-  os << "\nTexture loader error: file '" << f << "' is corrupted and cannot be opened";
+  os << "\nTexture loader error: file '" << _entr.path() << "' is corrupted and cannot be opened";
   return os.str();
 }
 
-std::string TextureFileExceptionExtension::Format(const std::string &f)
+std::string TextureFileExceptionExtension::Format(const std::filesystem::directory_entry &_entr)
 {
   std::ostringstream os;
-  os << "\nTexture loader error: file '" << f << "' has an unrecognised extension (must be a .png)";
+  os << "\nTexture loader error: file '" << _entr.path() << "' has an unrecognised extension (must be a .png)";
   return os.str();
 }
 
